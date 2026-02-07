@@ -1,0 +1,278 @@
+/* --- RESET E BASE --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background-color: #fcfcfc;
+    color: #333;
+}
+
+/* --- NAVEGAÇÃO (ESTILO MOCKUP) --- */
+.top-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 2%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Logo esquerda, Botões direita */
+    z-index: 100;
+    height: 120px;
+}
+
+.logo-img {
+    height: 120px;
+    width: auto;
+    display: block;
+}
+
+/* Menu no centro exato da tela */
+.main-menu {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+}
+
+.main-menu a {
+    color: white;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.main-menu a.active, .main-menu a:hover {
+    color: #0084ff;
+}
+
+/* Ações do Utilizador */
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.btn-text {
+    color: white;
+    font-weight: 600;
+}
+
+.btn-register {
+    background: #0084ff;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.btn-register:hover {
+    background: #0066cc;
+    transform: scale(1.05);
+}
+
+/* --- HERO SECTION --- */
+.main-hero {
+    width: 100%;
+    height: 90vh; /* Ligeiramente menor para dar espaço aos destaques */
+    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), 
+                url('img/GARMOTOR_PLACE.png') no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding-bottom: 100px;
+}
+
+.hero-content {
+    text-align: center;
+    color: white;
+    max-width: 900px;
+    z-index: 5;
+}
+
+.hero-content h2 {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 15px;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+/* BARRA DE PESQUISA */
+.search-bar {
+    background: white;
+    padding: 8px 8px 8px 25px;
+    border-radius: 60px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.search-input-group {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.search-bar i { color: #888; margin-right: 15px; }
+
+.search-bar input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 1rem;
+    color: #333;
+}
+
+.search-bar button {
+    background: #000;
+    color: white;
+    border: none;
+    padding: 15px 35px;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.search-bar button:hover { background: #0084ff; }
+
+.social-sidebar {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 9999;
+    align-items: flex-end; /* Garante que alinham à direita */
+}
+
+.social-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Ícone fixo à direita */
+    background: #fff;
+    color: #333;
+    padding: 12px;
+    border-radius: 30px 0 0 30px;
+    text-decoration: none;
+    box-shadow: -2px 5px 15px rgba(0,0,0,0.1);
+    transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s;
+    width: 55px; /* Largura base apenas para o ícone */
+    height: 50px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* O TRUQUE: O hover é individual por item */
+.social-item:hover {
+    width: 200px; /* Só este item expande */
+    color: #fff;
+    background: #0084ff;
+}
+
+.social-item i {
+    font-size: 1.4rem;
+    min-width: 30px;
+    display: flex;
+    justify-content: center;
+    order: 2; /* Garante que o ícone fica sempre na extremidade direita */
+}
+
+.social-item span {
+    font-weight: 600;
+    margin-right: 15px;
+    opacity: 0;
+    order: 1; /* Texto fica à esquerda do ícone */
+    transition: opacity 0.3s ease;
+}
+
+.social-item:hover span {
+    opacity: 1;
+}
+
+/* Cores individuais mantendo o efeito isolado */
+.social-item:nth-child(2):hover { background: #25D366; } /* WhatsApp */
+.social-item:nth-child(3):hover { background: #1877F2; } /* Facebook */
+.social-item:nth-child(4):hover { background: #d94d7c; } /* Instagram */
+/* --- LAYOUT DE VEÍCULOS E FILTROS --- */
+.featured-section {
+    padding: 0 5%;
+    margin-top: -100px;
+    position: relative;
+    z-index: 50;
+}
+
+.featured-container {
+    background: #f4f4f4;
+    border-radius: 40px 40px 0 0;
+    padding: 50px;
+}
+
+.main-content-layout {
+    display: flex;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.featured-grid {
+    flex: 3;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Auto-ajuste */
+    gap: 25px;
+    align-items: start;
+}
+
+.sidebar-filters {
+    flex: 1; /* Coluna da direita */
+    background: white;
+    padding: 25px;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.btn-filter {
+    width: 100%;
+    background: #0084ff;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+/* Banner de aviso de verificação */
+.verify-banner {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 15px;
+    text-align: center;
+    font-weight: 600;
+    border-bottom: 2px solid #ffeeba;
+    display: none; /* Escondido por padrão, mostrar via JS */
+}

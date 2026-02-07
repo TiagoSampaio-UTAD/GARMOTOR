@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GARMOTOR - Qualidade que Conduz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="Index.css">
+</head>
+<body>
+    <div id="verify-alert" class="verify-banner">
+        Por favor, verifique o seu e-mail para desbloquear todas as funcionalidades.
+    </div>
+    <header class="top-nav">
+        <div class="logo-area">
+            <img src="img/GARMOTOR_LOGO.png" alt="GARMOTOR" class="logo-img" />
+        </div>
+        
+        <nav class="main-menu">
+            <a href="#" class="active">INÍCIO</a>
+            <a href="#h">VEÍCULOS</a>
+            <a href="#">HORÁRIOS</a> 
+            <a href="#">SOBRE NÓS</a>
+        </nav>
+        
+        <div id="nav-auth" class="user-actions">
+            <a href="Authentication.html?mode=log" class="btn-text">Entrar</a>
+            <a href="Authentication.html?mode=reg" class="btn-register">Registar</a>
+        </div>
+    </header>
+
+    <section class="main-hero">
+        <div class="hero-content">
+            <h2>ENCONTRE O SEU CARRO IDEAL</h2>
+            <p>Milhares de Veículos de Qualidade, Compare preços, Reserve Compra.</p>
+
+            <form action="#" class="search-bar">
+                <div class="search-input-group">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Pesquise marca, modelo...">
+                </div>
+                <button type="submit">Pesquisar</button>
+            </form>
+        </div>
+
+        <div class="social-sidebar">
+            <a href="tel:919741045" class="social-item">
+                <i class="fa-solid fa-phone"></i>
+                <span>919 741 045</span>
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=919741045" target="_blank" class="social-item">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span>WhatsApp</span>
+            </a>
+            <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank" class="social-item">
+                <i class="fa-brands fa-facebook-f"></i>
+                <span>Facebook</span>
+            </a>
+            <a href="https://www.instagram.com/garmotor.automovel/" target="_blank" class="social-item">
+                <i class="fa-brands fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="featured-section">
+        <div class="featured-container">
+            <div class="featured-header">
+                <section id="h">
+                    <h3>TODOS OS VEÍCULOS</h3>
+                </section>
+            </div>
+            
+            <div class="main-content-layout">
+                <div class="featured-grid"></div>
+
+                <aside class="sidebar-filters">
+                    <h4>Filtros</h4>
+                    <div class="filter-group">
+                        <label>Marca</label>
+                        <select id="filtro-marca"><option>Todas</option></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Preço Máximo</label>
+                        <input type="range" min="1000" max="100000" id="filtro-preco">
+                    </div>
+                    <button class="btn-filter">Aplicar Filtros</button>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
+            <div class="footer-links">
+                <a href="#">Política de Privacidade</a>
+                <a href="#">Termos de Uso</a>
+                <a href="#">Contato</a>
+            </div>
+        </div>
+    </footer>
+
+<script>
+window.onload = function() {
+    verificarSessao();
+    carregarVeiculos();
+};
+
+async function carregarVeiculos() {
+    const grid = document.querySelector('.featured-grid');
+    if (!grid) return;
+
+    try {
+        const resposta = await fetch('http://localhost:3000/api/veiculos');
+        const veiculos = await resposta.json();
+
+        if (veiculos.length === 0) {
+            grid.innerHTML = "<p>Sem stock disponível.</p>";
+            return;
+        }
+
+        grid.innerHTML = veiculos.map(carro => {
+            let imgCapa = 'img/default_car.png';
+            if (carro.ImagemCapa) {
+                try {
+                    const fotos = carro.ImagemCapa.startsWith('[') ? JSON.parse(carro.ImagemCapa) : [carro.ImagemCapa];
+                    if (fotos.length > 0) imgCapa = fotos[0];
+                } catch (e) { imgCapa = carro.ImagemCapa; }
+            }
+
+            return `
+                <div class="car-card" style="background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <img src="${imgCapa}" alt="${carro.Marca}" style="width: 100%; border-radius: 15px; height: 180px; object-fit: cover;">
+                    <div style="padding: 15px 5px;">
+                        <h4 style="font-size: 1.1rem; color: #111; margin-bottom: 5px;">${carro.Marca} ${carro.Modelo}</h4>
+                        <p style="color: #0084ff; font-weight: 800; font-size: 1.2rem;">
+                            ${Number(carro.Preco).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' })}
+                        </p>
+                        <button onclick="window.location.href='Detalhes.html?id=${carro.Id}'" style="width: 100%; margin-top: 10px; padding: 10px; border: none; background: #0084ff; color: white; border-radius: 10px; cursor: pointer; font-weight: 600;">Ver Detalhes</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    } catch (erro) {
+        grid.innerHTML = "<p>Erro ao carregar veículos.</p>";
+    }
+}
+
+function verificarSessao() {
+    const userActions = document.querySelector('.user-actions');
+    const banner = document.getElementById('verify-alert');
+    
+    // Dados guardados no login
+    const nomeLogado = localStorage.getItem('vendedorNome');
+    const tipo = localStorage.getItem('userTipo'); // 'Admin' ou 'Cliente'
+
+    if (nomeLogado) {
+        // Esconde o banner de verificação se estiver logado
+        if (banner) banner.style.display = 'none';
+
+        // Definimos o que aparece no botão de ação dependendo do tipo de conta
+        let botaoAcao = "";
+
+        if (tipo === 'Admin') {
+            // Se for Admin (GARMOTOR), mostra botão de Gestão de Stock
+            botaoAcao = `
+                <a href="Dashboard.html" class="btn-register" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">
+                    + ADICIONAR VEÍCULO
+                </a>`;
+        } else {
+            // Se for Cliente (Utilizador), mostra botão de Favoritos/Filtros
+            // Este botão pode levar a uma página de perfil ou favoritos que cries depois
+            botaoAcao = `
+                <a href="Favoritos.html" class="btn-register" style="background: #007aff; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">
+                    MEUS FAVORITOS
+                </a>`;
+        }
+
+        userActions.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="color: white; font-weight: 600;">Olá, ${nomeLogado}</span>
+                ${botaoAcao}
+                <a href="#" onclick="fazerLogout(event)" style="color: #ff4d4d; font-weight: 700; text-decoration: none; font-size: 0.8rem; margin-left: 10px;">
+                    SAIR
+                </a>
+            </div>
+        `;
+    }
+}
+
+// Função de Logout corrigida
+function fazerLogout(event) {
+    if(event) event.preventDefault();
+    localStorage.clear(); // Limpa Nome, Email e Tipo
+    window.location.reload(); // Recarrega para aplicar as mudanças
+}
+
+</script>
+</body>
+</html>
