@@ -262,7 +262,7 @@
                 imagens: JSON.stringify(finalImagens)
             };
 
-            const res = await fetch('http://localhost:3000/api/veiculos/adicionar', {
+            const res = await fetch('https://garmotor.onrender.com/api/veiculos/adicionar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
