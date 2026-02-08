@@ -1,174 +1,95 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
-const bodyParser = require('body-parser');
-const nodemailer = require('nodemailer');
-const path = require('path'); // IMPORTANTE: Adicionado para gerir caminhos de ficheiros
+const path = require('path');
 
 const app = express();
 
-// Aumentar o limite para suportar imagens grandes em Base64
-app.use(bodyParser.json({ limit: '200mb' }));
-app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
+// Aumentar o limite para aceitar várias fotos em Base64
+app.use(express.json({ limit: '100mb' }));
 app.use(cors());
+app.use(express.static(__dirname));
 
-// --- CONFIGURAÇÃO PARA SERVIR O SITE HTML ---
-// Esta linha diz ao servidor para entregar os teus ficheiros (index.html, css, imagens, etc.)
-app.use(express.static(path.join(__dirname)));
-
-// Configuração da Base de Dados PostgreSQL do Render
 const pool = new Pool({
   connectionString: 'postgresql://garmotor_db_user:bwMHap8eQ1hkRgYDkP9IFLYOO2Nh2rZE@dpg-d63uagq4d50c73e10640-a.frankfurt-postgres.render.com/garmotor_db',
-  ssl: {
-    rejectUnauthorized: false
-  }
+  ssl: { rejectUnauthorized: false }
 });
 
-// Configuração do Nodemailer
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'tiagoalvessampaio12@gmail.com',
-        pass: 'fdypmpuinyowotba'
-    }
-});
+// --- API DE VEÍCULOS ---
 
-// --- ROTA PRINCIPAL (Resolve o erro "Cannot GET /") ---
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Index.html'));
-});
-
-// --- AUTENTICAÇÃO E UTILIZADORES ---
-
-// ROTA DE REGISTO
-app.post('/api/registar', async (req, res) => {
-    try {
-        const { nome, email, pass } = req.body; 
-        const client = await pool.connect();
-        
-        const userCheck = await client.query('SELECT id FROM Vendedores WHERE Email = $1', [email]);
-        
-        if (userCheck.rows.length > 0) {
-            client.release();
-            return res.status(400).json({ mensagem: "Este e-mail já está registado." });
-        }
-
-        let nomeFinal = nome;
-        let tipoFinal = 'Cliente';
-
-        if (email.toLowerCase() === 'tiagoalvessampaio12@gmail.com') {
-            nomeFinal = 'GARMOTOR';
-            tipoFinal = 'Admin';
-        }
-
-        await client.query(
-            'INSERT INTO Vendedores (Nome, Email, Senha, EmailConfirmado, Tipo) VALUES ($1, $2, $3, 0, $4)',
-            [nomeFinal, email, pass, tipoFinal]
-        );
-        client.release();
-
-        const token = Buffer.from(email).toString('base64');
-        
-        // ATUALIZADO: Usando o teu link correto do Render
-        const link = `https://garmotor.onrender.com/api/confirmar/${token}`;
-
-        await transporter.sendMail({
-            from: '"GARMOTOR" <tiagoalvessampaio12@gmail.com>',
-            to: email,
-            subject: 'Ativa a tua conta - GARMOTOR',
-            html: `<h2>Olá ${nomeFinal}!</h2>
-                   <p>Clica no link abaixo para ativares a tua conta:</p>
-                   <a href="${link}" style="padding:10px 20px; background:#007aff; color:white; text-decoration:none; border-radius:5px;">ATIVAR CONTA</a>`
-        });
-
-        res.json({ mensagem: "Conta criada! Verifica o e-mail para ativar." });
-    } catch (err) { 
-        console.error(err);
-        res.status(500).json({ mensagem: "Erro ao registar utilizador." }); 
-    }
-});
-
-// ROTA DE LOGIN
-app.post('/api/login', async (req, res) => {
-    try {
-        const client = await pool.connect();
-        const result = await client.query(
-            'SELECT Nome, Email, Tipo, EmailConfirmado FROM Vendedores WHERE Email = $1 AND Senha = $2',
-            [req.body.email, req.body.pass]
-        );
-        client.release();
-
-        if (result.rows.length > 0) {
-            const user = result.rows[0];
-            if (user.emailconfirmado == 0) { 
-                return res.status(403).json({ mensagem: "Conta não ativada! Verifica o teu e-mail." });
-            }
-            res.json({ nome: user.nome, email: user.email, tipo: user.tipo });
-        } else {
-            res.status(401).json({ mensagem: "E-mail ou senha incorretos." });
-        }
-    } catch (err) { 
-        res.status(500).json({ mensagem: "Erro no servidor." }); 
-    }
-});
-// --- GESTÃO DE VEÍCULOS ---
-
+// LISTAR TODOS (Index)
 app.get('/api/veiculos', async (req, res) => {
     try {
-        const client = await pool.connect();
-        const result = await client.query('SELECT * FROM Veiculos ORDER BY Id DESC');
-        client.release();
-        res.json(result.rows);
-    } catch (err) { res.status(500).send(err.message); }
-});
-
-app.post('/api/veiculos/adicionar', async (req, res) => {
-    try {
-        const d = req.body;
-        const client = await pool.connect();
-        
-        const vendedor = await client.query('SELECT Id, Tipo FROM Vendedores WHERE Email = $1', [d.vendedorEmail]);
-
-        if (vendedor.rows.length > 0 && vendedor.rows[0].tipo === 'Admin') {
-            await client.query(
-                `INSERT INTO Veiculos (VendedorId, Marca, Modelo, Ano, Kms, Combustivel, Caixa, Cor, Preco, Descricao, ImagemCapa) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-                [vendedor.rows[0].id, d.marca, d.modelo, d.ano, d.kms, d.combustivel, d.caixa, d.cor, d.preco, d.descricao, d.imagens]
-            );
-            client.release();
-            res.json({ mensagem: "Veículo adicionado com sucesso!" });
-        } else { 
-            client.release();
-            res.status(403).json({ mensagem: "Acesso negado." }); 
-        }
-    } catch (err) { res.status(500).json({ mensagem: "Erro: " + err.message }); }
-});
-
-// --- ROTA DE DETALHES NO SERVER.JS ---
-app.get('/api/veiculos/:id', async (req, res) => {
-    try {
-        const client = await pool.connect();
-        // O SQL busca os dados do veículo e o nome do vendedor associado
-        const result = await client.query(
-            `SELECT v.*, vend.nome as vendedornome 
-             FROM veiculos v 
-             LEFT JOIN vendedores vend ON v.vendedorid = vend.id 
-             WHERE v.id = $1`,
-            [req.params.id]
-        );
-        client.release();
-
-        if (result.rows.length > 0) {
-            // Enviamos o primeiro resultado encontrado
-            res.json(result.rows[0]);
-        } else {
-            res.status(404).json({ mensagem: "Veículo não encontrado." });
-        }
+        const resultado = await pool.query("SELECT * FROM Veiculos ORDER BY Id DESC");
+        res.json(resultado.rows);
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Erro ao buscar detalhes no servidor.");
+        res.status(500).json({ error: err.message });
     }
 });
 
-const PORT = process.env.PORT || 10000; // Alterado para 10000 (padrão Render)
-app.listen(PORT, () => console.log(`🚀 SERVIDOR GARMOTOR LIGADO NA PORTA ${PORT}`));
+// OBTER UM (Detalhes)
+app.get('/api/veiculos/:id', async (req, res) => {
+    try {
+        const resultado = await pool.query("SELECT * FROM Veiculos WHERE Id = $1", [req.params.id]);
+        res.json(resultado.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// PUBLICAR (Dashboard)
+app.post('/api/veiculos/adicionar', async (req, res) => {
+    try {
+        const { marca, modelo, preco, ano, kms, combustivel, caixa, cor, descricao, imagemCapa } = req.body;
+        const query = `
+            INSERT INTO Veiculos (VendedorId, Marca, Modelo, Preco, Ano, Kms, Combustivel, Caixa, Cor, Descricao, ImagemCapa)
+            VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`;
+        
+        const values = [marca, modelo, preco, ano, kms, combustivel, caixa, cor, descricao, imagemCapa];
+        const resultado = await pool.query(query, values);
+        res.status(201).json(resultado.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: "Erro ao salvar veículo." });
+    }
+});
+
+// EDITAR (Dashboard)
+app.put('/api/veiculos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { marca, modelo, preco, ano, kms, combustivel, caixa, cor, descricao, imagemCapa } = req.body;
+        
+        const query = `
+            UPDATE Veiculos 
+            SET Marca=$1, Modelo=$2, Preco=$3, Ano=$4, Kms=$5, Combustivel=$6, Caixa=$7, Cor=$8, Descricao=$9, ImagemCapa=$10
+            WHERE Id=$11`;
+            
+        await pool.query(query, [marca, modelo, preco, ano, kms, combustivel, caixa, cor, descricao, imagemCapa, id]);
+        res.json({ mensagem: "Atualizado com sucesso!" });
+    } catch (err) {
+        res.status(500).json({ error: "Erro ao atualizar." });
+    }
+});
+
+// ROTA ÚNICA PARA APAGAR VEÍCULO
+app.delete('/api/veiculos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // No Render (PostgreSQL), usamos $1 para parâmetros
+        const resultado = await pool.query("DELETE FROM Veiculos WHERE Id = $1", [id]);
+
+        if (resultado.rowCount === 0) {
+            return res.status(404).json({ mensagem: "Veículo não encontrado." });
+        }
+
+        // Resposta de sucesso que o frontend vai ler
+        res.json({ mensagem: "Veículo eliminado com sucesso de todo o sistema!" });
+    } catch (err) {
+        console.error("Erro ao apagar veículo:", err);
+        res.status(500).json({ erro: "Erro ao comunicar com a base de dados." });
+    }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor a correr na porta ${PORT}`));

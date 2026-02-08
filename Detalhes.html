@@ -3,266 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GARMOTOR - Detalhes do Veículo</title>
+    <title>GARMOTOR - Editorial</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-    :root { 
-        --blue: #0084ff; 
-        --dark: #121212; 
-        --glass: rgba(255, 255, 255, 0.85);
-        --shadow: 0 20px 40px rgba(0,0,0,0.1);
-    }
+        :root { --accent: #1a1a1a; --text: #333; --bg: #ffffff; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    body { 
-        font-family: 'Inter', sans-serif; 
-        margin: 0; 
-        background: #f4f7fe; 
-        color: var(--dark);
-    }
+        body { 
+            background-color: var(--bg); 
+            color: var(--text); 
+            font-family: 'Inter', sans-serif; 
+            line-height: 1.6;
+        }
 
-    /* Hero do Carro com Fundo Dinâmico */
-    .car-hero {
-        width: 100%;
-        height: 60vh;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        background: #000;
-    }
+        /* Barra de Navegação Minimalista */
+        nav {
+            padding: 30px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+        }
 
-    .hero-blur-bg {
-        position: absolute;
-        width: 110%;
-        height: 110%;
-        background-size: cover;
-        background-position: center;
-        filter: blur(30px) brightness(0.7);
-        z-index: 1;
-        transition: background-image 0.5s ease-in-out;
-    }
+        .btn-back { color: var(--accent); text-decoration: none; font-size: 0.9rem; letter-spacing: 1px; }
 
-    .carousel-container { 
-        width: 100%; 
-        height: 100%; 
-        position: relative; 
-        z-index: 2; 
-    }
+        /* Estrutura Editorial */
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            padding-top: 100px;
+        }
 
-    .carousel-slide { display: none; width: 100%; height: 100%; animation: fadeIn 0.5s ease; }
-    .carousel-slide img { width: 100%; height: 100%; object-fit: contain; }
+        /* Esquerda: Galeria que rola */
+        .gallery-column {
+            flex: 1;
+            min-width: 60%;
+            padding: 20px;
+        }
 
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .gallery-column img {
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
 
-    .nav-btn {
-        position: absolute; top: 50%; transform: translateY(-50%);
-        background: rgba(255,255,255,0.2); backdrop-filter: blur(10px);
-        color: white; border: none; padding: 20px; cursor: pointer;
-        border-radius: 50%; transition: 0.3s; z-index: 10;
-    }
-    .nav-btn:hover { background: var(--blue); }
-    .prev { left: 20px; } .next { right: 20px; }
+        /* Direita: Informação fixa (Sticky) */
+        .info-column {
+            flex: 1;
+            min-width: 350px;
+            padding: 40px 5%;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
 
-    .container { max-width: 1200px; margin: -60px auto 50px; padding: 0 20px; position: relative; z-index: 5; }
-    .info-grid { display: grid; grid-template-columns: 2.5fr 1fr; gap: 30px; }
+        .category { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: #999; margin-bottom: 10px; display: block; }
+        
+        h1 { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 3.5rem; 
+            color: var(--accent); 
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
 
-    .main-card { 
-        background: var(--glass); padding: 40px; border-radius: 24px; 
-        box-shadow: var(--shadow); backdrop-filter: blur(15px);
-        border: 1px solid rgba(255,255,255,0.4);
-    }
+        .price { font-size: 1.8rem; font-weight: 300; margin-bottom: 40px; color: #666; }
 
-    .header-veiculo { border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 20px; margin-bottom: 30px; }
-    .header-veiculo h1 { font-size: 2.5rem; margin: 5px 0; color: #111; font-weight: 800; }
-    .badge-ano { background: var(--blue); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; }
+        .specs-list {
+            border-top: 1px solid #eee;
+            margin-bottom: 40px;
+        }
 
-    .specs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .spec-box { 
-        background: white; padding: 20px; border-radius: 16px; 
-        display: flex; align-items: center; gap: 15px; border: 1px solid #f0f0f0;
-    }
-    .spec-box i { color: var(--blue); font-size: 1.5rem; }
-    .spec-box div small { display: block; color: #888; text-transform: uppercase; font-size: 0.7rem; }
-    .spec-box div span { font-weight: 700; font-size: 1.1rem; }
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
 
-    .price-card { 
-        background: var(--dark); color: white; padding: 30px; border-radius: 24px; 
-        box-shadow: var(--shadow); text-align: center; position: sticky; top: 20px;
-    }
-    .price-value { font-size: 2.5rem; font-weight: 900; color: var(--blue); margin-bottom: 20px; }
+        .spec-label { color: #999; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; }
 
-    .btn-action { 
-        width: 100%; padding: 18px; border: none; border-radius: 14px; 
-        font-weight: 700; cursor: pointer; transition: 0.3s; margin-bottom: 15px;
-        display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none;
-    }
-    .btn-blue { background: var(--blue); color: white; }
-    .btn-whatsapp { background: #25D366; color: white; }
-    .btn-action:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .description { margin-bottom: 40px; font-size: 1.1rem; color: #555; font-style: italic; }
 
-    @media (max-width: 768px) {
-        .info-grid { grid-template-columns: 1fr; }
-        .specs-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-</style>
+        /* Botão Elegante */
+        .btn-contact {
+            display: block;
+            background: var(--accent);
+            color: white;
+            padding: 22px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: 0.4s;
+            border: 1px solid var(--accent);
+        }
+
+        .btn-contact:hover {
+            background: transparent;
+            color: var(--accent);
+        }
+
+        /* Mapa em Bloco no Fundo */
+        .map-section {
+            width: 100%;
+            height: 400px;
+            margin-top: 100px;
+            filter: grayscale(1);
+            transition: 0.6s;
+        }
+        .map-section:hover { filter: grayscale(0); }
+
+        @media (max-width: 900px) {
+            .info-column { position: relative; top: 0; padding: 20px; }
+            .gallery-column { min-width: 100%; }
+            h1 { font-size: 2.5rem; }
+        }
+    </style>
 </head>
 <body>
 
-    <div class="car-hero">
-        <button class="nav-btn prev" onclick="changeSlide(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-        <div class="carousel-container" id="carrossel"></div>
-        <button class="nav-btn next" onclick="changeSlide(1)"><i class="fa-solid fa-chevron-right"></i></button>
-    </div>
+<nav>
+    <a href="Index.html" class="btn-back"><i class="fas fa-chevron-left"></i> VOLTAR</a>
+    <img src="img/GARMOTOR_LOGO.png" alt="GARMOTOR" style="height: 30px;">
+    <div style="width: 50px;"></div>
+</nav>
 
-    <div class="container">
-        <div class="info-grid">
-            <div class="main-card">
-                <div class="header-veiculo">
-                    <span class="badge-ano" id="det-ano-top">---</span>
-                    <h1 id="tituloVeiculo">Carregando...</h1>
-                    <p id="subtitulo"><i class="fa-solid fa-location-dot"></i> Garmotor, Portugal</p>
-                </div>
+<div class="container">
+    <div class="gallery-column" id="galleryPhotos">
+        </div>
 
-                <h3>Características Principais</h3>
-                <div class="specs-grid">
-                    <div class="spec-box"><i class="fa-solid fa-calendar"></i><div><small>Ano</small><span id="det-ano">-</span></div></div>
-                    <div class="spec-box"><i class="fa-solid fa-gauge-high"></i><div><small>Quilómetros</small><span id="det-kms">-</span></div></div>
-                    <div class="spec-box"><i class="fa-solid fa-gas-pump"></i><div><small>Combustível</small><span id="det-combustivel">-</span></div></div>
-                    <div class="spec-box"><i class="fa-solid fa-gear"></i><div><small>Caixa</small><span id="det-caixa">-</span></div></div>
-                    <div class="spec-box"><i class="fa-solid fa-palette"></i><div><small>Cor</small><span id="det-cor">-</span></div></div>
-                    <div class="spec-box"><i class="fa-solid fa-bolt"></i><div><small>Potência</small><span id="det-potencia">N/D</span></div></div>
-                </div>
+    <div class="info-column">
+        <span class="category" id="carBrand">MARCA</span>
+        <h1 id="carModel">MODELO</h1>
+        <div class="price" id="carPrice">0.00€</div>
 
-                <h3 style="margin-top:40px;">Descrição do Veículo</h3>
-                <p id="det-descricao" style="line-height:1.8; color:#555;">Carregando detalhes do veículo...</p>
+        <p class="description" id="carDesc">
+            Carregando a narrativa deste veículo exclusivo...
+        </p>
+
+        <div class="specs-list">
+            <div class="spec-row">
+                <span class="spec-label">Ano de Registo</span>
+                <span id="carYear">----</span>
             </div>
-
-            <div class="sticky-side">
-                <div class="price-card">
-                    <div class="price-value" id="det-preco">0€</div>
-                    <p style="opacity:0.7; margin-bottom:30px;">IVA Incluído / Revisto por GARMOTOR</p>
-                    
-                    <button class="btn-action btn-blue" onclick="alert('Ligar para: +351 912 345 678')">
-                        <i class="fa-solid fa-phone"></i> VER TELEFONE
-                    </button>
-                    <a href="#" id="linkWhatsapp" class="btn-action btn-whatsapp" target="_blank">
-                        <i class="fa-brands fa-whatsapp"></i> WHATSAPP
-                    </a>
-                    
-                    <div style="margin-top:20px; font-size:0.9rem;">
-                        Anunciado por: <span id="det-vendedor" style="color:var(--blue); font-weight:700;">GARMOTOR</span>
-                    </div>
-                </div>
+            <div class="spec-row">
+                <span class="spec-label">Quilometragem</span>
+                <span id="carKms">0 KM</span>
+            </div>
+            <div class="spec-row">
+                <span class="spec-label">Combustível</span>
+                <span id="carFuel">---</span>
+            </div>
+            <div class="spec-row">
+                <span class="spec-label">Transmissão</span>
+                <span id="carTrans">---</span>
             </div>
         </div>
+
+        <a href="https://wa.me/351912345678" target="_blank" class="btn-contact">Solicitar Informação</a>
     </div>
+</div>
+
+<section class="map-section">
+    <iframe width="100%" height="100%" frameborder="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3113.123!2d-9.123!3d38.123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzjCsDA3JzE1LjYiTiA5wrAwNyczMi44Ilc!5e0!3m2!1spt!2spt!4v123456789"></iframe>
+</section>
 
 <script>
-    let slideIndex = 0;
-    let fotosCarro = [];
+    async function carregar() {
+        const id = new URLSearchParams(window.location.search).get('id');
+        if (!id) return;
 
-    async function carregarDetalhes() {
         try {
-            const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
-            
-            if (!id) {
-                alert("ID do veículo não especificado.");
-                window.location.href = 'Index.html';
-                return;
-            }
-
-            // Chamada à API no Render
             const res = await fetch(`https://garmotor.onrender.com/api/veiculos/${id}`);
-            if (!res.ok) throw new Error("Veículo não encontrado na base de dados.");
-            
-            const veiculo = await res.json();
+            const v = await res.json();
 
-            // Mapeamento dinâmico (resolve o problema de Maiúsculas/Minúsculas do Postgres)
-            const marca = veiculo.marca || veiculo.Marca || '---';
-            const modelo = veiculo.modelo || veiculo.Modelo || '---';
-            const preco = veiculo.preco || veiculo.Preco || 0;
-            const ano = veiculo.ano || veiculo.Ano || '---';
-            const kms = veiculo.kms || veiculo.Kms || 0;
-            const combustivel = veiculo.combustivel || veiculo.Combustivel || '---';
-            const caixa = veiculo.caixa || veiculo.Caixa || '---';
-            const cor = veiculo.cor || veiculo.Cor || '---';
-            const descricao = veiculo.descricao || veiculo.Descricao || 'Sem descrição disponível.';
-            const vendedor = veiculo.vendedornome || veiculo.VendedorNome || 'GARMOTOR';
-            
-            // Tenta encontrar a imagem em qualquer variação de nome de coluna
-            const campoImagem = veiculo.imagemcapa || veiculo.ImagemCapa || veiculo.imagens || veiculo.Imagens;
+            document.getElementById('carBrand').innerText = v.marca;
+            document.getElementById('carModel').innerText = v.modelo;
+            document.getElementById('carPrice').innerText = `${parseFloat(v.preco).toLocaleString()}€`;
+            document.getElementById('carYear').innerText = v.ano;
+            document.getElementById('carKms').innerText = `${v.kms.toLocaleString()} KM`;
+            document.getElementById('carFuel').innerText = v.combustivel;
+            document.getElementById('carTrans').innerText = v.caixa || 'Manual';
+            document.getElementById('carDesc').innerText = v.descricao;
 
-            // Preenchimento do HTML
-            document.getElementById('tituloVeiculo').innerText = `${marca} ${modelo}`;
-            document.getElementById('det-ano-top').innerText = ano;
-            document.getElementById('det-preco').innerText = Number(preco).toLocaleString('pt-PT') + '€';
-            document.getElementById('det-ano').innerText = ano;
-            document.getElementById('det-kms').innerText = Number(kms).toLocaleString('pt-PT') + ' km';
-            document.getElementById('det-combustivel').innerText = combustivel;
-            document.getElementById('det-caixa').innerText = caixa;
-            document.getElementById('det-cor').innerText = cor;
-            document.getElementById('det-descricao').innerText = descricao;
-            document.getElementById('det-vendedor').innerText = vendedor;
-
-            // Configurar Botão WhatsApp
-            const msg = `Olá! Tenho interesse no ${marca} ${modelo} (${ano}) que vi no site.`;
-            document.getElementById('linkWhatsapp').href = `https://wa.me/351912345678?text=${encodeURIComponent(msg)}`;
-
-            // Lógica das Fotos
-            const container = document.getElementById('carrossel');
-            if (campoImagem) {
-                try {
-                    // Se as imagens forem um array em formato string "[img1, img2]"
-                    fotosCarro = (typeof campoImagem === 'string' && campoImagem.startsWith('[')) 
-                        ? JSON.parse(campoImagem) 
-                        : [campoImagem];
-                } catch (e) {
-                    fotosCarro = [campoImagem];
-                }
+            if (v.imagemcapa) {
+                const fotos = v.imagemcapa.split('|||');
+                const galeria = document.getElementById('galleryPhotos');
+                galeria.innerHTML = fotos.map(f => `<img src="${f}" alt="Carro">`).join('');
             }
-
-            if (fotosCarro.length > 0) {
-                container.innerHTML = ""; // Limpa o "Carregando"
-                
-                // Criar fundo desfocado se não existir
-                if (!document.querySelector('.hero-blur-bg')) {
-                    let blurBg = document.createElement('div');
-                    blurBg.className = 'hero-blur-bg';
-                    document.querySelector('.car-hero').prepend(blurBg);
-                }
-
-                fotosCarro.forEach(img => {
-                    const div = document.createElement('div');
-                    div.className = "carousel-slide";
-                    div.innerHTML = `<img src="${img}" alt="Foto do veículo">`;
-                    container.appendChild(div);
-                });
-                showSlide(0);
-            }
-
-        } catch (err) {
-            console.error("Erro ao carregar:", err);
-            document.getElementById('tituloVeiculo').innerText = "Erro ao carregar veículo.";
-        }
+        } catch (e) { console.error(e); }
     }
-
-    function showSlide(n) {
-        let slides = document.getElementsByClassName("carousel-slide");
-        let blurBg = document.querySelector('.hero-blur-bg');
-        if (slides.length === 0) return;
-        if (n >= slides.length) slideIndex = 0;
-        else if (n < 0) slideIndex = slides.length - 1;
-        else slideIndex = n;
-        for (let i = 0; i < slides.length; i++) slides[i].style.display = "none";
-        slides[slideIndex].style.display = "block";
-        if (blurBg) blurBg.style.backgroundImage = `url('${fotosCarro[slideIndex]}')`;
-    }
-
-    function changeSlide(n) { showSlide(slideIndex += n); }
-
-    window.onload = carregarDetalhes;
+    window.onload = carregar;
 </script>
+
 </body>
 </html>

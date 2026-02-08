@@ -103,58 +103,47 @@
         carregarVeiculos();
     };
 
-    async function carregarVeiculos(filtro = '') {
-        const grid = document.querySelector('.featured-grid');
-        if (!grid) return;
+    async function carregarVeiculos() {
+    const grid = document.querySelector('.featured-grid');
+    if (!grid) return;
 
-        try {
-            const resposta = await fetch('https://garmotor.onrender.com/api/veiculos');
-            let veiculos = await resposta.json();
+    try {
+        const resposta = await fetch('https://garmotor.onrender.com/api/veiculos');
+        const veiculos = await resposta.json();
 
-            if (filtro) {
-                veiculos = veiculos.filter(carro => 
-                    carro.marca.toLowerCase().includes(filtro.toLowerCase()) || 
-                    carro.modelo.toLowerCase().includes(filtro.toLowerCase())
-                );
-            }
+        grid.innerHTML = ""; // Limpa o carregamento anterior
 
-            if (veiculos.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                    <p>Não encontrámos veículos para "${filtro}".</p>
-                    <button onclick="carregarVeiculos('')">Ver todo o stock</button>
+        veiculos.forEach(carro => {
+            // Se a imagem na BD estiver vazia, usa uma imagem padrão (placeholder)
+            const imagemCapa = carro.imagemcapa && carro.imagemcapa !== "" 
+                ? carro.imagemcapa 
+                : 'img/placeholder-car.jpg';
+
+            const preco = Number(carro.preco || 0).toLocaleString('pt-PT', { 
+                style: 'currency', 
+                currency: 'EUR' 
+            });
+
+            const card = `
+                <div class="car-card">
+                    <div class="car-img-container">
+                        <img src="${imagemCapa}" alt="${carro.marca} ${carro.modelo}" onerror="this.src='img/placeholder-car.jpg'">
+                    </div>
+                    <div class="car-info">
+                        <h4>${carro.marca} ${carro.modelo}</h4>
+                        <p class="car-price">${preco}</p>
+                        <button onclick="window.location.href='Detalhes.html?id=${carro.id}'" class="btn-detalhes">
+                            VER DETALHES
+                        </button>
+                    </div>
                 </div>`;
-                return;
-            }
-
-            grid.innerHTML = veiculos.map(carro => {
-                let imgCapa = 'img/default_car.png';
-                if (carro.imagemcapa) { // Coluna em minúsculo
-                    try {
-                        const fotos = carro.imagemcapa.startsWith('[') ? JSON.parse(carro.imagemcapa) : [carro.imagemcapa];
-                        if (fotos.length > 0) imgCapa = fotos[0];
-                    } catch (e) { imgCapa = carro.imagemcapa; }
-                }
-
-                return `
-                    <div class="car-card" style="background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                        <img src="${imgCapa}" alt="${carro.marca}" style="width: 100%; border-radius: 15px; height: 180px; object-fit: cover;">
-                        <div style="padding: 15px 5px;">
-                            <h4 style="font-size: 1.1rem; color: #111; margin-bottom: 5px;">${carro.marca} ${carro.modelo}</h4>
-                            <p style="color: #0084ff; font-weight: 800; font-size: 1.2rem;">
-                                ${Number(carro.preco).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' })}
-                            </p>
-                            <button onclick="window.location.href='Detalhes.html?id=${carro.id}'" 
-                                    style="width: 100%; margin-top: 10px; padding: 10px; border: none; background: #0084ff; color: white; border-radius: 10px; cursor: pointer; font-weight: 600;">
-                                Ver Detalhes
-                            </button>
-                        </div>
-                    </div>`;
-            }).join('');
-        } catch (erro) {
-            grid.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>Erro ao carregar stock.</p>";
-            console.error(erro);
-        }
+            grid.innerHTML += card;
+        });
+    } catch (erro) {
+        console.error("Erro ao carregar:", erro);
+        grid.innerHTML = "<p>Não foi possível carregar os veículos.</p>";
     }
+}
     
     // Gestão de Login e interface do utilizador
     function verificarSessao() {

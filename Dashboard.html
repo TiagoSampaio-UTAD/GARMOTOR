@@ -2,267 +2,344 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>GARMOTOR - Gestão de Stock</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GARMOTOR - Painel de Controlo</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7fe; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f0f0f0; padding-bottom: 20px; margin-bottom: 20px; }
-        
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
-        label { font-weight: 700; margin-bottom: 8px; font-size: 0.85rem; color: #555; text-transform: uppercase; }
-        input, select { padding: 12px; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; outline: none; transition: 0.3s; }
-        input:focus { border-color: #0084ff; box-shadow: 0 0 0 3px rgba(0,132,255,0.1); }
-        
-        .photo-section { background: #f9fbff; padding: 20px; border-radius: 15px; border: 2px dashed #0084ff; margin-top: 10px; text-align: center; }
-        #previewFotos { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 15px; justify-content: center; }
-        .foto-box { position: relative; width: 140px; height: 100px; border: 2px solid transparent; transition: 0.3s; }
-        .foto-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
-        .btn-del { position: absolute; top: -10px; right: -10px; background: #ff4d4d; color: white; border: none; border-radius: 50%; width: 25px; height: 25px; cursor: pointer; font-weight: bold; }
+        /* 1. ESTRUTURA GLOBAL */
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), 
+                        url('img/GARMOTOR_PLACE.png') no-repeat center center;
+            background-size: cover;
+            background-attachment: fixed;
+        }
 
-        .btn-publicar { width: 100%; background: #0084ff; color: white; border: none; padding: 18px; border-radius: 15px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: 0.3s; margin-top: 20px; }
-        .btn-publicar:hover { background: #0066cc; transform: translateY(-2px); }
-        .btn-publicar:disabled { background: #ccc; cursor: not-allowed; }
+        .header-admin {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative; 
+            background: #1a1a1a;
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 1100px;
+            margin: 0 auto 30px auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .btn-voltar {
+            position: absolute;
+            left: 20px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.3s;
+            border: 1px solid #444;
+        }
+        .btn-voltar:hover { background: #444; }
+
+        .admin-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 25px; 
+            max-width: 1100px; 
+            margin: auto; 
+        }
+
+        .card { 
+            background: white; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+        }
+
+        h3 { margin-top: 0; color: #333; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+
+        input, select, textarea { 
+            width: 100%; 
+            padding: 10px; 
+            margin: 5px 0 15px; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            box-sizing: border-box;
+        }
+
+        .btn-post { 
+            background: #1a1a1a; 
+            color: white; 
+            border: none; 
+            padding: 15px; 
+            width: 100%; 
+            cursor: pointer; 
+            font-weight: bold; 
+            border-radius: 6px; 
+            transition: 0.3s;
+        }
+        .btn-post:hover { background: #218838; }
+
+        .item-anuncio { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px; 
+            border-bottom: 1px solid #eee; 
+            background: rgba(255,255,255,0.9);
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .acoes-botoes { display: flex; gap: 8px; }
+        .btn-editar { background: #ffc107; color: #000; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn-remover { background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+        #preview-fotos { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
+        .img-preview { width: 70px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ccc; }
+
+        @media (max-width: 800px) { .admin-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <div>
-            <h1>Novo Anúncio</h1>
-            <p>Vendedor: <span id="nomeVendedor" style="font-weight: bold; color: #0084ff;">...</span></p>
-        </div>
-        <button onclick="location.href='Index.html'" style="background:none; border:none; color:#666; cursor:pointer; font-weight:700;">Voltar ao Site</button>
-    </header>
+<div class="header-admin">
+    <a href="Index.html" class="btn-voltar">← Voltar ao Site</a>
+    <div>
+        <h1>GARMOTOR - PAINEL DE CONTROLO</h1>
+        <p>Gestão de Inventário e Publicação de Anúncios</p>
+    </div>
+</div>
 
-    <div class="form-grid">
-        <div class="form-group">
-            <label>Marca</label>
-            <select id="marca" onchange="atualizarModelos()">
-                <option value="" disabled selected hidden>Escolha uma Marca...</option>
-                <option value="BMW">BMW</option>
+<div class="admin-grid">
+    <div class="card">
+        <h3 id="titulo-form">Adicionar Veículo</h3>
+        <form id="car-form">
+            <select id="marca" required onchange="gerirModelos()">
+                <option value="">Selecionar Marca</option>
                 <option value="Mercedes-Benz">Mercedes-Benz</option>
-                <option value="Audi">Audi</option>
+                <option value="BMW">BMW</option>
                 <option value="Volkswagen">Volkswagen</option>
-                <option value="Renault">Renault</option>
-                <option value="Peugeot">Peugeot</option>
-                <option value="Tesla">Tesla</option>
-                <option value="Toyota">Toyota</option>
+                <option value="Audi">Audi</option>
             </select>
-        </div>
-
-        <div class="form-group">
-            <label>Modelo</label>
-            <select id="modelo" disabled>
-                <option value="">Aguardando marca...</option>
+            
+            <select id="modelo" disabled required>
+                <option value="">Selecione primeiro a marca</option>
             </select>
-        </div>
 
-        <div class="form-group"><label>Ano (1900-2026)</label><input type="number" id="ano" placeholder="2022"></div>
-        <div class="form-group"><label>Quilómetros (Km)</label><input type="number" id="kms" placeholder="25000"></div>
-        <div class="form-group"><label>Preço (€)</label><input type="number" id="preco" placeholder="50000"></div>
-        
-        <div class="form-group">
-            <label>Combustível</label>
+            <input type="number" id="preco" placeholder="Preço (€)" step="0.01" required>
+            <input type="number" id="ano" placeholder="Ano" min="1960" max="2026" required>
+            <input type="number" id="kms" placeholder="Kms" required>
+            
             <select id="combustivel">
-                <option>Diesel</option>
-                <option>Gasolina</option>
-                <option>Híbrido</option>
-                <option>Elétrico</option>
+                <option value="Diesel">Diesel</option>
+                <option value="Gasolina">Gasolina</option>
+                <option value="Híbrido">Híbrido</option>
+                <option value="Elétrico">Elétrico</option>
             </select>
-        </div>
 
-        <div class="form-group">
-            <label>Caixa</label>
-            <select id="caixa">
-                <option>Manual</option>
-                <option>Automática</option>
-            </select>
-        </div>
+            <input type="text" id="cor" placeholder="Cor (Ex: Cinza Metalizado)">
+            
+            <label style="font-size: 12px; color: #666;">Fotos do Veículo:</label>
+            <input type="file" id="foto-input" accept="image/*" multiple onchange="previsualizarFotos()">
+            <div id="preview-fotos"></div>
 
-        <div class="form-group"><label>Cor</label><input type="text" id="cor" placeholder="Preto"></div>
+            <textarea id="desc" placeholder="Descrição detalhada do veículo..."></textarea>
+            
+            <button type="submit" id="btn-submit" class="btn-post">PUBLICAR VEÍCULO</button>
+            <button type="button" id="btn-cancel" onclick="cancelarEdicao()" style="display:none; background:#666; color:white; width:100%; margin-top:10px; border-radius:6px; padding:12px; border:none; cursor:pointer; font-weight:bold;">
+                CANCELAR EDIÇÃO
+            </button>
+        </form>
     </div>
 
-    <div class="photo-section">
-        <label style="cursor: pointer; display: block; padding: 10px;">
-            <strong>📷 ADICIONAR FOTOS (CLIQUE AQUI)</strong>
-            <input type="file" id="fotoInput" multiple accept="image/*" style="display:none;" onchange="gerirFotos(this)">
-        </label>
-        <div id="previewFotos"></div>
+    <div class="card">
+        <h3>Anúncios Ativos</h3>
+        <div id="lista-gestao">
+            <p style="text-align: center; color: #999;">A carregar anúncios...</p>
+        </div>
     </div>
-
-    <button id="btnPublicar" class="btn-publicar" onclick="enviarAnuncio()">PUBLICAR NO STOCK</button>
 </div>
 
 <script>
-    let listaImagens = [];
-    let fotoPrincipalIndex = 0;
+    const API = 'https://garmotor.onrender.com/api/veiculos';
+    let imagensBase64 = [];
+    let editandoId = null;
 
-    const baseDadosModelos = {
-        "BMW": ["Série 1", "Série 3", "Série 5", "X1", "X3", "X5", "M3", "M4"],
-        "Mercedes-Benz": ["Classe A", "Classe C", "Classe E", "CLA", "GLA", "GLC", "EQE"],
-        "Audi": ["A1", "A3", "A4", "A6", "Q3", "Q5", "e-tron"],
-        "Volkswagen": ["Golf", "Polo", "Passat", "Tiguan", "T-Roc", "ID.3", "ID.4"],
-        "Renault": ["Clio", "Megane", "Captur", "Zoe", "Austral"],
-        "Peugeot": ["208", "308", "2008", "3008", "5008"],
-        "Tesla": ["Model 3", "Model Y", "Model S", "Model X"],
-        "Toyota": ["Yaris", "Corolla", "C-HR", "RAV4", "Hilux"]
-    };
+    // 1. GESTÃO DE MODELOS DINÂMICOS
+    function gerirModelos(callback) {
+        const marcaSel = document.getElementById('marca').value;
+        const modeloSelect = document.getElementById('modelo');
+        const modelos = {
+            "Mercedes-Benz": ["Classe A", "Classe C", "Classe E", "CLA", "GLC", "GLE"],
+            "BMW": ["Série 1", "Série 3", "Série 5", "X1", "X3", "X5", "M4"],
+            "Volkswagen": ["Golf", "Polo", "Tiguan", "Passat", "T-Roc"],
+            "Audi": ["A1", "A3", "A4", "A6", "Q3", "Q5"]
+        };
 
-    window.onload = () => {
-        const nome = localStorage.getItem('vendedorNome');
-        if (!nome) {
-            alert("Sessão expirada. A redirecionar para Login...");
-            window.location.href = 'Authentication.html';
+        if (marcaSel && modelos[marcaSel]) {
+            modeloSelect.disabled = false;
+            modeloSelect.innerHTML = '<option value="">Selecionar Modelo</option>' + 
+                modelos[marcaSel].map(m => `<option value="${m}">${m}</option>`).join('');
+            if (callback) callback();
+        } else {
+            modeloSelect.disabled = true;
+            modeloSelect.innerHTML = '<option value="">Selecione primeiro a marca</option>';
+        }
+    }
+
+    // 2. CONVERTER IMAGENS PARA BASE64
+    function previsualizarFotos() {
+        const files = document.getElementById('foto-input').files;
+        const container = document.getElementById('preview-fotos');
+        container.innerHTML = "";
+        imagensBase64 = [];
+
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                imagensBase64.push(e.target.result);
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = "img-preview";
+                container.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // 3. CARREGAR VEÍCULOS
+    async function carregarListaGestao() {
+        const lista = document.getElementById('lista-gestao'); 
+        try {
+            const res = await fetch(API);
+            const veiculos = await res.json();
+
+            if (!veiculos || veiculos.length === 0) {
+                lista.innerHTML = "<p style='text-align:center; color:#666;'>Nenhum veículo em stock.</p>";
+                return;
+            }
+
+            lista.innerHTML = veiculos.map(v => `
+                <div class="item-anuncio">
+                    <div>
+                        <strong>${v.marca} ${v.modelo}</strong><br>
+                        <small>${v.preco}€ | ${v.ano} | ID: ${v.id}</small>
+                    </div>
+                    <div class="acoes-botoes">
+                        <button class="btn-editar" onclick='prepararEdicao(${JSON.stringify(v)})'>EDITAR</button>
+                        <button class="btn-remover" onclick="remover(${v.id})">APAGAR</button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (err) {
+            lista.innerHTML = "<p style='color:red;'>Erro ao ligar ao servidor.</p>";
+        }
+    }
+
+    // 4. MODO EDIÇÃO
+    function prepararEdicao(v) {
+        editandoId = v.id;
+        document.getElementById('titulo-form').innerText = "📝 Editar Anúncio";
+        document.getElementById('btn-submit').innerText = "GUARDAR ALTERAÇÕES";
+        document.getElementById('btn-submit').style.background = "#007bff";
+        document.getElementById('btn-cancel').style.display = "block";
+
+        document.getElementById('marca').value = v.marca;
+        document.getElementById('preco').value = v.preco;
+        document.getElementById('ano').value = v.ano;
+        document.getElementById('kms').value = v.kms;
+        document.getElementById('combustivel').value = v.combustivel;
+        document.getElementById('cor').value = v.cor || "";
+        document.getElementById('desc').value = v.descricao || "";
+        
+        gerirModelos(() => {
+            document.getElementById('modelo').value = v.modelo;
+        });
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelarEdicao() {
+        editandoId = null;
+        document.getElementById('car-form').reset();
+        document.getElementById('titulo-form').innerText = "Adicionar Veículo";
+        document.getElementById('btn-submit').innerText = "PUBLICAR VEÍCULO";
+        document.getElementById('btn-submit').style.background = "#1a1a1a";
+        document.getElementById('btn-cancel').style.display = "none";
+        document.getElementById('preview-fotos').innerHTML = "";
+    }
+
+    // 5. REMOVER
+    async function remover(id) {
+    if (!confirm("Tens a certeza que queres apagar este veículo?")) return;
+
+    try {
+        const res = await fetch(`${API}/${id}`, {
+            method: 'DELETE'
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.mensagem || "Erro ao apagar veículo.");
             return;
         }
-        document.getElementById('nomeVendedor').innerText = nome;
-    };
 
-    function atualizarModelos() {
-        const marcaSelecionada = document.getElementById('marca').value;
-        const selectModelo = document.getElementById('modelo');
-        selectModelo.innerHTML = '';
-
-        if (marcaSelecionada && baseDadosModelos[marcaSelecionada]) {
-            selectModelo.disabled = false;
-            const opInicial = document.createElement('option');
-            opInicial.text = "Selecione o Modelo";
-            opInicial.value = "";
-            opInicial.disabled = true;
-            opInicial.selected = true;
-            selectModelo.appendChild(opInicial);
-
-            baseDadosModelos[marcaSelecionada].forEach(modelo => {
-                const option = document.createElement('option');
-                option.value = modelo;
-                option.text = modelo;
-                selectModelo.appendChild(option);
-            });
-        }
+        alert(data.mensagem);
+        carregarListaGestao(); // atualiza a lista sem reload
+    } catch (err) {
+        console.error(err);
+        alert("Erro de ligação ao servidor.");
     }
+}
 
-    async function gerirFotos(input) {
-        if (!input.files || input.files.length === 0) return;
-        const files = Array.from(input.files);
-        for (let file of files) {
-            const base64 = await comprimirImagem(file);
-            listaImagens.push(base64);
-        }
-        renderizarGaleria();
-        input.value = ""; 
-    }
 
-    function renderizarGaleria() {
-        const preview = document.getElementById('previewFotos');
-        preview.innerHTML = ""; 
-        listaImagens.forEach((img, index) => {
-            const div = document.createElement('div');
-            div.className = 'foto-box';
-            if(index === fotoPrincipalIndex) div.style.border = "3px solid #ffbb00";
-            
-            div.innerHTML = `
-                <img src="${img}" onclick="definirPrincipal(${index})" style="cursor:pointer; width:100%; height:100%; object-fit:cover; border-radius:10px;">
-                <button class="btn-del" onclick="removerFoto(${index})">X</button>
-                ${index === fotoPrincipalIndex ? '<span style="position:absolute; bottom:2px; left:5px; font-size:10px; background:#ffbb00; color:black; padding:2px 5px; border-radius:5px; font-weight:bold;">CAPA</span>' : ''}
-            `;
-            preview.appendChild(div);
-        });
-    }
+    // 6. SUBMETER FORMULÁRIO
+    document.getElementById('car-form').onsubmit = async (e) => {
+        e.preventDefault();
+        
+        const dados = {
+            marca: document.getElementById('marca').value,
+            modelo: document.getElementById('modelo').value,
+            preco: document.getElementById('preco').value,
+            ano: document.getElementById('ano').value,
+            kms: document.getElementById('kms').value,
+            combustivel: document.getElementById('combustivel').value,
+            cor: document.getElementById('cor').value,
+            descricao: document.getElementById('desc').value,
+            // Só atualiza a imagem se o utilizador carregou ficheiros novos
+            imagemCapa: imagensBase64.length > 0 ? imagensBase64.join('|||') : undefined 
+        };
 
-    function definirPrincipal(index) { fotoPrincipalIndex = index; renderizarGaleria(); }
+        const url = editandoId ? `${API}/${editandoId}` : `${API}/adicionar`;
+        const metodo = editandoId ? 'PUT' : 'POST';
 
-    function removerFoto(index) { 
-        listaImagens.splice(index, 1); 
-        if (fotoPrincipalIndex >= listaImagens.length) fotoPrincipalIndex = 0;
-        renderizarGaleria(); 
-    }
-
-    function comprimirImagem(file) {
-        return new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (e) => {
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
-                    let width = img.width;
-                    let height = img.height;
-                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
-                    canvas.width = width; canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL('image/jpeg', 0.7));
-                };
-            };
-        });
-    }
-
-    async function enviarAnuncio() {
         try {
-            const marca = document.getElementById('marca').value;
-            const modelo = document.getElementById('modelo').value;
-            const ano = parseInt(document.getElementById('ano').value);
-            const preco = parseFloat(document.getElementById('preco').value);
-            const kms = document.getElementById('kms').value;
-
-            if (!marca || !modelo || !ano || !preco) {
-                alert("Por favor, preencha Marca, Modelo, Ano e Preço.");
-                return;
-            }
-
-            if (listaImagens.length === 0) {
-                alert("Adicione pelo menos uma foto.");
-                return;
-            }
-
-            const btn = document.getElementById('btnPublicar');
-            btn.disabled = true;
-            btn.innerText = "A guardar...";
-
-            let finalImagens = [...listaImagens];
-            if (fotoPrincipalIndex > 0) {
-                const principal = finalImagens.splice(fotoPrincipalIndex, 1)[0];
-                finalImagens.unshift(principal);
-            }
-
-            const dados = {
-                vendedorEmail: localStorage.getItem('vendedorEmail'),
-                marca, 
-                modelo, 
-                ano, 
-                kms,
-                combustivel: document.getElementById('combustivel').value,
-                caixa: document.getElementById('caixa').value,
-                cor: document.getElementById('cor').value,
-                preco,
-                imagens: JSON.stringify(finalImagens)
-            };
-
-            const res = await fetch('https://garmotor.onrender.com/api/veiculos/adicionar', {
-                method: 'POST',
+            const res = await fetch(url, {
+                method: metodo,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados)
             });
 
             if (res.ok) {
-                alert("✅ VEÍCULO PUBLICADO COM SUCESSO!");
-                window.location.href = 'Index.html';
+                alert(editandoId ? "Atualizado com sucesso!" : "Veículo publicado!");
+                location.reload();
             } else {
-                const erroTexto = await res.text();
-                throw new Error(erroTexto);
+                alert("Erro no servidor. Verifica os dados.");
             }
-
         } catch (err) {
-            alert("⚠️ Erro ao publicar: " + err.message);
-            const btn = document.getElementById('btnPublicar');
-            btn.disabled = false;
-            btn.innerText = "PUBLICAR NO STOCK";
+            alert("Erro de ligação.");
         }
-    }
+    };
+
+    window.onload = carregarListaGestao;
 </script>
+
 </body>
 </html>
