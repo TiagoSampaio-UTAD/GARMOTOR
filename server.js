@@ -1,8 +1,9 @@
 const express = require('express');
-const { Pool } = require('pg'); // Driver para PostgreSQL
+const { Pool } = require('pg');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
+const path = require('path'); // IMPORTANTE: Adicionado para gerir caminhos de ficheiros
 
 const app = express();
 
@@ -11,11 +12,15 @@ app.use(bodyParser.json({ limit: '200mb' }));
 app.use(bodyParser.urlencoded({ limit: '200mb', extended: true }));
 app.use(cors());
 
+// --- CONFIGURAÇÃO PARA SERVIR O SITE HTML ---
+// Esta linha diz ao servidor para entregar os teus ficheiros (index.html, css, imagens, etc.)
+app.use(express.static(path.join(__dirname)));
+
 // Configuração da Base de Dados PostgreSQL do Render
 const pool = new Pool({
   connectionString: 'postgresql://garmotor_db_user:bwMHap8eQ1hkRgYDkP9IFLYOO2Nh2rZE@dpg-d63uagq4d50c73e10640-a.frankfurt-postgres.render.com/garmotor_db',
   ssl: {
-    rejectUnauthorized: false // Obrigatório para a ligação segura do Render
+    rejectUnauthorized: false
   }
 });
 
@@ -28,15 +33,19 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// --- ROTA PRINCIPAL (Resolve o erro "Cannot GET /") ---
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // --- AUTENTICAÇÃO E UTILIZADORES ---
 
 // ROTA DE REGISTO
 app.post('/api/registar', async (req, res) => {
     try {
         const { nome, email, pass } = req.body; 
-        const client = await pool.connect(); //
+        const client = await pool.connect();
         
-        // Verifica se o email já existe (Postgres usa $1)
         const userCheck = await client.query('SELECT id FROM Vendedores WHERE Email = $1', [email]);
         
         if (userCheck.rows.length > 0) {
@@ -59,8 +68,9 @@ app.post('/api/registar', async (req, res) => {
         client.release();
 
         const token = Buffer.from(email).toString('base64');
-        // ATENÇÃO: Substitui pelo teu URL do Render quando o tiveres!
-        const link = `https://garmotor-api.onrender.com/api/confirmar/${token}`;
+        
+        // ATUALIZADO: Usando o teu link correto do Render
+        const link = `https://garmotor.onrender.com/api/confirmar/${token}`;
 
         await transporter.sendMail({
             from: '"GARMOTOR" <tiagoalvessampaio12@gmail.com>',
@@ -90,7 +100,7 @@ app.post('/api/login', async (req, res) => {
 
         if (result.rows.length > 0) {
             const user = result.rows[0];
-            if (user.emailconfirmado == 0) { // Postgres converte nomes para minúsculas
+            if (user.emailconfirmado == 0) { 
                 return res.status(403).json({ mensagem: "Conta não ativada! Verifica o teu e-mail." });
             }
             res.json({ nome: user.nome, email: user.email, tipo: user.tipo });
@@ -113,6 +123,7 @@ app.get('/api/confirmar/:token', async (req, res) => {
         res.send(`<div style="text-align:center; font-family:sans-serif; margin-top:50px;">
                     <h1 style="color:#28a745;">✅ Conta Ativada!</h1>
                     <p>Já podes voltar ao site e fazer login.</p>
+                    <a href="https://garmotor.onrender.com" style="color:#007aff;">Voltar ao site</a>
                   </div>`);
     } catch (err) { res.status(500).send("Erro na ativação."); }
 });
@@ -163,5 +174,5 @@ app.get('/api/veiculos/:id', async (req, res) => {
     } catch (err) { res.status(500).send(err.message); }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000; // Alterado para 10000 (padrão Render)
 app.listen(PORT, () => console.log(`🚀 SERVIDOR GARMOTOR LIGADO NA PORTA ${PORT}`));
