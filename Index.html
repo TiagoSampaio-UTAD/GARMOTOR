@@ -219,7 +219,7 @@
         if (!id) throw new Error("ID do veículo não fornecido.");
 
         try {
-            const resposta = await fetch('https://garmotor.onrender.com/api/veiculos');
+            const resposta = await fetch(`https://garmotor.onrender.com/api/veiculos/${id}`);
             if (!resposta.ok) throw new Error("Veículo não encontrado.");
             const veiculo = await resposta.json();
             // Preencher os detalhes do veículo na página
