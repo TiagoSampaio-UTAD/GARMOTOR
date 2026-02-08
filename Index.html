@@ -110,7 +110,7 @@
 
         try {
             // Chamada à API (Porta 3000 conforme o teu servidor)
-            const resposta = await fetch('http://localhost:3000/api/veiculos');
+            const resposta = await fetch('https://garmotor.onrender.com/api/veiculos');
             let veiculos = await resposta.json();
 
             // Lógica de Filtragem por Marca ou Modelo
