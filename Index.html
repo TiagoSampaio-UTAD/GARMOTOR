@@ -11,21 +11,20 @@
     <div id="verify-alert" class="verify-banner">
         Por favor, verifique o seu e-mail para desbloquear todas as funcionalidades.
     </div>
+
     <header class="top-nav">
         <div class="logo-area">
             <img src="img/GARMOTOR_LOGO.png" alt="GARMOTOR" class="logo-img" />
         </div>
         
         <nav class="main-menu">
-            <a href="#" class="active">INÍCIO</a>
+            <a href="#">INÍCIO</a>
             <a href="#h">VEÍCULOS</a>
-            <a href="#">HORÁRIOS</a> 
             <a href="#">SOBRE NÓS</a>
         </nav>
         
         <div id="nav-auth" class="user-actions">
-            <a href="Authentication.html?mode=log" class="btn-text">Entrar</a>
-            <a href="Authentication.html?mode=reg" class="btn-register">Registar</a>
+            <a href="Authentication.html?mode=reg" class="btn-admin">Portal de Gestão</a>
         </div>
     </header>
 
@@ -34,10 +33,10 @@
             <h2>ENCONTRE O SEU CARRO IDEAL</h2>
             <p>Milhares de Veículos de Qualidade, Compare preços, Reserve Compra.</p>
 
-            <form action="#" class="search-bar">
+            <form id="search-form" class="search-bar">
                 <div class="search-input-group">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Pesquise marca, modelo...">
+                    <input type="text" id="search-input" placeholder="Pesquise marca, modelo...">
                 </div>
                 <button type="submit">Pesquisar</button>
             </form>
@@ -67,135 +66,168 @@
         <div class="featured-container">
             <div class="featured-header">
                 <section id="h">
-                    <h3>TODOS OS VEÍCULOS</h3>
+                    <h3 style="font-size: 1.8rem; margin-bottom: 30px; color: #111;">TODOS OS VEÍCULOS</h3>
                 </section>
             </div>
-            
-            <div class="main-content-layout">
-                <div class="featured-grid"></div>
-
-                <aside class="sidebar-filters">
-                    <h4>Filtros</h4>
-                    <div class="filter-group">
-                        <label>Marca</label>
-                        <select id="filtro-marca"><option>Todas</option></select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Preço Máximo</label>
-                        <input type="range" min="1000" max="100000" id="filtro-preco">
-                    </div>
-                    <button class="btn-filter">Aplicar Filtros</button>
-                </aside>
-            </div>
+            <div class="featured-grid"></div>
         </div>
     </section>
 
     <footer class="main-footer">
         <div class="footer-content">
-            <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
+            <div class="footer-brand">
+                <img src="img/GARMOTOR_LOGO.png" alt="GARMOTOR" class="footer-logo">
+                <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
+            </div>
+            
             <div class="footer-links">
                 <a href="#">Política de Privacidade</a>
                 <a href="#">Termos de Uso</a>
                 <a href="#">Contato</a>
             </div>
         </div>
+
+        <div class="developer-credits">
+            <p>Desenvolvido por 
+                <strong>
+                    <a href="https://linktr.ee/tiagoalvessampaio12" target="_blank">Tiago Sampaio</a>
+                </strong>
+            </p>
+        </div>
     </footer>
 
-<script>
-window.onload = function() {
-    verificarSessao();
-    carregarVeiculos();
-};
+    <script>
+    // Inicialização ao carregar a página
+    window.onload = function() {
+        verificarSessao();
+        carregarVeiculos();
+    };
 
-async function carregarVeiculos() {
-    const grid = document.querySelector('.featured-grid');
-    if (!grid) return;
+    // Função principal para carregar e filtrar veículos
+    async function carregarVeiculos(filtro = '') {
+        const grid = document.querySelector('.featured-grid');
+        if (!grid) return;
 
-    try {
-        const resposta = await fetch('http://localhost:3000/api/veiculos');
-        const veiculos = await resposta.json();
+        try {
+            // Chamada à API (Porta 3000 conforme o teu servidor)
+            const resposta = await fetch('http://localhost:3000/api/veiculos');
+            let veiculos = await resposta.json();
 
-        if (veiculos.length === 0) {
-            grid.innerHTML = "<p>Sem stock disponível.</p>";
-            return;
-        }
-
-        grid.innerHTML = veiculos.map(carro => {
-            let imgCapa = 'img/default_car.png';
-            if (carro.ImagemCapa) {
-                try {
-                    const fotos = carro.ImagemCapa.startsWith('[') ? JSON.parse(carro.ImagemCapa) : [carro.ImagemCapa];
-                    if (fotos.length > 0) imgCapa = fotos[0];
-                } catch (e) { imgCapa = carro.ImagemCapa; }
+            // Lógica de Filtragem por Marca ou Modelo
+            if (filtro) {
+                veiculos = veiculos.filter(carro => 
+                    carro.Marca.toLowerCase().includes(filtro.toLowerCase()) || 
+                    carro.Modelo.toLowerCase().includes(filtro.toLowerCase())
+                );
             }
 
-            return `
-                <div class="car-card" style="background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                    <img src="${imgCapa}" alt="${carro.Marca}" style="width: 100%; border-radius: 15px; height: 180px; object-fit: cover;">
-                    <div style="padding: 15px 5px;">
-                        <h4 style="font-size: 1.1rem; color: #111; margin-bottom: 5px;">${carro.Marca} ${carro.Modelo}</h4>
-                        <p style="color: #0084ff; font-weight: 800; font-size: 1.2rem;">
-                            ${Number(carro.Preco).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' })}
+            // Exibição da mensagem caso não existam carros com esse filtro
+            if (veiculos.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                        <i class="fa-solid fa-car-side" style="font-size: 3rem; color: #ccc; margin-bottom: 15px;"></i>
+                        <p style="font-size: 1.2rem; color: #666;">
+                            Não encontrámos veículos da marca ou modelo <strong>"${filtro}"</strong> em stock.
                         </p>
-                        <button onclick="window.location.href='Detalhes.html?id=${carro.Id}'" style="width: 100%; margin-top: 10px; padding: 10px; border: none; background: #0084ff; color: white; border-radius: 10px; cursor: pointer; font-weight: 600;">Ver Detalhes</button>
-                    </div>
+                        <button onclick="carregarVeiculos('')" style="margin-top: 15px; padding: 8px 20px; cursor: pointer; border-radius: 8px; border: none; background: #0084ff; color: white;">Ver todo o stock</button>
+                    </div>`;
+                return;
+            }
+
+            // Renderização dos cartões de veículos
+            grid.innerHTML = veiculos.map(carro => {
+                let imgCapa = 'img/default_car.png';
+                
+                // Tratamento da imagem de capa (JSON ou string simples)
+                if (carro.ImagemCapa) {
+                    try {
+                        const fotos = carro.ImagemCapa.startsWith('[') ? JSON.parse(carro.ImagemCapa) : [carro.ImagemCapa];
+                        if (fotos.length > 0) imgCapa = fotos[0];
+                    } catch (e) { 
+                        imgCapa = carro.ImagemCapa; 
+                    }
+                }
+
+                return `
+                    <div class="car-card" style="background: white; padding: 15px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                        <img src="${imgCapa}" alt="${carro.Marca}" style="width: 100%; border-radius: 15px; height: 180px; object-fit: cover;">
+                        <div style="padding: 15px 5px;">
+                            <h4 style="font-size: 1.1rem; color: #111; margin-bottom: 5px;">${carro.Marca} ${carro.Modelo}</h4>
+                            <p style="color: #0084ff; font-weight: 800; font-size: 1.2rem;">
+                                ${Number(carro.Preco).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR' })}
+                            </p>
+                            <button onclick="window.location.href='Detalhes.html?id=${carro.Id}'" 
+                                    style="width: 100%; margin-top: 10px; padding: 10px; border: none; background: #0084ff; color: white; border-radius: 10px; cursor: pointer; font-weight: 600;">
+                                Ver Detalhes
+                            </button>
+                        </div>
+                    </div>`;
+            }).join('');
+
+        } catch (erro) {
+            grid.innerHTML = "<p style='text-align:center; grid-column: 1/-1;'>Erro ao carregar veículos. Certifique-se que o servidor está ligado.</p>";
+            console.error("Erro na API:", erro);
+        }
+    }
+
+    // Gestão de Login e interface do utilizador
+    function verificarSessao() {
+        const userActions = document.querySelector('.user-actions');
+        const banner = document.getElementById('verify-alert');
+        const nomeLogado = localStorage.getItem('vendedorNome');
+        const tipo = localStorage.getItem('userTipo');
+
+        if (nomeLogado && userActions) {
+            if (banner) banner.style.display = 'none';
+            
+            let botaoAcao = tipo === 'Admin' ? 
+                `<a href="Dashboard.html" class="btn-register" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">+ ADICIONAR VEÍCULO</a>` :
+                `<a href="Favoritos.html" class="btn-register" style="background: #007aff; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">MEUS FAVORITOS</a>`;
+
+            userActions.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="color: white; font-weight: 600;">Olá, ${nomeLogado}</span>
+                    ${botaoAcao}
+                    <a href="#" onclick="fazerLogout(event)" style="color: #ff4d4d; font-weight: 700; text-decoration: none; font-size: 0.8rem; margin-left: 10px;">SAIR</a>
                 </div>
             `;
-        }).join('');
-    } catch (erro) {
-        grid.innerHTML = "<p>Erro ao carregar veículos.</p>";
-    }
-}
-
-function verificarSessao() {
-    const userActions = document.querySelector('.user-actions');
-    const banner = document.getElementById('verify-alert');
-    
-    // Dados guardados no login
-    const nomeLogado = localStorage.getItem('vendedorNome');
-    const tipo = localStorage.getItem('userTipo'); // 'Admin' ou 'Cliente'
-
-    if (nomeLogado) {
-        // Esconde o banner de verificação se estiver logado
-        if (banner) banner.style.display = 'none';
-
-        // Definimos o que aparece no botão de ação dependendo do tipo de conta
-        let botaoAcao = "";
-
-        if (tipo === 'Admin') {
-            // Se for Admin (GARMOTOR), mostra botão de Gestão de Stock
-            botaoAcao = `
-                <a href="Dashboard.html" class="btn-register" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">
-                    + ADICIONAR VEÍCULO
-                </a>`;
-        } else {
-            // Se for Cliente (Utilizador), mostra botão de Favoritos/Filtros
-            // Este botão pode levar a uma página de perfil ou favoritos que cries depois
-            botaoAcao = `
-                <a href="Favoritos.html" class="btn-register" style="background: #007aff; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">
-                    MEUS FAVORITOS
-                </a>`;
         }
-
-        userActions.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <span style="color: white; font-weight: 600;">Olá, ${nomeLogado}</span>
-                ${botaoAcao}
-                <a href="#" onclick="fazerLogout(event)" style="color: #ff4d4d; font-weight: 700; text-decoration: none; font-size: 0.8rem; margin-left: 10px;">
-                    SAIR
-                </a>
-            </div>
-        `;
     }
-}
 
-// Função de Logout corrigida
-function fazerLogout(event) {
-    if(event) event.preventDefault();
-    localStorage.clear(); // Limpa Nome, Email e Tipo
-    window.location.reload(); // Recarrega para aplicar as mudanças
-}
+    function fazerLogout(event) {
+        if(event) event.preventDefault();
+        localStorage.clear();
+        window.location.reload();
+    }
 
+    // Evento de escuta para a barra de pesquisa
+    const searchForm = document.getElementById('search-form');
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const input = document.getElementById('search-input');
+            carregarVeiculos(input.value);
+        });
+    }
+</script>
+<script>
+    let slideIndex = 0;
+
+    async function carregarDetalhes() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        if (!id) throw new Error("ID do veículo não fornecido.");
+
+        try {
+            const resposta = await fetch(`http://localhost:3000/api/veiculos/${id}`);
+            if (!resposta.ok) throw new Error("Veículo não encontrado.");
+            const veiculo = await resposta.json();
+            // Preencher os detalhes do veículo na página
+        } catch (erro) {
+            console.error("Erro ao carregar detalhes:", erro);
+            alert("Erro ao carregar detalhes do veículo. Tente novamente mais tarde.");
+        }
+    }
 </script>
 </body>
 </html>

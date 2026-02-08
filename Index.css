@@ -9,8 +9,14 @@
 
 body {
     font-family: 'Segoe UI', Roboto, sans-serif;
-    background-color: #fcfcfc;
     color: #333;
+    margin: 0;
+    padding: 0;
+    /* Define a imagem no body para cobrir tudo */
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), 
+                url('img/GARMOTOR_PLACE.png') no-repeat center center;
+    background-size: cover;
+    background-attachment: fixed; /* Mantém a imagem parada ao fazer scroll */
 }
 
 /* --- NAVEGAÇÃO (ESTILO MOCKUP) --- */
@@ -51,7 +57,7 @@ body {
 }
 
 .main-menu a.active, .main-menu a:hover {
-    color: #0084ff;
+    color: #000000;
 }
 
 /* Ações do Utilizador */
@@ -61,13 +67,8 @@ body {
     gap: 20px;
 }
 
-.btn-text {
-    color: white;
-    font-weight: 600;
-}
-
-.btn-register {
-    background: #0084ff;
+.btn-admin {
+    background: #222222;
     color: white;
     padding: 12px 28px;
     border-radius: 50px;
@@ -75,22 +76,19 @@ body {
     transition: 0.3s;
 }
 
-.btn-register:hover {
-    background: #0066cc;
+.btn-admin:hover {
+    background: #222222;
     transform: scale(1.05);
 }
 
-/* --- HERO SECTION --- */
 .main-hero {
     width: 100%;
-    height: 90vh; /* Ligeiramente menor para dar espaço aos destaques */
-    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.5)), 
-                url('img/GARMOTOR_PLACE.png') no-repeat center center/cover;
+    min-height: 80vh; /* Reduzimos um pouco para mostrar logo o início dos carros */
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    padding-bottom: 100px;
+    background: transparent; /* Removemos o fundo daqui */
 }
 
 .hero-content {
@@ -218,61 +216,84 @@ body {
 /* --- LAYOUT DE VEÍCULOS E FILTROS --- */
 .featured-section {
     padding: 0 5%;
-    margin-top: -100px;
+    margin-top: -80px; /* Faz o contentor subir para cima da imagem */
     position: relative;
     z-index: 50;
 }
 
 .featured-container {
-    background: #f4f4f4;
-    border-radius: 40px 40px 0 0;
-    padding: 50px;
-}
-
-.main-content-layout {
-    display: flex;
-    gap: 30px;
-    margin-top: 30px;
+    background: rgba(255, 255, 255, 0.95); /* Ligeira transparência para um look premium */
+    backdrop-filter: blur(10px); /* Desfoca o fundo atrás do branco */
+    border-radius: 40px;
+    padding: 60px 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    margin-bottom: 50px;
 }
 
 .featured-grid {
-    flex: 3;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Auto-ajuste */
-    gap: 25px;
-    align-items: start;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
 }
 
-.sidebar-filters {
-    flex: 1; /* Coluna da direita */
-    background: white;
-    padding: 25px;
-    border-radius: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    height: fit-content;
-    position: sticky;
-    top: 20px;
-}
-
-.btn-filter {
-    width: 100%;
-    background: #0084ff;
+/* --- FOOTER (ESTILO DARK) --- */
+.main-footer {
+    background-color: #111;
+    padding: 80px 5% 40px;
     color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 10px;
+    margin-top: 0; /* Colado ao contentor acima */
 }
 
-/* Banner de aviso de verificação */
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-logo { height: 50px; margin-bottom: 15px; }
+
+.footer-brand p { color: #888; font-size: 14px; }
+
+.footer-links a {
+    color: #bbb;
+    font-size: 14px;
+    margin-left: 25px;
+    transition: 0.3s;
+}
+
+.footer-links a:hover { color: #0084ff; }
+
+.developer-credits {
+    text-align: center;
+    margin-top: 50px;
+    padding-top: 30px;
+    border-top: 1px solid #222;
+    color: #666;
+    font-size: 13px;
+}
+
+.developer-credits strong a {
+    color: #0084ff;
+    text-decoration: none;
+}
+
+/* Banner */
 .verify-banner {
     background-color: #fff3cd;
     color: #856404;
-    padding: 15px;
+    padding: 12px;
     text-align: center;
     font-weight: 600;
-    border-bottom: 2px solid #ffeeba;
-    display: none; /* Escondido por padrão, mostrar via JS */
+    display: none;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .hero-content h2 { font-size: 2.2rem; }
+    .main-menu { display: none; }
+    .footer-content { flex-direction: column; text-align: center; gap: 30px; }
+    .footer-links a { margin: 0 10px; }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GARMOTOR - Login</title>
+    <title>GARMOTOR - Painel de Gestão</title>
     <style>
         body {
             margin: 0;
@@ -13,7 +13,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), 
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
                         url('img/GARMOTOR_PLACE.png') no-repeat center center/cover;
             backdrop-filter: blur(10px);
         }
@@ -58,12 +58,26 @@
             color: #111; 
             letter-spacing: -1px; 
             margin-bottom: 10px;
+            text-transform: uppercase;
         }
 
         .subtitle { 
             color: #666; 
             font-size: 15px; 
             margin-bottom: 35px; 
+            line-height: 1.4;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
         }
 
         form { display: flex; flex-direction: column; gap: 15px; }
@@ -90,7 +104,7 @@
         .btn-auth {
             width: 100%;
             padding: 18px;
-            background: #007aff; 
+            background: #111; /* Cor escura para Admin */
             color: white;
             border: none;
             border-radius: 18px;
@@ -98,25 +112,19 @@
             font-size: 17px;
             cursor: pointer;
             margin-top: 10px;
-            box-shadow: 0 10px 20px rgba(0, 122, 255, 0.25);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
             transition: 0.3s;
         }
 
         .btn-auth:hover {
-            background: #0063d1;
+            background: #007aff;
             transform: translateY(-2px);
         }
 
         .auth-footer { 
             margin-top: 30px; 
-            color: #64748b; 
-            font-size: 15px; 
-        }
-
-        .auth-footer a { 
-            color: #007aff; 
-            font-weight: 700; 
-            text-decoration: none; 
+            color: #94a3b8; 
+            font-size: 13px; 
         }
     </style>
 </head>
@@ -129,98 +137,74 @@
             <img src="img/GARMOTOR_LOGO.png" alt="GARMOTOR">
         </div>
 
-        <h2 id="atitle">Entrar</h2>
-        <p id="asub" class="subtitle">Bem-vindo de volta! Introduza os seus dados.</p>
+        <div class="admin-badge">PAINEL DE GESTÃO</div>
+        <h2 id="atitle">Administração</h2>
+        <p id="asub" class="subtitle">Acesso exclusivo para administradores e vendedores autorizados.</p>
 
         <form id="alogin">
-            <div class="field"><input type="email" id="loginEmail" placeholder="Email" required></div>
-            <div class="field"><input type="password" id="loginPass" placeholder="Palavra-passe" required></div>
-            <button type="button" onclick="executarLogin()" class="btn-auth">Entrar</button>
-            <div class="auth-footer">Ainda não tem conta? <a href="#" onclick="switchTab('reg')">Registe-se</a></div>
-        </form>
-
-        <form id="areg" style="display: none;">
-            <div class="field"><input type="text" id="regNome" placeholder="Nome Completo" required></div>
-            <div class="field"><input type="email" id="regEmail" placeholder="email@exemplo.com" required></div>
-            <div class="field"><input type="password" id="regPass" placeholder="Criar Palavra-passe" required></div>
-            <button type="button" onclick="executarRegisto()" class="btn-auth">Criar Conta</button>
-            <div class="auth-footer">Já tem conta? <a href="#" onclick="switchTab('log')">Faça Login</a></div>
+            <div class="field">
+                <input type="email" id="loginEmail" placeholder="E-mail profissional" required>
+            </div>
+            <div class="field">
+                <input type="password" id="loginPass" placeholder="Palavra-passe" required>
+            </div>
+            <button type="button" onclick="executarLogin()" class="btn-auth">Aceder ao Painel</button>
+            
+            <div class="auth-footer">
+                Problemas no acesso? Contacte o suporte técnico.
+            </div>
         </form>
     </div>
 
-   <script>
-    // Alternar entre Login e Registo
-    function switchTab(mode) {
-        const fL = document.getElementById('alogin');
-        const fR = document.getElementById('areg');
-        const t = document.getElementById('atitle');
-        const s = document.getElementById('asub');
+    <script>
+        // Função de Login dedicada a Admins/Vendedores
+        async function executarLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
 
-        if(mode === 'log') {
-            fL.style.display = 'flex'; 
-            fR.style.display = 'none';
-            t.innerText = "Entrar"; 
-            s.innerText = "Bem-vindo de volta! Introduza os seus dados.";
-        } else {
-            fL.style.display = 'none'; 
-            fR.style.display = 'flex';
-            t.innerText = "Criar Conta"; 
-            s.innerText = "Junte-se à Garmotor.";
+            if (!email || !pass) {
+                return alert("Por favor, preencha as credenciais.");
+            }
+
+            try {
+                const res = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, pass })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    // Guardar dados da sessão
+                    localStorage.setItem('vendedorNome', data.nome);
+                    localStorage.setItem('vendedorEmail', data.email);
+                    localStorage.setItem('userTipo', data.tipo);
+
+                    // Só permitimos a entrada se for Admin ou Vendedor
+                    if (data.tipo === 'Admin' || data.tipo === 'Vendedor') {
+                        alert("Bem-vindo ao Painel, " + data.nome + "!");
+                        window.location.href = "Index.html"; 
+                    } else {
+                        // Se por algum motivo um cliente tentar entrar aqui
+                        localStorage.clear();
+                        alert("Erro: Esta área é restrita a administradores.");
+                    }
+                } else { 
+                    alert(data.mensagem || "Credenciais inválidas."); 
+                }
+            } catch (e) { 
+                console.error(e);
+                alert("Erro ao ligar ao servidor. Verifique se o backend está ligado."); 
+            }
         }
-    }
 
-    // Função de Registo (LIMPA: Sem referências a 'loja')
-    // Função de Registo para Utilizadores (Clientes)
-// Função de Registo
-async function executarRegisto() {
-    const nome = document.getElementById('regNome').value;
-    const email = document.getElementById('regEmail').value;
-    const pass = document.getElementById('regPass').value;
-    
-    if(!nome || !email || !pass) return alert("Preencha tudo!");
-
-    try {
-        const res = await fetch('http://localhost:3000/api/registar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, email, pass }) // SEM LOJA AQUI
-        });
-        const data = await res.json();
-        alert(data.mensagem);
-        if(res.ok) switchTab('log');
-    } catch (e) { alert("Erro ao ligar ao servidor."); }
-}
-
-// Função de Login
-async function executarLogin() {
-    const email = document.getElementById('loginEmail').value;
-    const pass = document.getElementById('loginPass').value;
-
-    try {
-        const res = await fetch('http://localhost:3000/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, pass })
-        });
-        const data = await res.json();
-        
-        if(res.ok) {
-            localStorage.setItem('vendedorNome', data.nome);
-            localStorage.setItem('vendedorEmail', data.email);
-            localStorage.setItem('userTipo', data.tipo); // GUARDA SE É ADMIN OU CLIENTE
-            
-            alert("Bem-vindo, " + data.nome + "!");
-            window.location.href = "Index.html";
-        } else { 
-            alert(data.mensagem); 
+        // Bloquear acesso à página se já estiver logado
+        window.onload = () => {
+            if (localStorage.getItem('vendedorNome')) {
+                window.location.href = "Index.html";
+            }
         }
-    } catch (e) { alert("Erro no login."); }
-}
-    // Verificar o modo ao carregar a página
-    window.onload = () => {
-        const mode = new URLSearchParams(window.location.search).get('mode');
-        switchTab(mode === 'reg' ? 'reg' : 'log');
-    }
-</script>
+    </script>
 </body>
 </html>
