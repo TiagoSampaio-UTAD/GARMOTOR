@@ -166,53 +166,73 @@
         try {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
+            
             if (!id) {
-                alert("Veículo não encontrado.");
+                alert("ID do veículo não especificado.");
                 window.location.href = 'Index.html';
                 return;
             }
 
-            // URL DA API NO RENDER
+            // Chamada à API no Render
             const res = await fetch(`https://garmotor.onrender.com/api/veiculos/${id}`);
-            if (!res.ok) throw new Error("Erro ao procurar veículo");
+            if (!res.ok) throw new Error("Veículo não encontrado na base de dados.");
             
             const veiculo = await res.json();
 
-            // Preenchimento de Dados
-            document.getElementById('tituloVeiculo').innerText = `${veiculo.Marca} ${veiculo.Modelo}`;
-            document.getElementById('det-ano-top').innerText = veiculo.Ano;
-            document.getElementById('det-preco').innerText = Number(veiculo.Preco).toLocaleString('pt-PT') + '€';
-            document.getElementById('det-ano').innerText = veiculo.Ano || '---';
-            document.getElementById('det-kms').innerText = veiculo.Kms ? Number(veiculo.Kms).toLocaleString('pt-PT') + ' km' : '---';
-            document.getElementById('det-combustivel').innerText = veiculo.Combustivel || '---';
-            document.getElementById('det-caixa').innerText = veiculo.Caixa || '---';
-            document.getElementById('det-cor').innerText = veiculo.Cor || '---';
-            document.getElementById('det-descricao').innerText = veiculo.Descricao || 'Este veículo encontra-se em excelentes condições e disponível para entrega imediata.';
+            // Mapeamento dinâmico (resolve o problema de Maiúsculas/Minúsculas do Postgres)
+            const marca = veiculo.marca || veiculo.Marca || '---';
+            const modelo = veiculo.modelo || veiculo.Modelo || '---';
+            const preco = veiculo.preco || veiculo.Preco || 0;
+            const ano = veiculo.ano || veiculo.Ano || '---';
+            const kms = veiculo.kms || veiculo.Kms || 0;
+            const combustivel = veiculo.combustivel || veiculo.Combustivel || '---';
+            const caixa = veiculo.caixa || veiculo.Caixa || '---';
+            const cor = veiculo.cor || veiculo.Cor || '---';
+            const descricao = veiculo.descricao || veiculo.Descricao || 'Sem descrição disponível.';
+            const vendedor = veiculo.vendedornome || veiculo.VendedorNome || 'GARMOTOR';
             
-            // Configurar WhatsApp dinâmico
-            const msgZap = `Olá, gostaria de saber mais sobre o ${veiculo.Marca} ${veiculo.Modelo} (${veiculo.Ano}).`;
-            document.getElementById('linkWhatsapp').href = `https://wa.me/351912345678?text=${encodeURIComponent(msgZap)}`;
+            // Tenta encontrar a imagem em qualquer variação de nome de coluna
+            const campoImagem = veiculo.imagemcapa || veiculo.ImagemCapa || veiculo.imagens || veiculo.Imagens;
 
-            // Tratamento de Fotos e Carrossel
+            // Preenchimento do HTML
+            document.getElementById('tituloVeiculo').innerText = `${marca} ${modelo}`;
+            document.getElementById('det-ano-top').innerText = ano;
+            document.getElementById('det-preco').innerText = Number(preco).toLocaleString('pt-PT') + '€';
+            document.getElementById('det-ano').innerText = ano;
+            document.getElementById('det-kms').innerText = Number(kms).toLocaleString('pt-PT') + ' km';
+            document.getElementById('det-combustivel').innerText = combustivel;
+            document.getElementById('det-caixa').innerText = caixa;
+            document.getElementById('det-cor').innerText = cor;
+            document.getElementById('det-descricao').innerText = descricao;
+            document.getElementById('det-vendedor').innerText = vendedor;
+
+            // Configurar Botão WhatsApp
+            const msg = `Olá! Tenho interesse no ${marca} ${modelo} (${ano}) que vi no site.`;
+            document.getElementById('linkWhatsapp').href = `https://wa.me/351912345678?text=${encodeURIComponent(msg)}`;
+
+            // Lógica das Fotos
             const container = document.getElementById('carrossel');
-            if (veiculo.Imagens) { // Nota: A API costuma devolver 'Imagens'
+            if (campoImagem) {
                 try {
-                    // Se for uma string JSON (vinda da DB), faz parse, senão usa como array ou string simples
-                    fotosCarro = typeof veiculo.Imagens === 'string' && veiculo.Imagens.startsWith('[') 
-                        ? JSON.parse(veiculo.Imagens) 
-                        : [veiculo.Imagens];
-                } catch (e) { 
-                    fotosCarro = [veiculo.Imagens]; 
+                    // Se as imagens forem um array em formato string "[img1, img2]"
+                    fotosCarro = (typeof campoImagem === 'string' && campoImagem.startsWith('[')) 
+                        ? JSON.parse(campoImagem) 
+                        : [campoImagem];
+                } catch (e) {
+                    fotosCarro = [campoImagem];
                 }
             }
 
             if (fotosCarro.length > 0) {
-                // Criar o fundo desfocado
-                let blurBg = document.createElement('div');
-                blurBg.className = 'hero-blur-bg';
-                document.querySelector('.car-hero').prepend(blurBg);
+                container.innerHTML = ""; // Limpa o "Carregando"
+                
+                // Criar fundo desfocado se não existir
+                if (!document.querySelector('.hero-blur-bg')) {
+                    let blurBg = document.createElement('div');
+                    blurBg.className = 'hero-blur-bg';
+                    document.querySelector('.car-hero').prepend(blurBg);
+                }
 
-                container.innerHTML = ""; // Limpa "carregando"
                 fotosCarro.forEach(img => {
                     const div = document.createElement('div');
                     div.className = "carousel-slide";
@@ -221,36 +241,26 @@
                 });
                 showSlide(0);
             }
+
         } catch (err) {
-            console.error("Erro:", err);
-            document.getElementById('tituloVeiculo').innerText = "Erro ao carregar";
+            console.error("Erro ao carregar:", err);
+            document.getElementById('tituloVeiculo').innerText = "Erro ao carregar veículo.";
         }
     }
 
     function showSlide(n) {
         let slides = document.getElementsByClassName("carousel-slide");
         let blurBg = document.querySelector('.hero-blur-bg');
-        
         if (slides.length === 0) return;
-        
         if (n >= slides.length) slideIndex = 0;
         else if (n < 0) slideIndex = slides.length - 1;
         else slideIndex = n;
-
-        for (let i = 0; i < slides.length; i++) {
-            slides[i].style.display = "none";
-        }
-
+        for (let i = 0; i < slides.length; i++) slides[i].style.display = "none";
         slides[slideIndex].style.display = "block";
-        
-        if (blurBg && fotosCarro[slideIndex]) {
-            blurBg.style.backgroundImage = `url('${fotosCarro[slideIndex]}')`;
-        }
+        if (blurBg) blurBg.style.backgroundImage = `url('${fotosCarro[slideIndex]}')`;
     }
 
-    function changeSlide(n) { 
-        showSlide(slideIndex += n); 
-    }
+    function changeSlide(n) { showSlide(slideIndex += n); }
 
     window.onload = carregarDetalhes;
 </script>

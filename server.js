@@ -111,23 +111,6 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ mensagem: "Erro no servidor." }); 
     }
 });
-
-// Confirmação de Email
-app.get('/api/confirmar/:token', async (req, res) => {
-    try {
-        const email = Buffer.from(req.params.token, 'base64').toString('ascii');
-        const client = await pool.connect();
-        await client.query('UPDATE Vendedores SET EmailConfirmado = 1 WHERE Email = $1', [email]);
-        client.release();
-        
-        res.send(`<div style="text-align:center; font-family:sans-serif; margin-top:50px;">
-                    <h1 style="color:#28a745;">✅ Conta Ativada!</h1>
-                    <p>Já podes voltar ao site e fazer login.</p>
-                    <a href="https://garmotor.onrender.com" style="color:#007aff;">Voltar ao site</a>
-                  </div>`);
-    } catch (err) { res.status(500).send("Erro na ativação."); }
-});
-
 // --- GESTÃO DE VEÍCULOS ---
 
 app.get('/api/veiculos', async (req, res) => {
@@ -161,17 +144,30 @@ app.post('/api/veiculos/adicionar', async (req, res) => {
     } catch (err) { res.status(500).json({ mensagem: "Erro: " + err.message }); }
 });
 
+// --- ROTA DE DETALHES NO SERVER.JS ---
 app.get('/api/veiculos/:id', async (req, res) => {
     try {
         const client = await pool.connect();
+        // O SQL busca os dados do veículo e o nome do vendedor associado
         const result = await client.query(
-            'SELECT V.*, Vend.Nome as VendedorNome FROM Veiculos V LEFT JOIN Vendedores Vend ON V.VendedorId = Vend.Id WHERE V.Id = $1',
+            `SELECT v.*, vend.nome as vendedornome 
+             FROM veiculos v 
+             LEFT JOIN vendedores vend ON v.vendedorid = vend.id 
+             WHERE v.id = $1`,
             [req.params.id]
         );
         client.release();
-        if (result.rows.length > 0) res.json(result.rows[0]);
-        else res.status(404).send("Não encontrado.");
-    } catch (err) { res.status(500).send(err.message); }
+
+        if (result.rows.length > 0) {
+            // Enviamos o primeiro resultado encontrado
+            res.json(result.rows[0]);
+        } else {
+            res.status(404).json({ mensagem: "Veículo não encontrado." });
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erro ao buscar detalhes no servidor.");
+    }
 });
 
 const PORT = process.env.PORT || 10000; // Alterado para 10000 (padrão Render)
