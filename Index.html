@@ -97,6 +97,7 @@
     </footer>
 
 <script>
+    // Inicialização ao carregar a página
     window.onload = function() {
         verificarSessao();
         carregarVeiculos();
@@ -110,6 +111,11 @@
             const resposta = await fetch('https://garmotor.onrender.com/api/veiculos');
             let veiculos = await resposta.json();
 
+            // 1. FILTRO: Remove todos os veículos que estão como "Vendido"
+            // Assim eles deixam de ocupar espaço na grelha principal
+            veiculos = veiculos.filter(v => v.estado !== 'Vendido');
+
+            // 2. Lógica de pesquisa (marca/modelo) sobre os veículos que sobraram
             if (filtro) {
                 veiculos = veiculos.filter(v => 
                     v.marca.toLowerCase().includes(filtro.toLowerCase()) || 
@@ -120,7 +126,7 @@
             grid.innerHTML = ""; 
 
             if (veiculos.length === 0) {
-                grid.innerHTML = "<p style='color: white;'>Nenhum veículo encontrado.</p>";
+                grid.innerHTML = "<p style='color: white; text-align: center; width: 100%;'>Nenhum veículo disponível de momento.</p>";
                 return;
             }
 
@@ -135,19 +141,13 @@
                     maximumFractionDigits: 0
                 });
 
-                // --- LÓGICA DE ESTADOS (Vendido e Reservado) ---
+                // --- LÓGICA PARA RESERVADOS (Já que os vendidos estão escondidos) ---
                 let seloHTML = '';
                 let classeEstado = '';
                 let textoBotao = 'Ver Mais <i class="fa-solid fa-arrow-right"></i>';
                 let styleBotao = '';
 
-                if (carro.estado === 'Vendido') {
-                    seloHTML = `<span class="badge-status badge-vendido">VENDIDO</span>`;
-                    classeEstado = 'car-card-vendido';
-                    textoBotao = 'Vendido';
-                    styleBotao = 'background: #666; cursor: not-allowed;';
-                } 
-                else if (carro.estado === 'Reservado') {
+                if (carro.estado === 'Reservado') {
                     seloHTML = `<span class="badge-status badge-reservado">RESERVADO</span>`;
                     classeEstado = 'car-card-reservado';
                     textoBotao = 'Reservado';
@@ -188,6 +188,7 @@
         }
     }
     
+    // Gestão de Login e interface do utilizador
     function verificarSessao() {
         const userActions = document.querySelector('.user-actions');
         const banner = document.getElementById('verify-alert');
