@@ -277,26 +277,27 @@
 
     // 5. REMOVER
     async function remover(id) {
-    if (!confirm("Tens a certeza que queres apagar este veículo?")) return;
+    if (!confirm("Tens a certeza que queres apagar?")) return;
 
     try {
-        const res = await fetch(`${API}/${id}`, {
-            method: 'DELETE'
+        // ATENÇÃO: Se o teu servidor está no Render, a URL deve ser completa
+        // ou usar a variável API que definiste no topo do script.
+        const res = await fetch(`/api/veiculos/${id}`, { 
+            method: 'DELETE' 
         });
 
-        if (!res.ok) {
-            alert("Erro ao apagar veículo.");
-            return;
-        }
+        const data = await res.json();
 
-        alert("Veículo eliminado com sucesso!");
-        carregarListaGestao(); // atualiza a lista
+        if (res.ok) {
+            alert(data.mensagem);
+            location.reload(); // Isto faz o carro desaparecer da lista
+        } else {
+            alert("Erro: " + data.mensagem);
+        }
     } catch (err) {
-        console.error(err);
         alert("Erro de ligação ao servidor.");
     }
 }
-
 
 
     // 6. SUBMETER FORMULÁRIO
