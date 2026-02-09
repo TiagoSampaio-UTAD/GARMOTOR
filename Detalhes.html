@@ -3,37 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GARMOTOR - Detalhes do Veículo</title>
+    <title>GARMOTOR - Detalhes Premium</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="Index.css"> <style>
+    <link rel="stylesheet" href="Index.css">
+    
+    <style>
         :root {
             --gold: #d4af37;
-            --dark-card: rgba(255, 255, 255, 0.05);
+            --glass: rgba(0, 0, 0, 0.75);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Ajuste do Background Geral para ser contínuo */
+        body {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
+                        url('img/GARMOTOR_PLACE.png') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
         }
 
         .details-container {
             max-width: 1200px;
-            margin: 150px auto 50px;
+            margin: 140px auto 40px;
             padding: 0 20px;
-            color: white;
         }
 
-        /* Galeria Estilo Cinema */
+        /* Galeria Cinema */
         .main-gallery {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 2.5fr 1fr;
             gap: 15px;
-            height: 500px;
-            margin-bottom: 40px;
+            height: 550px;
+            margin-bottom: 30px;
         }
 
         .main-photo img {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 24px;
+            border: 1px solid var(--border);
         }
 
         .side-photos {
@@ -43,111 +52,102 @@
         }
 
         .side-photos img {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
-            border-radius: 15px;
+            border-radius: 18px;
             cursor: pointer;
-            transition: 0.3s;
+            filter: brightness(0.7);
+            transition: 0.4s;
         }
 
-        .side-photos img:hover { transform: scale(1.02); }
+        .side-photos img:hover { filter: brightness(1); transform: scale(1.02); }
 
-        /* Informação do Carro */
-        .info-grid {
+        /* Blocos de Informação com Fundo Curto (Glass) */
+        .info-layout {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 40px;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 30px;
+            align-items: start;
         }
 
-        .car-main-info h1 {
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 35px;
+            margin-bottom: 25px;
+        }
+
+        .car-header h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 3rem;
+            font-size: 3.2rem;
+            line-height: 1.1;
             margin-bottom: 10px;
         }
 
-        .price-tag {
-            font-size: 2.5rem;
+        .price-hero {
+            font-size: 2.8rem;
             color: var(--gold);
-            font-weight: 700;
-            margin-bottom: 30px;
-        }
-
-        .specs-horizontal {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 20px;
-            background: var(--dark-card);
-            padding: 30px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .spec-item {
-            text-align: center;
-        }
-
-        .spec-item i {
-            display: block;
-            color: var(--gold);
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .spec-item span {
-            font-size: 0.8rem;
-            color: #aaa;
-            text-transform: uppercase;
-        }
-
-        .spec-item p {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        /* Seção Marca GARMOTOR */
-        .brand-experience {
-            margin-top: 60px;
-            padding: 40px;
-            background: linear-gradient(135deg, rgba(20,20,20,0.8), rgba(0,0,0,0.9));
-            border-radius: 20px;
-            border-left: 4px solid var(--gold);
-        }
-
-        .brand-experience h3 {
-            font-family: 'Playfair Display', serif;
+            font-weight: 800;
             margin-bottom: 20px;
-            font-size: 1.8rem;
         }
 
-        .cta-box {
-            position: sticky;
-            top: 150px;
-            background: white;
-            color: #111;
-            padding: 30px;
-            border-radius: 25px;
+        /* Grelha de Especificações */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .spec-box {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 15px;
             text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .btn-whatsapp {
+        .spec-box i { color: var(--gold); font-size: 1.4rem; margin-bottom: 8px; display: block; }
+        .spec-box span { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .spec-box p { font-size: 1.1rem; font-weight: 600; margin-top: 5px; }
+
+        /* Barra Lateral de Contacto */
+        .cta-sidebar {
+            position: sticky;
+            top: 130px;
+        }
+
+        .btn-whatsapp-big {
             background: #25d366;
             color: white;
-            display: block;
-            padding: 15px;
-            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 22px;
+            border-radius: 18px;
             font-weight: 700;
-            margin-top: 20px;
+            font-size: 1.1rem;
             transition: 0.3s;
         }
 
-        .btn-whatsapp:hover { background: #128c7e; transform: translateY(-3px); }
+        .btn-whatsapp-big:hover { background: #1eb956; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(37, 211, 102, 0.2); }
 
-        @media (max-width: 768px) {
-            .main-gallery, .info-grid { grid-template-columns: 1fr; }
-            .main-gallery { height: auto; }
+        /* Secção do Mapa */
+        .map-section {
+            margin-top: 50px;
+            border-radius: 24px;
+            overflow: hidden;
+            height: 350px;
+            border: 1px solid var(--border);
+        }
+
+        @media (max-width: 900px) {
+            .main-gallery, .info-layout { grid-template-columns: 1fr; }
+            .main-gallery { height: 400px; }
             .side-photos { display: none; }
+            .specs-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -158,153 +158,134 @@
             <a href="Index.html"><img src="img/GARMOTOR_LOGO.png" alt="GARMOTOR" class="logo-img" /></a>
         </div>
         <nav class="main-menu">
-            <a href="Index.html">VOLTAR AO INÍCIO</a>
+            <a href="Index.html"><i class="fa-solid fa-chevron-left"></i> VOLTAR AO STOCK</a>
         </nav>
     </header>
 
     <main class="details-container">
-        <div class="main-gallery" id="imageGallery">
+        
+        <div class="main-gallery">
             <div class="main-photo">
-                <img id="fotoPrincipal" src="img/placeholder-car.jpg" alt="Foto Principal">
+                <img id="mainImg" src="img/placeholder-car.jpg" alt="Veículo">
             </div>
-            <div class="side-photos" id="fotosSecundarias">
+            <div class="side-photos" id="sideGallery">
                 </div>
         </div>
 
-        <div class="info-grid">
-            <div class="car-content">
-                <div class="car-main-info">
-                    <h1 id="carTitulo">Carregando...</h1>
-                    <p class="price-tag" id="carPreco">--- €</p>
+        <div class="info-layout">
+            
+            <div class="car-data-column">
+                
+                <div class="glass-card car-header">
+                    <h1 id="titulo">A Carregar...</h1>
+                    <div class="price-hero" id="preco">0 €</div>
+                    <p id="descricao" style="color: #bbb; line-height: 1.7;"></p>
                 </div>
 
-                <div class="specs-horizontal">
-                    <div class="spec-item">
-                        <i class="fa-solid fa-calendar-days"></i>
-                        <span>Ano</span>
-                        <p id="carAno">-</p>
-                    </div>
-                    <div class="spec-item">
-                        <i class="fa-solid fa-road"></i>
-                        <span>Quilómetros</span>
-                        <p id="carKms">-</p>
-                    </div>
-                    <div class="spec-item">
-                        <i class="fa-solid fa-gas-pump"></i>
-                        <span>Combustível</span>
-                        <p id="carFuel">-</p>
-                    </div>
-                    <div class="spec-item">
-                        <i class="fa-solid fa-gears"></i>
-                        <span>Caixa</span>
-                        <p id="carCaixa">-</p>
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 20px; font-size: 1.2rem; border-left: 3px solid var(--gold); padding-left: 15px;">FICHA TÉCNICA</h3>
+                    <div class="specs-grid">
+                        <div class="spec-box"><i class="fa-solid fa-calendar"></i><span>Ano</span><p id="ano">-</p></div>
+                        <div class="spec-box"><i class="fa-solid fa-road"></i><span>Kms</span><p id="kms">-</p></div>
+                        <div class="spec-box"><i class="fa-solid fa-gas-pump"></i><span>Combustível</span><p id="fuel">-</p></div>
+                        <div class="spec-box"><i class="fa-solid fa-gears"></i><span>Caixa</span><p id="caixa">-</p></div>
+                        <div class="spec-box"><i class="fa-solid fa-palette"></i><span>Cor</span><p id="cor">-</p></div>
+                        <div class="spec-box"><i class="fa-solid fa-shield-halved"></i><span>Garantia</span><p>18 Meses</p></div>
                     </div>
                 </div>
 
-                <div class="brand-experience">
-                    <h3>A Diferença GARMOTOR</h3>
-                    <p>Na <strong>GARMOTOR</strong>, não vendemos apenas automóveis; entregamos confiança e performance. Cada veículo da nossa coleção passa por uma rigorosa inspeção técnica de 120 pontos, garantindo que a sua única preocupação seja desfrutar da estrada.</p>
-                    <br>
-                    <p><i class="fa-solid fa-check-double" style="color: var(--gold)"></i> Garantia Premium até 24 meses.</p>
-                    <p><i class="fa-solid fa-check-double" style="color: var(--gold)"></i> Financiamento personalizado com aprovação imediata.</p>
-                    <p><i class="fa-solid fa-check-double" style="color: var(--gold)"></i> Entrega em todo o país.</p>
-                </div>
-
-                <div style="margin-top: 40px;">
-                    <h4 style="color: var(--gold); margin-bottom: 15px;">DESCRIÇÃO DO VENDEDOR</h4>
-                    <p id="carDesc" style="line-height: 1.8; color: #ccc;"></p>
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 15px;">VISITE-NOS</h3>
+                    <p style="color: #888; margin-bottom: 20px;">Estamos situados em Lisboa. Venha testar o seu próximo automóvel num ambiente de total exclusividade.</p>
+                    <div class="map-section">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m12!1m3!1d199214.375123!2d-9.296614!3d38.743621!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd19331a61e4f33b%3A0x400ebbde49036d0!2sLisboa!5e0!3m2!1spt!2spt!4v1710000000000!5m2!1spt!2spt" 
+                            width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+                        </iframe>
+                    </div>
                 </div>
             </div>
 
-            <aside>
-                <div class="cta-box">
-                    <h4>Interessado neste veículo?</h4>
-                    <p style="font-size: 0.9rem; margin: 10px 0;">Fale agora com um dos nossos consultores especialistas.</p>
+            <aside class="cta-sidebar">
+                <div class="glass-card" style="text-align: center;">
+                    <h4 style="font-size: 1.4rem; margin-bottom: 10px;">Interessado?</h4>
+                    <p style="color: #aaa; margin-bottom: 25px;">Peça uma simulação de financiamento ou agende o seu Test-Drive.</p>
                     
-                    <a href="#" id="btnZap" target="_blank" class="btn-whatsapp">
-                        <i class="fa-brands fa-whatsapp"></i> CONTACTAR VIA WHATSAPP
+                    <a href="#" id="linkZap" target="_blank" class="btn-whatsapp-big">
+                        <i class="fa-brands fa-whatsapp"></i> CONTACTAR AGORA
                     </a>
-                    
-                    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                        <p style="font-size: 0.8rem; color: #666;"><i class="fa-solid fa-phone"></i> +351 912 345 678</p>
-                        <p style="font-size: 0.8rem; color: #666;"><i class="fa-solid fa-location-dot"></i> Lisboa, Portugal</p>
+
+                    <div style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 15px;">
+                            <i class="fa-solid fa-phone" style="color: var(--gold);"></i>
+                            <span>+351 919 741 045</span>
+                        </div>
+                        <p style="font-size: 0.8rem; color: #666;">Aberto de Segunda a Sábado<br>09:00 - 19:00</p>
                     </div>
                 </div>
+
+                <div class="glass-card" style="margin-top: 20px; background: rgba(212, 175, 55, 0.1); border-color: var(--gold);">
+                    <p style="font-size: 0.9rem; color: var(--gold); font-weight: 600;">
+                        <i class="fa-solid fa-star"></i> COMPROMISSO GARMOTOR
+                    </p>
+                    <p style="font-size: 0.8rem; color: #ccc; margin-top: 5px;">
+                        Todos os nossos veículos são entregues com revisão completa e higienização certificada.
+                    </p>
+                </div>
             </aside>
+
         </div>
     </main>
 
-    <footer class="main-footer">
-        <div class="footer-content">
-            <div class="footer-brand">
-                <img src="img/GARMOTOR_LOGO.png" alt="GARMOTOR" class="footer-logo">
-                <p>Onde a excelência encontra a estrada.</p>
-            </div>
-            <div class="footer-links">
-                <a href="Index.html">Stock</a>
-                <a href="#">Privacidade</a>
-                <a href="#">Contactos</a>
-            </div>
-        </div>
-    </footer>
-
     <script>
-        async function carregarDetalhes() {
-            const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
-
-            if (!id) {
-                window.location.href = 'Index.html';
-                return;
-            }
+        async function carregarDados() {
+            const id = new URLSearchParams(window.location.search).get('id');
+            if (!id) { window.location.href = 'Index.html'; return; }
 
             try {
                 const res = await fetch(`https://garmotor.onrender.com/api/veiculos/${id}`);
                 const v = await res.json();
 
-                // Títulos e Preços
-                document.getElementById('carTitulo').innerText = `${v.marca} ${v.modelo}`;
-                document.getElementById('carPreco').innerText = Number(v.preco).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-                
-                // Specs
-                document.getElementById('carAno').innerText = v.ano;
-                document.getElementById('carKms').innerText = `${v.kms?.toLocaleString()} km`;
-                document.getElementById('carFuel').innerText = v.combustivel;
-                document.getElementById('carCaixa').innerText = v.caixa || 'Manual';
-                document.getElementById('carDesc').innerText = v.descricao || 'Nenhuma descrição detalhada disponível.';
+                // Textos
+                document.getElementById('titulo').innerText = `${v.marca} ${v.modelo}`;
+                document.getElementById('preco').innerText = Number(v.preco).toLocaleString('pt-PT', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+                document.getElementById('ano').innerText = v.ano;
+                document.getElementById('kms').innerText = `${v.kms?.toLocaleString()} km`;
+                document.getElementById('fuel').innerText = v.combustivel;
+                document.getElementById('caixa').innerText = v.caixa || 'Manual';
+                document.getElementById('cor').innerText = v.cor || 'N/D';
+                document.getElementById('descricao').innerText = v.descricao || 'Este veículo premium aguarda a sua visita.';
 
-                // Lógica de Imagens (Suporta Múltiplas)
+                // Imagens
                 if (v.imagemcapa) {
                     const fotos = v.imagemcapa.split('|||');
-                    document.getElementById('fotoPrincipal').src = fotos[0];
-
-                    const containerSecundario = document.getElementById('fotosSecundarias');
-                    containerSecundario.innerHTML = "";
+                    document.getElementById('mainImg').src = fotos[0];
                     
-                    // Adiciona até 2 fotos na lateral para o design não quebrar
-                    fotos.slice(1, 3).forEach(imgUrl => {
+                    const side = document.getElementById('sideGallery');
+                    side.innerHTML = "";
+                    fotos.slice(1, 3).forEach(url => {
                         const img = document.createElement('img');
-                        img.src = imgUrl;
+                        img.src = url;
                         img.onclick = () => {
-                            const actualMain = document.getElementById('fotoPrincipal').src;
-                            document.getElementById('fotoPrincipal').src = imgUrl;
-                            img.src = actualMain;
+                            const tmp = document.getElementById('mainImg').src;
+                            document.getElementById('mainImg').src = url;
+                            img.src = tmp;
                         };
-                        containerSecundario.appendChild(img);
+                        side.appendChild(img);
                     });
                 }
 
-                // Configurar link WhatsApp
-                const msg = `Olá GARMOTOR! Tenho interesse no ${v.marca} ${v.modelo} (${v.ano}) anunciado por ${document.getElementById('carPreco').innerText}.`;
-                document.getElementById('btnZap').href = `https://wa.me/351912345678?text=${encodeURIComponent(msg)}`;
+                // WhatsApp
+                const msg = `Olá! Gostaria de mais informações sobre o ${v.marca} ${v.modelo} (${v.ano}) que vi no site.`;
+                document.getElementById('linkZap').href = `https://api.whatsapp.com/send?phone=919741045&text=${encodeURIComponent(msg)}`;
 
             } catch (err) {
-                console.error("Erro:", err);
-                alert("Erro ao carregar dados do veículo.");
+                console.error(err);
+                alert("Erro ao carregar veículo.");
             }
         }
 
-        window.onload = carregarDetalhes;
+        window.onload = carregarDados;
     </script>
 </body>
 </html>
