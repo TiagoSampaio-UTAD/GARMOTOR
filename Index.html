@@ -156,12 +156,10 @@
             if (banner) banner.style.display = 'none';
             
             let botaoAcao = tipo === 'Admin' ? 
-                `<a href="Dashboard.html" class="btn-register" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">+ ADICIONAR VEÍCULO</a>` :
-                `<a href="Favoritos.html" class="btn-register" style="background: #007aff; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">MEUS FAVORITOS</a>`;
-
+                `<a href="Dashboard.html" class="btn-register" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">Gestão de Anúncios</a>` :
             userActions.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <span style="color: white; font-weight: 600;">Olá, ${nomeLogado}</span>
+                    <span style="color: white; font-weight: 600;">Logado como:${nomeLogado}</span>
                     ${botaoAcao}
                     <a href="#" onclick="fazerLogout(event)" style="color: #ff4d4d; font-weight: 700; text-decoration: none; font-size: 0.8rem; margin-left: 10px;">SAIR</a>
                 </div>
