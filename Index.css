@@ -247,11 +247,17 @@ body {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .car-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.car-card-vendido img {
+    filter: grayscale(100%); /* Foto a preto e branco */
+    opacity: 0.7;
 }
 
 /* Contentor da Imagem */
@@ -401,6 +407,25 @@ body {
     text-align: center;
     font-weight: 600;
     display: none;
+}
+
+.badge-vendido {
+    position: absolute;
+    top: 15px;
+    right: -30px;
+    background: #ff4d4d; /* Vermelho */
+    color: white;
+    padding: 5px 35px;
+    transform: rotate(45deg);
+    font-weight: 900;
+    font-size: 0.7rem;
+    z-index: 5;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.foto-preto-e-branco img {
+    filter: grayscale(100%);
+    opacity: 0.6;
 }
 
 /* Responsividade */

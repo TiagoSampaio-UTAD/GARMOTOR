@@ -96,7 +96,7 @@
         </div>
     </footer>
 
-    <script>
+<script>
     // Inicialização ao carregar a página
     window.onload = function() {
         verificarSessao();
@@ -104,100 +104,106 @@
     };
 
     async function carregarVeiculos(filtro = "") {
-    const grid = document.querySelector('.featured-grid');
-    if (!grid) return;
+        const grid = document.querySelector('.featured-grid');
+        if (!grid) return;
 
-    try {
-        const resposta = await fetch('https://garmotor.onrender.com/api/veiculos');
-        let veiculos = await resposta.json();
+        try {
+            const resposta = await fetch('https://garmotor.onrender.com/api/veiculos');
+            let veiculos = await resposta.json();
 
-        // Lógica de pesquisa simples se houver filtro
-        if (filtro) {
-            veiculos = veiculos.filter(v => 
-                v.marca.toLowerCase().includes(filtro.toLowerCase()) || 
-                v.modelo.toLowerCase().includes(filtro.toLowerCase())
-            );
-        }
+            // Lógica de pesquisa simples se houver filtro
+            if (filtro) {
+                veiculos = veiculos.filter(v => 
+                    v.marca.toLowerCase().includes(filtro.toLowerCase()) || 
+                    v.modelo.toLowerCase().includes(filtro.toLowerCase())
+                );
+            }
 
-        grid.innerHTML = ""; 
+            grid.innerHTML = ""; 
 
-        if (veiculos.length === 0) {
-            grid.innerHTML = "<p style='color: white;'>Nenhum veículo encontrado.</p>";
-            return;
-        }
+            if (veiculos.length === 0) {
+                grid.innerHTML = "<p style='color: white;'>Nenhum veículo encontrado.</p>";
+                return;
+            }
 
-        veiculos.forEach(carro => {
-            const imagemCapa = carro.imagemcapa && carro.imagemcapa !== "" 
-                ? (carro.imagemcapa.includes('|||') ? carro.imagemcapa.split('|||')[0] : carro.imagemcapa)
-                : 'img/placeholder-car.jpg';
+            veiculos.forEach(carro => {
+                const imagemCapa = carro.imagemcapa && carro.imagemcapa !== "" 
+                    ? (carro.imagemcapa.includes('|||') ? carro.imagemcapa.split('|||')[0] : carro.imagemcapa)
+                    : 'img/placeholder-car.jpg';
 
-            const preco = Number(carro.preco || 0).toLocaleString('pt-PT', { 
-                style: 'currency', 
-                currency: 'EUR',
-                maximumFractionDigits: 0
+                const preco = Number(carro.preco || 0).toLocaleString('pt-PT', { 
+                    style: 'currency', 
+                    currency: 'EUR',
+                    maximumFractionDigits: 0
+                });
+
+                // --- LÓGICA DE VENDIDO ---
+                const isVendido = carro.estado === 'Vendido'; 
+                const seloVendido = isVendido ? `<span class="badge-vendido">VENDIDO</span>` : '';
+                const classeVendido = isVendido ? 'car-card-vendido' : '';
+                // Se estiver vendido, podemos mudar o texto do botão ou desativá-lo
+                const textoBotao = isVendido ? 'Vendido' : 'Ver Mais <i class="fa-solid fa-arrow-right"></i>';
+
+                const card = `
+                    <div class="car-card ${classeVendido}">
+                        <div class="car-img-container">
+                            ${seloVendido}
+                            <img src="${imagemCapa}" alt="${carro.marca} ${carro.modelo}" loading="lazy" onerror="this.src='img/placeholder-car.jpg'">
+                            <span class="car-tag">${carro.ano}</span>
+                        </div>
+                        <div class="car-info">
+                            <div class="car-header">
+                                <h4>${carro.marca} <span>${carro.modelo}</span></h4>
+                            </div>
+                            
+                            <div class="car-specs">
+                                <span><i class="fa-solid fa-road"></i> ${carro.kms?.toLocaleString() || 0} km</span>
+                                <span><i class="fa-solid fa-gas-pump"></i> ${carro.combustivel || 'N/D'}</span>
+                            </div>
+
+                            <div class="car-footer">
+                                <p class="car-price">${preco}</p>
+                                <button onclick="window.location.href='Detalhes.html?id=${carro.id}'" 
+                                        class="btn-detalhes" ${isVendido ? 'style="background: #666; cursor: not-allowed;"' : ''}>
+                                    ${textoBotao}
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+                grid.innerHTML += card;
             });
-
-            const card = `
-                <div class="car-card">
-                    <div class="car-img-container">
-                        <img src="${imagemCapa}" alt="${carro.marca} ${carro.modelo}" loading="lazy" onerror="this.src='img/placeholder-car.jpg'">
-                        <span class="car-tag">${carro.ano}</span>
-                    </div>
-                    <div class="car-info">
-                        <div class="car-header">
-                            <h4>${carro.marca} <span>${carro.modelo}</span></h4>
-                        </div>
-                        
-                        <div class="car-specs">
-                            <span><i class="fa-solid fa-road"></i> ${carro.kms?.toLocaleString() || 0} km</span>
-                            <span><i class="fa-solid fa-gas-pump"></i> ${carro.combustivel || 'N/D'}</span>
-                        </div>
-
-                        <div class="car-footer">
-                            <p class="car-price">${preco}</p>
-                            <button onclick="window.location.href='Detalhes.html?id=${carro.id}'" class="btn-detalhes">
-                                Ver Mais <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>`;
-            grid.innerHTML += card;
-        });
-    } catch (erro) {
-        console.error("Erro ao carregar:", erro);
-        grid.innerHTML = "<p>Não foi possível carregar os veículos.</p>";
+        } catch (erro) {
+            console.error("Erro ao carregar:", erro);
+            grid.innerHTML = "<p>Não foi possível carregar os veículos.</p>";
+        }
     }
-}
     
     // Gestão de Login e interface do utilizador
     function verificarSessao() {
-    const userActions = document.querySelector('.user-actions');
-    const banner = document.getElementById('verify-alert');
-    const nomeLogado = localStorage.getItem('vendedorNome');
-    const tipo = localStorage.getItem('userTipo');
+        const userActions = document.querySelector('.user-actions');
+        const banner = document.getElementById('verify-alert');
+        const nomeLogado = localStorage.getItem('vendedorNome');
+        const tipo = localStorage.getItem('userTipo');
 
-    if (nomeLogado && userActions) {
-        // Esconde o banner de verificação se estiver logado
-        if (banner) banner.style.display = 'none';
-        
-        // Define o botão baseado no tipo de utilizador
-        let botaoAcao = "";
-        if (tipo === 'Admin' || tipo === 'Vendedor') {
-            botaoAcao = `<a href="Dashboard.html" class="btn-register" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">Gestão de Anúncios</a>`;
+        if (nomeLogado && userActions) {
+            if (banner) banner.style.display = 'none';
+            
+            let botaoAcao = "";
+            if (tipo === 'Admin' || tipo === 'Vendedor') {
+                botaoAcao = `<a href="Dashboard.html" class="btn-register" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">Gestão de Anúncios</a>`;
+            }
+
+            userActions.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span style="color: white; font-weight: 600; font-size: 0.8rem;">
+                        Bem Vindo, ${nomeLogado}!
+                    </span>
+                    ${botaoAcao}
+                    <a href="#" onclick="fazerLogout(event)" style="color: #ff4d4d; font-weight: 700; text-decoration: none; font-size: 0.8rem;">SAIR</a>
+                </div>
+            `;
         }
-
-        // Atualiza o HTML da barra de navegação
-        userActions.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <span style="color: white; font-weight: 600; font-size: 0.8rem;">
-                    Bem Vindo, ${nomeLogado}!
-                </span>
-                ${botaoAcao}
-                <a href="#" onclick="fazerLogout(event)" style="color: #ff4d4d; font-weight: 700; text-decoration: none; font-size: 0.8rem;">SAIR</a>
-            </div>
-        `;
     }
-}
 
     function fazerLogout(event) {
         if(event) event.preventDefault();
@@ -205,7 +211,6 @@
         window.location.reload();
     }
 
-    // Evento de escuta para a barra de pesquisa
     const searchForm = document.getElementById('search-form');
     if (searchForm) {
         searchForm.addEventListener('submit', function(e) {
@@ -213,25 +218,6 @@
             const input = document.getElementById('search-input');
             carregarVeiculos(input.value);
         });
-    }
-</script>
-<script>
-    let slideIndex = 0;
-
-    async function carregarDetalhes() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const id = urlParams.get('id');
-        if (!id) throw new Error("ID do veículo não fornecido.");
-
-        try {
-            const resposta = await fetch(`https://garmotor.onrender.com/api/veiculos/${id}`);
-            if (!resposta.ok) throw new Error("Veículo não encontrado.");
-            const veiculo = await resposta.json();
-            // Preencher os detalhes do veículo na página
-        } catch (erro) {
-            console.error("Erro ao carregar detalhes:", erro);
-            alert("Erro ao carregar detalhes do veículo. Tente novamente mais tarde.");
-        }
     }
 </script>
 </body>
