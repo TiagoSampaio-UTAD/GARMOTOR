@@ -97,7 +97,6 @@
     </footer>
 
 <script>
-    // Inicialização ao carregar a página
     window.onload = function() {
         verificarSessao();
         carregarVeiculos();
@@ -111,7 +110,6 @@
             const resposta = await fetch('https://garmotor.onrender.com/api/veiculos');
             let veiculos = await resposta.json();
 
-            // Lógica de pesquisa simples se houver filtro
             if (filtro) {
                 veiculos = veiculos.filter(v => 
                     v.marca.toLowerCase().includes(filtro.toLowerCase()) || 
@@ -137,17 +135,29 @@
                     maximumFractionDigits: 0
                 });
 
-                // --- LÓGICA DE VENDIDO ---
-                const isVendido = carro.estado === 'Vendido'; 
-                const seloVendido = isVendido ? `<span class="badge-vendido">VENDIDO</span>` : '';
-                const classeVendido = isVendido ? 'car-card-vendido' : '';
-                // Se estiver vendido, podemos mudar o texto do botão ou desativá-lo
-                const textoBotao = isVendido ? 'Vendido' : 'Ver Mais <i class="fa-solid fa-arrow-right"></i>';
+                // --- LÓGICA DE ESTADOS (Vendido e Reservado) ---
+                let seloHTML = '';
+                let classeEstado = '';
+                let textoBotao = 'Ver Mais <i class="fa-solid fa-arrow-right"></i>';
+                let styleBotao = '';
+
+                if (carro.estado === 'Vendido') {
+                    seloHTML = `<span class="badge-status badge-vendido">VENDIDO</span>`;
+                    classeEstado = 'car-card-vendido';
+                    textoBotao = 'Vendido';
+                    styleBotao = 'background: #666; cursor: not-allowed;';
+                } 
+                else if (carro.estado === 'Reservado') {
+                    seloHTML = `<span class="badge-status badge-reservado">RESERVADO</span>`;
+                    classeEstado = 'car-card-reservado';
+                    textoBotao = 'Reservado';
+                    styleBotao = 'background: #f39c12;'; 
+                }
 
                 const card = `
-                    <div class="car-card ${classeVendido}">
+                    <div class="car-card ${classeEstado}">
                         <div class="car-img-container">
-                            ${seloVendido}
+                            ${seloHTML}
                             <img src="${imagemCapa}" alt="${carro.marca} ${carro.modelo}" loading="lazy" onerror="this.src='img/placeholder-car.jpg'">
                             <span class="car-tag">${carro.ano}</span>
                         </div>
@@ -164,7 +174,7 @@
                             <div class="car-footer">
                                 <p class="car-price">${preco}</p>
                                 <button onclick="window.location.href='Detalhes.html?id=${carro.id}'" 
-                                        class="btn-detalhes" ${isVendido ? 'style="background: #666; cursor: not-allowed;"' : ''}>
+                                        class="btn-detalhes" style="${styleBotao}">
                                     ${textoBotao}
                                 </button>
                             </div>
@@ -178,7 +188,6 @@
         }
     }
     
-    // Gestão de Login e interface do utilizador
     function verificarSessao() {
         const userActions = document.querySelector('.user-actions');
         const banner = document.getElementById('verify-alert');

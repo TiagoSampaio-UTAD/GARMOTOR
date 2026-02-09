@@ -409,11 +409,11 @@ body {
     display: none;
 }
 
-.badge-vendido {
+/* Base para todos os selos */
+.badge-status {
     position: absolute;
     top: 15px;
     right: -30px;
-    background: #ff4d4d; /* Vermelho */
     color: white;
     padding: 5px 35px;
     transform: rotate(45deg);
@@ -421,6 +421,27 @@ body {
     font-size: 0.7rem;
     z-index: 5;
     box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+/* Cor para Vendido */
+.badge-vendido {
+    background: #ff4d4d; /* Vermelho */
+}
+
+/* Cor para Reservado */
+.badge-reservado {
+    background: #f39c12; /* Laranja/Amarelo */
+}
+
+/* Efeito visual nos cards */
+.car-card-vendido img {
+    filter: grayscale(100%);
+    opacity: 0.6;
+}
+
+.car-card-reservado img {
+    filter: sepia(30%); /* Dá um tom levemente diferente para mostrar que está em espera */
 }
 
 .foto-preto-e-branco img {
