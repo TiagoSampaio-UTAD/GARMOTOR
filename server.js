@@ -9,12 +9,12 @@ const app = express();
 app.use(express.json({ limit: '100mb' }));
 app.use(cors());
 
-// Servir frontend
-app.use(express.static(path.join(__dirname, 'public')));
+// Servir frontend da raiz (onde os teus ficheiros estão)
+app.use(express.static(__dirname));
 
-// Rota raiz (abre o site)
+// Rota raiz correta
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'Index.html'));
 });
 
 // Base de dados
