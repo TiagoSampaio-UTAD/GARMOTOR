@@ -157,22 +157,12 @@
     </div>
 
     <script>
-    // 1. Definição da URL base
-    // Usamos '/' para que funcione tanto no Render como em localhost automaticamente
-    const API_URL = '/api';
-
     async function executarLogin() {
-        // Capturar valores e limpar espaços extras
         const email = document.getElementById('loginEmail').value.trim();
         const pass = document.getElementById('loginPass').value;
 
-        if (!email || !pass) {
-            return alert("Por favor, preencha as credenciais.");
-        }
-
         try {
-            // 2. Chamada ao servidor
-            const res = await fetch(`${API_URL}/login`, {
+            const res = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, pass })
@@ -181,38 +171,20 @@
             const data = await res.json();
             
             if (res.ok) {
-                // 3. Guardar dados da sessão
-                // Usamos data.nome, data.email, etc., conforme o server.js envia
+                // Guarda a sessão
                 localStorage.setItem('vendedorNome', data.nome);
-                localStorage.setItem('vendedorEmail', data.email);
                 localStorage.setItem('userTipo', data.tipo);
 
-                // 4. Verificação de Acesso
-                if (data.tipo === 'Admin' || data.tipo === 'Vendedor') {
-                    alert("Bem-vindo ao Painel, " + data.nome + "!");
-                    // Redireciona para o Dashboard onde geres os carros
-                    window.location.href = "Dashboard.html"; 
-                } else {
-                    // Caso um cliente comum tente usar este formulário
-                    localStorage.clear();
-                    alert("Acesso restrito: Apenas administradores podem entrar aqui.");
-                }
-            } else { 
-                // Exibe a mensagem de erro vinda do backend (ex: "Senha incorreta")
-                alert(data.mensagem || "Credenciais inválidas."); 
+                alert("Login efetuado com sucesso!");
+                
+                // Redireciona para a Index ou Dashboard
+                // Na Index.html vamos fazer o botão aparecer
+                window.location.href = "Index.html"; 
+            } else {
+                alert(data.mensagem || "Credenciais erradas.");
             }
-        } catch (e) { 
-            console.error("Erro no fetch:", e);
-            alert("Erro ao ligar ao servidor. Verifica a tua ligação."); 
-        }
-    }
-
-    // 5. Proteção de página: Se já estiver logado, vai direto para o Dashboard
-    window.onload = () => {
-        const nome = localStorage.getItem('vendedorNome');
-        const tipo = localStorage.getItem('userTipo');
-        if (nome && (tipo === 'Admin' || tipo === 'Vendedor')) {
-            window.location.href = "Dashboard.html";
+        } catch (e) {
+            alert("Erro ao ligar ao servidor.");
         }
     }
 </script>
