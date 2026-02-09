@@ -167,7 +167,7 @@
 </div>
 
 <script>
-    const API = 'https://garmotor.onrender.com/api/veiculos';
+    const API = "https://garmotor.onrender.com/api/veiculos";
     let imagensBase64 = [];
     let editandoId = null;
 
@@ -284,20 +284,19 @@
             method: 'DELETE'
         });
 
-        const data = await res.json();
-
         if (!res.ok) {
-            alert(data.mensagem || "Erro ao apagar veículo.");
+            alert("Erro ao apagar veículo.");
             return;
         }
 
-        alert(data.mensagem);
-        carregarListaGestao(); // atualiza a lista sem reload
+        alert("Veículo eliminado com sucesso!");
+        carregarListaGestao(); // atualiza a lista
     } catch (err) {
         console.error(err);
         alert("Erro de ligação ao servidor.");
     }
 }
+
 
 
     // 6. SUBMETER FORMULÁRIO
