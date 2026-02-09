@@ -147,25 +147,33 @@
     
     // Gestão de Login e interface do utilizador
     function verificarSessao() {
-        const userActions = document.querySelector('.user-actions');
-        const banner = document.getElementById('verify-alert');
-        const nomeLogado = localStorage.getItem('vendedorNome');
-        const tipo = localStorage.getItem('userTipo');
+    const userActions = document.querySelector('.user-actions');
+    const banner = document.getElementById('verify-alert');
+    const nomeLogado = localStorage.getItem('vendedorNome');
+    const tipo = localStorage.getItem('userTipo');
 
-        if (nomeLogado && userActions) {
-            if (banner) banner.style.display = 'none';
-            
-            let botaoAcao = tipo === 'Admin' ? 
-                `<a href="Dashboard.html" class="btn-register" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">Gestão de Anúncios</a>` :
-            userActions.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <span style="color: white; font-weight: 600;">Logado como:${nomeLogado}</span>
-                    ${botaoAcao}
-                    <a href="#" onclick="fazerLogout(event)" style="color: #ff4d4d; font-weight: 700; text-decoration: none; font-size: 0.8rem; margin-left: 10px;">SAIR</a>
-                </div>
-            `;
+    if (nomeLogado && userActions) {
+        // Esconde o banner de verificação se estiver logado
+        if (banner) banner.style.display = 'none';
+        
+        // Define o botão baseado no tipo de utilizador
+        let botaoAcao = "";
+        if (tipo === 'Admin' || tipo === 'Vendedor') {
+            botaoAcao = `<a href="Dashboard.html" class="btn-register" style="background: #28a745; color: white; border: none; padding: 10px 15px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 0.8rem;">Gestão de Anúncios</a>`;
         }
+
+        // Atualiza o HTML da barra de navegação
+        userActions.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="color: white; font-weight: 600; font-size: 0.8rem;">
+                    Olá, ${nomeLogado}
+                </span>
+                ${botaoAcao}
+                <a href="#" onclick="fazerLogout(event)" style="color: #ff4d4d; font-weight: 700; text-decoration: none; font-size: 0.8rem;">SAIR</a>
+            </div>
+        `;
     }
+}
 
     function fazerLogout(event) {
         if(event) event.preventDefault();
