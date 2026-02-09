@@ -157,54 +157,64 @@
     </div>
 
     <script>
-        // Função de Login dedicada a Admins/Vendedores
-        async function executarLogin() {
-            const email = document.getElementById('loginEmail').value;
-            const pass = document.getElementById('loginPass').value;
+    // 1. Definição da URL base
+    // Usamos '/' para que funcione tanto no Render como em localhost automaticamente
+    const API_URL = '/api';
 
-            if (!email || !pass) {
-                return alert("Por favor, preencha as credenciais.");
-            }
+    async function executarLogin() {
+        // Capturar valores e limpar espaços extras
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPass').value;
 
-            try {
-                const res = await fetch('https://garmotor.onrender.com/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, pass })
-                });
-                
-                const data = await res.json();
-                
-                if (res.ok) {
-                    // Guardar dados da sessão
-                    localStorage.setItem('vendedorNome', data.nome);
-                    localStorage.setItem('vendedorEmail', data.email);
-                    localStorage.setItem('userTipo', data.tipo);
+        if (!email || !pass) {
+            return alert("Por favor, preencha as credenciais.");
+        }
 
-                    // Só permitimos a entrada se for Admin ou Vendedor
-                    if (data.tipo === 'Admin' || data.tipo === 'Vendedor') {
-                        alert("Bem-vindo ao Painel, " + data.nome + "!");
-                        window.location.href = "Index.html"; 
-                    } else {
-                        // Se por algum motivo um cliente tentar entrar aqui
-                        localStorage.clear();
-                        alert("Erro: Esta área é restrita a administradores.");
-                    }
-                } else { 
-                    alert(data.mensagem || "Credenciais inválidas."); 
+        try {
+            // 2. Chamada ao servidor
+            const res = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, pass })
+            });
+            
+            const data = await res.json();
+            
+            if (res.ok) {
+                // 3. Guardar dados da sessão
+                // Usamos data.nome, data.email, etc., conforme o server.js envia
+                localStorage.setItem('vendedorNome', data.nome);
+                localStorage.setItem('vendedorEmail', data.email);
+                localStorage.setItem('userTipo', data.tipo);
+
+                // 4. Verificação de Acesso
+                if (data.tipo === 'Admin' || data.tipo === 'Vendedor') {
+                    alert("Bem-vindo ao Painel, " + data.nome + "!");
+                    // Redireciona para o Dashboard onde geres os carros
+                    window.location.href = "Dashboard.html"; 
+                } else {
+                    // Caso um cliente comum tente usar este formulário
+                    localStorage.clear();
+                    alert("Acesso restrito: Apenas administradores podem entrar aqui.");
                 }
-            } catch (e) { 
-                console.error(e);
-                alert("Erro ao ligar ao servidor. Verifique se o backend está ligado."); 
+            } else { 
+                // Exibe a mensagem de erro vinda do backend (ex: "Senha incorreta")
+                alert(data.mensagem || "Credenciais inválidas."); 
             }
+        } catch (e) { 
+            console.error("Erro no fetch:", e);
+            alert("Erro ao ligar ao servidor. Verifica a tua ligação."); 
         }
+    }
 
-        // Bloquear acesso à página se já estiver logado
-        window.onload = () => {
-            if (localStorage.getItem('vendedorNome')) {
-                window.location.href = "Index.html";
-            }
+    // 5. Proteção de página: Se já estiver logado, vai direto para o Dashboard
+    window.onload = () => {
+        const nome = localStorage.getItem('vendedorNome');
+        const tipo = localStorage.getItem('userTipo');
+        if (nome && (tipo === 'Admin' || tipo === 'Vendedor')) {
+            window.location.href = "Dashboard.html";
         }
-    </script>
+    }
+</script>
 </body>
 </html>

@@ -22,8 +22,62 @@ const pool = new Pool({
     connectionString: 'postgresql://garmotor_db_user:bwMHap8eQ1hkRgYDkP9IFLYOO2Nh2rZE@dpg-d63uagq4d50c73e10640-a.frankfurt-postgres.render.com/garmotor_db',
     ssl: { rejectUnauthorized: false }
 });
+// --- API DE UTILIZADORES (LOGIN E REGISTO) ---
 
-// --- API DE VEÍCULOS ---
+// LOGIN
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, pass } = req.body;
+
+        // Procurar o utilizador na tabela Vendedores
+        // Nota: No Postgres, os nomes das colunas sem aspas são tratados como minúsculas
+        const query = 'SELECT * FROM Vendedores WHERE Email = $1 AND Senha = $2';
+        const resultado = await pool.query(query, [email, pass]);
+
+        if (resultado.rows.length > 0) {
+            const user = resultado.rows[0];
+            
+            // Retorna exatamente o que o teu Authentication.html espera
+            res.json({
+                nome: user.nome || user.Nome,
+                email: user.email || user.Email,
+                tipo: user.tipo || user.Tipo
+            });
+        } else {
+            res.status(401).json({ mensagem: "E-mail ou senha incorretos." });
+        }
+    } catch (err) {
+        console.error("Erro no Login:", err);
+        res.status(500).json({ mensagem: "Erro interno no servidor." });
+    }
+});
+
+// REGISTO (Opcional, caso precises de criar novos vendedores)
+app.post('/api/registar', async (req, res) => {
+    try {
+        const { nome, email, pass } = req.body;
+
+        // Verificar se já existe
+        const existe = await pool.query('SELECT * FROM Vendedores WHERE Email = $1', [email]);
+        if (existe.rows.length > 0) {
+            return res.status(400).json({ mensagem: "Este e-mail já está registado." });
+        }
+
+        // Definir como Admin se for o teu email, caso contrário Vendedor
+        const tipo = (email.toLowerCase() === 'tiagoalvessampaio12@gmail.com') ? 'Admin' : 'Vendedor';
+
+        const query = `
+            INSERT INTO Vendedores (Nome, Email, Senha, Tipo, EmailConfirmado)
+            VALUES ($1, $2, $3, $4, 1)
+            RETURNING Nome, Email, Tipo
+        `;
+        
+        const resultado = await pool.query(query, [nome, email, pass, tipo]);
+        res.status(201).json(resultado.rows[0]);
+    } catch (err) {
+        res.status(500).json({ mensagem: "Erro ao criar conta." });
+    }
+});
 
 // LISTAR TODOS
 app.get('/api/veiculos', async (req, res) => {
