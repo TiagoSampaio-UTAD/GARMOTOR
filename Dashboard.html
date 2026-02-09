@@ -148,6 +148,13 @@
             <label style="font-size: 12px; color: #666;">Fotos do Veículo:</label>
             <input type="file" id="foto-input" accept="image/*" multiple onchange="previsualizarFotos()">
             <div id="preview-fotos"></div>
+            
+            <label>Estado do Veículo:</label>
+<select id="estado" class="form-control" required>
+    <option value="Disponível">Disponível</option>
+    <option value="Reservado">Reservado</option>
+    <option value="Vendido">Vendido</option>
+</select>
 
             <textarea id="desc" placeholder="Descrição detalhada do veículo..."></textarea>
             
@@ -213,7 +220,7 @@
         });
     }
 
-    // 3. CARREGAR VEÍCULOS
+    // 3. CARREGAR VEÍCULOS (Com Badge de Estado)
     async function carregarListaGestao() {
         const lista = document.getElementById('lista-gestao'); 
         try {
@@ -225,18 +232,28 @@
                 return;
             }
 
-            lista.innerHTML = veiculos.map(v => `
-                <div class="item-anuncio">
-                    <div>
-                        <strong>${v.marca} ${v.modelo}</strong><br>
-                        <small>${v.preco}€ | ${v.ano} | ID: ${v.id}</small>
+            lista.innerHTML = veiculos.map(v => {
+                // Lógica de cor para o estado no dashboard
+                let corEstado = "#28a745"; // Verde
+                if (v.estado === "Reservado") corEstado = "#ffa500"; // Laranja
+                if (v.estado === "Vendido") corEstado = "#dc3545"; // Vermelho
+
+                return `
+                    <div class="item-anuncio">
+                        <div>
+                            <span style="background:${corEstado}; color:white; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:bold; margin-bottom:5px; display:inline-block;">
+                                ${v.estado ? v.estado.toUpperCase() : 'DISPONÍVEL'}
+                            </span><br>
+                            <strong>${v.marca} ${v.modelo}</strong><br>
+                            <small>${parseFloat(v.preco).toLocaleString()}€ | ${v.ano} | ID: ${v.id}</small>
+                        </div>
+                        <div class="acoes-botoes">
+                            <button class="btn-editar" onclick='prepararEdicao(${JSON.stringify(v)})'>EDITAR</button>
+                            <button class="btn-remover" onclick="remover(${v.id})">APAGAR</button>
+                        </div>
                     </div>
-                    <div class="acoes-botoes">
-                        <button class="btn-editar" onclick='prepararEdicao(${JSON.stringify(v)})'>EDITAR</button>
-                        <button class="btn-remover" onclick="remover(${v.id})">APAGAR</button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         } catch (err) {
             lista.innerHTML = "<p style='color:red;'>Erro ao ligar ao servidor.</p>";
         }
@@ -250,6 +267,7 @@
         document.getElementById('btn-submit').style.background = "#007bff";
         document.getElementById('btn-cancel').style.display = "block";
 
+        // Preencher campos
         document.getElementById('marca').value = v.marca;
         document.getElementById('preco').value = v.preco;
         document.getElementById('ano').value = v.ano;
@@ -257,6 +275,11 @@
         document.getElementById('combustivel').value = v.combustivel;
         document.getElementById('cor').value = v.cor || "";
         document.getElementById('desc').value = v.descricao || "";
+        
+        // NOVO: Preencher o campo de estado
+        if(document.getElementById('estado')) {
+            document.getElementById('estado').value = v.estado || "Disponível";
+        }
         
         gerirModelos(() => {
             document.getElementById('modelo').value = v.modelo;
@@ -277,31 +300,27 @@
 
     // 5. REMOVER
     async function remover(id) {
-    if (!id) return alert("ID inválido.");
-    if (!confirm("Tem a certeza que deseja eliminar este veículo?")) return;
+        if (!id) return alert("ID inválido.");
+        if (!confirm("Tem a certeza que deseja eliminar este veículo?")) return;
 
-    try {
-        const res = await fetch(`${API}/${id}`, { // API já tem o /api/veiculos
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
-        });
+        try {
+            const res = await fetch(`${API}/${id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' }
+            });
 
-        if (res.ok) {
-            const data = await res.json();
-            alert(data.mensagem);
-            location.reload(); // Recarrega para o carro sumir da lista
-        } else {
-            const erroData = await res.json();
-            alert("Erro: " + (erroData.mensagem || "Não foi possível apagar."));
+            if (res.ok) {
+                alert("Veículo removido com sucesso!");
+                location.reload();
+            } else {
+                alert("Erro ao apagar o veículo.");
+            }
+        } catch (err) {
+            alert("Erro de ligação ao servidor.");
         }
-    } catch (err) {
-        console.error(err);
-        alert("Erro de ligação ao servidor.");
     }
-}
 
-
-    // 6. SUBMETER FORMULÁRIO
+    // 6. SUBMETER FORMULÁRIO (Adicionar/Editar)
     document.getElementById('car-form').onsubmit = async (e) => {
         e.preventDefault();
         
@@ -314,7 +333,9 @@
             combustivel: document.getElementById('combustivel').value,
             cor: document.getElementById('cor').value,
             descricao: document.getElementById('desc').value,
-            // Só atualiza a imagem se o utilizador carregou ficheiros novos
+            // NOVO: Campo de estado capturado do select do form
+            estado: document.getElementById('estado') ? document.getElementById('estado').value : "Disponível",
+            // Só envia novas imagens se o utilizador as selecionou
             imagemCapa: imagensBase64.length > 0 ? imagensBase64.join('|||') : undefined 
         };
 
@@ -332,7 +353,8 @@
                 alert(editandoId ? "Atualizado com sucesso!" : "Veículo publicado!");
                 location.reload();
             } else {
-                alert("Erro no servidor. Verifica os dados.");
+                const erro = await res.json();
+                alert("Erro: " + erro.error);
             }
         } catch (err) {
             alert("Erro de ligação.");

@@ -127,6 +127,24 @@
             .gallery-column { min-width: 100%; }
             h1 { font-size: 2.5rem; }
         }
+
+        .badge {
+        padding: 8px 20px;
+        border-radius: 50px;
+        color: white;
+        font-weight: bold;
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+    .tech-spec {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        background: #f9f9f9;
+        padding: 25px;
+        border-radius: 15px;
+    }
+
     </style>
 </head>
 <body>
@@ -177,31 +195,76 @@
     <iframe width="100%" height="100%" frameborder="0" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3113.123!2d-9.123!3d38.123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzjCsDA3JzE1LjYiTiA5wrAwNyczMi44Ilc!5e0!3m2!1spt!2spt!4v123456789"></iframe>
 </section>
 
+<div id="statusBadge" class="badge"></div>
+
 <script>
     async function carregar() {
         const id = new URLSearchParams(window.location.search).get('id');
-        if (!id) return;
+        if (!id) {
+            console.error("ID não encontrado na URL");
+            return;
+        }
 
         try {
+            // Chamada à API para obter os dados do veículo
             const res = await fetch(`https://garmotor.onrender.com/api/veiculos/${id}`);
+            if (!res.ok) throw new Error("Veículo não encontrado");
+            
             const v = await res.json();
 
+            // 1. Preencher Títulos e Preço
             document.getElementById('carBrand').innerText = v.marca;
             document.getElementById('carModel').innerText = v.modelo;
             document.getElementById('carPrice').innerText = `${parseFloat(v.preco).toLocaleString()}€`;
-            document.getElementById('carYear').innerText = v.ano;
-            document.getElementById('carKms').innerText = `${v.kms.toLocaleString()} KM`;
-            document.getElementById('carFuel').innerText = v.combustivel;
-            document.getElementById('carTrans').innerText = v.caixa || 'Manual';
-            document.getElementById('carDesc').innerText = v.descricao;
+            document.getElementById('carDesc').innerText = v.descricao || "Sem descrição disponível.";
 
+            // 2. Lógica do Estado (Badge de Disponibilidade)
+            const badge = document.getElementById('statusBadge');
+            if (badge) {
+                const estado = v.estado || 'Disponível';
+                badge.innerText = estado.toUpperCase();
+                
+                // Aplicar cores conforme o estado
+                if (estado === 'Vendido') {
+                    badge.style.backgroundColor = "#d9534f"; // Vermelho
+                    // Opcional: Esconder botão de contacto se estiver vendido
+                    const btnC = document.getElementById('btnContacto');
+                    if(btnC) btnC.style.display = 'none';
+                } else if (estado === 'Reservado') {
+                    badge.style.backgroundColor = "#f0ad4e"; // Laranja
+                } else {
+                    badge.style.backgroundColor = "#5cb85c"; // Verde
+                }
+            }
+
+            // 3. Preencher Ficha Técnica (Ícones e Detalhes)
+            // Certifica-te que estes IDs existem no teu HTML (ex: <span id="carYear"></span>)
+            if (document.getElementById('carYear')) document.getElementById('carYear').innerText = v.ano;
+            if (document.getElementById('carKms')) document.getElementById('carKms').innerText = `${v.kms.toLocaleString()} KM`;
+            if (document.getElementById('carFuel')) document.getElementById('carFuel').innerText = v.combustivel;
+            if (document.getElementById('carTrans')) document.getElementById('carTrans').innerText = v.caixa || 'Manual';
+            if (document.getElementById('carColor')) document.getElementById('carColor').innerText = v.cor || 'N/A';
+
+            // 4. Carregar Galeria de Fotos
             if (v.imagemcapa) {
                 const fotos = v.imagemcapa.split('|||');
                 const galeria = document.getElementById('galleryPhotos');
-                galeria.innerHTML = fotos.map(f => `<img src="${f}" alt="Carro">`).join('');
+                if (galeria) {
+                    galeria.innerHTML = fotos.map(f => `
+                        <div class="photo-slide">
+                            <img src="${f}" alt="${v.marca} ${v.modelo}" onclick="window.open('${f}', '_blank')">
+                        </div>
+                    `).join('');
+                }
             }
-        } catch (e) { console.error(e); }
+
+        } catch (e) { 
+            console.error("Erro ao carregar detalhes:", e);
+            alert("Não foi possível carregar os dados do veículo.");
+        }
     }
+
+    // Executa a função quando a página termina de carregar
     window.onload = carregar;
 </script>
 
