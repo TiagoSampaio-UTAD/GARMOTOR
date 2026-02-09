@@ -103,38 +103,62 @@
         carregarVeiculos();
     };
 
-    async function carregarVeiculos() {
+    async function carregarVeiculos(filtro = "") {
     const grid = document.querySelector('.featured-grid');
     if (!grid) return;
 
     try {
         const resposta = await fetch('https://garmotor.onrender.com/api/veiculos');
-        const veiculos = await resposta.json();
+        let veiculos = await resposta.json();
 
-        grid.innerHTML = ""; // Limpa o carregamento anterior
+        // Lógica de pesquisa simples se houver filtro
+        if (filtro) {
+            veiculos = veiculos.filter(v => 
+                v.marca.toLowerCase().includes(filtro.toLowerCase()) || 
+                v.modelo.toLowerCase().includes(filtro.toLowerCase())
+            );
+        }
+
+        grid.innerHTML = ""; 
+
+        if (veiculos.length === 0) {
+            grid.innerHTML = "<p style='color: white;'>Nenhum veículo encontrado.</p>";
+            return;
+        }
 
         veiculos.forEach(carro => {
-            // Se a imagem na BD estiver vazia, usa uma imagem padrão (placeholder)
             const imagemCapa = carro.imagemcapa && carro.imagemcapa !== "" 
-                ? carro.imagemcapa 
+                ? (carro.imagemcapa.includes('|||') ? carro.imagemcapa.split('|||')[0] : carro.imagemcapa)
                 : 'img/placeholder-car.jpg';
 
             const preco = Number(carro.preco || 0).toLocaleString('pt-PT', { 
                 style: 'currency', 
-                currency: 'EUR' 
+                currency: 'EUR',
+                maximumFractionDigits: 0
             });
 
             const card = `
                 <div class="car-card">
                     <div class="car-img-container">
-                        <img src="${imagemCapa}" alt="${carro.marca} ${carro.modelo}" onerror="this.src='img/placeholder-car.jpg'">
+                        <img src="${imagemCapa}" alt="${carro.marca} ${carro.modelo}" loading="lazy" onerror="this.src='img/placeholder-car.jpg'">
+                        <span class="car-tag">${carro.ano}</span>
                     </div>
                     <div class="car-info">
-                        <h4>${carro.marca} ${carro.modelo}</h4>
-                        <p class="car-price">${preco}</p>
-                        <button onclick="window.location.href='Detalhes.html?id=${carro.id}'" class="btn-detalhes">
-                            VER DETALHES
-                        </button>
+                        <div class="car-header">
+                            <h4>${carro.marca} <span>${carro.modelo}</span></h4>
+                        </div>
+                        
+                        <div class="car-specs">
+                            <span><i class="fa-solid fa-road"></i> ${carro.kms?.toLocaleString() || 0} km</span>
+                            <span><i class="fa-solid fa-gas-pump"></i> ${carro.combustivel || 'N/D'}</span>
+                        </div>
+
+                        <div class="car-footer">
+                            <p class="car-price">${preco}</p>
+                            <button onclick="window.location.href='Detalhes.html?id=${carro.id}'" class="btn-detalhes">
+                                Ver Mais <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>`;
             grid.innerHTML += card;
@@ -166,7 +190,7 @@
         userActions.innerHTML = `
             <div style="display: flex; align-items: center; gap: 15px;">
                 <span style="color: white; font-weight: 600; font-size: 0.8rem;">
-                    Olá, ${nomeLogado}
+                    Bem Vindo, ${nomeLogado}!
                 </span>
                 ${botaoAcao}
                 <a href="#" onclick="fazerLogout(event)" style="color: #ff4d4d; font-weight: 700; text-decoration: none; font-size: 0.8rem;">SAIR</a>
