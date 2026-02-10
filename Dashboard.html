@@ -11,215 +11,173 @@
             --bg-dark: #0a0a0a;
             --card-gray: #444444;
             --panel-gray: #333333;
+            --modal-bg: #1a1a1a;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa; /* Fundo exterior claro como na imagem */
-            margin: 0;
-            padding: 40px;
-            display: flex;
-            justify-content: center;
-        }
-
+        body { font-family: 'Inter', sans-serif; background-color: white; margin: 0; padding: 40px; display: flex; justify-content: center; }
         .dashboard-container { width: 100%; max-width: 1100px; }
 
+        /* HEADER & BUTTON */
         .header { display: flex; justify-content: flex-end; margin-bottom: 30px; }
-
-        /* Botão Novo Veículo */
-        .btn-novo {
-            background-color: var(--gold);
-            color: black;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-weight: 700;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: 0.3s;
-        }
-        .btn-novo:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-novo { background: var(--gold); color: black; padding: 12px 24px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; }
 
         /* STATS GRID */
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px; }
-        .stat-card { background-color: var(--card-gray); padding: 25px; border-radius: 20px; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .stat-card { background: var(--card-gray); padding: 25px; border-radius: 20px; color: white; }
         .stat-card i { color: rgba(255,255,255,0.3); margin-bottom: 10px; display: block; }
-        .stat-value { font-size: 28px; font-weight: 800; display: block; margin-bottom: 5px; }
-        .stat-label { font-size: 12px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 28px; font-weight: 800; display: block; }
 
-        /* LISTA PRINCIPAL */
-        .main-panel { background-color: var(--panel-gray); border-radius: 25px; padding: 40px; color: white; min-height: 400px; }
-        .panel-title { font-size: 20px; font-weight: 700; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-        .vehicle-list { display: flex; flex-direction: column; gap: 15px; }
-
-        /* CARD DO VEÍCULO */
-        .vehicle-item {
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: 0.2s;
-        }
-        .vehicle-item:hover { background-color: rgba(255, 255, 255, 0.08); border-color: var(--gold); }
-
+        /* PANEL & LIST */
+        .main-panel { background: var(--panel-gray); border-radius: 25px; padding: 40px; color: white; }
+        .panel-title { font-size: 20px; font-weight: 700; margin-bottom: 30px; }
+        .vehicle-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; padding: 15px 20px; display: flex; align-items: center; gap: 20px; margin-bottom: 15px; }
         .vehicle-img { width: 85px; height: 60px; border-radius: 10px; object-fit: cover; background: #222; }
-
         .vehicle-content { flex: 1; }
-        .vehicle-header { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
-        .vehicle-name { font-size: 16px; font-weight: 700; margin: 0; }
-
         .badge { font-size: 9px; padding: 3px 10px; border-radius: 6px; font-weight: 800; text-transform: uppercase; border: 1px solid; }
-        .badge-disponivel { color: #34d399; border-color: rgba(52, 211, 153, 0.3); background: rgba(52, 211, 153, 0.1); }
-        .badge-reservado { color: #fbbf24; border-color: rgba(251, 191, 36, 0.3); background: rgba(251, 191, 36, 0.1); }
-        .badge-vendido { color: #f87171; border-color: rgba(248, 113, 113, 0.3); background: rgba(248, 113, 113, 0.1); }
+        .badge-disponivel { color: #34d399; border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.1); }
+        .actions { display: flex; gap: 15px; color: rgba(255,255,255,0.3); }
+        .actions i { cursor: pointer; transition: 0.2s; }
+        .actions i:hover { color: white; }
 
-        .vehicle-details { font-size: 13px; color: rgba(255,255,255,0.4); }
-
-        /* AÇÕES (Botões) */
-        .actions { display: flex; gap: 15px; }
-        .btn-action { 
-            background: none; border: none; color: rgba(255,255,255,0.3); 
-            cursor: pointer; transition: 0.2s; padding: 5px;
-        }
-        .btn-action:hover { color: white; transform: scale(1.1); }
-        .btn-delete:hover { color: #f87171; }
+        /* MODAL STYLE */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--modal-bg); padding: 40px; border-radius: 25px; width: 90%; max-width: 700px; color: white; border: 1px solid #333; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .grid-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .field { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 11px; color: #666; text-transform: uppercase; font-weight: 700; }
+        input, select, textarea { background: #000; border: 1px solid #333; padding: 12px; color: white; border-radius: 10px; outline: none; }
+        .full-width { grid-column: span 2; }
+        .btn-salvar { background: var(--gold); color: black; border: none; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 20px; width: 100%; }
     </style>
 </head>
 <body>
 
 <div class="dashboard-container">
     <div class="header">
-        <a href="AdicionarVeiculo.html" class="btn-novo">
-            <i data-lucide="plus"></i> Novo Veículo
-        </a>
+        <button class="btn-novo" onclick="abrirModal()"><i data-lucide="plus"></i> Novo Veículo</button>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-card">
-            <i data-lucide="package" size="20"></i>
-            <span class="stat-value" id="st-total">0</span>
-            <span class="stat-label">Total em Stock</span>
-        </div>
-        <div class="stat-card">
-            <i data-lucide="car" size="20"></i>
-            <span class="stat-value" id="st-disp">0</span>
-            <span class="stat-label">Disponíveis</span>
-        </div>
-        <div class="stat-card">
-            <i data-lucide="trending-up" size="20"></i>
-            <span class="stat-value" id="st-res">0</span>
-            <span class="stat-label">Reservados</span>
-        </div>
-        <div class="stat-card">
-            <i data-lucide="dollar-sign" size="20"></i>
-            <span class="stat-value" id="st-val">0 €</span>
-            <span class="stat-label">Valor Total</span>
-        </div>
+        <div class="stat-card"><i data-lucide="package"></i><span class="stat-value" id="st-total">0</span><span>Total Stock</span></div>
+        <div class="stat-card"><i data-lucide="car"></i><span class="stat-value" id="st-disp">0</span><span>Disponíveis</span></div>
+        <div class="stat-card"><i data-lucide="trending-up"></i><span class="stat-value" id="st-res">0</span><span>Reservados</span></div>
+        <div class="stat-card"><i data-lucide="dollar-sign"></i><span class="stat-value" id="st-val">0 €</span><span>Valor Total</span></div>
     </div>
 
     <div class="main-panel">
-        <div class="panel-title">Anúncios Ativos (<span id="count-anuncios">0</span>)</div>
-        <div id="vehicle-list" class="vehicle-list">
+        <div class="panel-title">Anúncios (<span id="count-txt">0</span>)</div>
+        <div id="vehicle-list"></div>
+    </div>
+</div>
+
+<div id="modalVeiculo" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-titulo">Publicar Veículo</h2>
+            <i data-lucide="x" style="cursor:pointer" onclick="fecharModal()"></i>
+        </div>
+        <form id="veiculoForm">
+            <input type="hidden" id="veiculoId">
+            <div class="grid-form">
+                <div class="field"><label>Marca</label><input type="text" id="marca" required></div>
+                <div class="field"><label>Modelo</label><input type="text" id="modelo" required></div>
+                <div class="field"><label>Preço (€)</label><input type="number" id="preco" required></div>
+                <div class="field"><label>Ano</label><input type="number" id="ano" required></div>
+                <div class="field"><label>KM</label><input type="number" id="kms" required></div>
+                <div class="field"><label>Estado</label>
+                    <select id="estado"><option value="Disponível">Disponível</option><option value="Reservado">Reservado</option></select>
+                </div>
+                <div class="field full-width"><label>URL Imagem</label><input type="text" id="imagemcapa"></div>
             </div>
+            <button type="submit" class="btn-salvar">GUARDAR VEÍCULO</button>
+        </form>
     </div>
 </div>
 
 <script>
-    // Inicializa os ícones do Lucide
     lucide.createIcons();
+    const API_URL = "/api/veiculos";
 
-    // Rota definida no seu server.js
-    const API_URL = "/api/veiculos"; 
+    async function loadData() {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        
+        document.getElementById('st-total').innerText = data.length;
+        document.getElementById('count-txt').innerText = data.length;
+        document.getElementById('st-val').innerText = data.reduce((a,b) => a + Number(b.preco), 0).toLocaleString() + ' €';
 
-    async function loadDashboard() {
-        try {
-            const res = await fetch(API_URL);
-            if (!res.ok) throw new Error("Erro ao aceder à API");
-            const veiculos = await res.json();
+        document.getElementById('vehicle-list').innerHTML = data.map(v => `
+            <div class="vehicle-item">
+                <img src="${v.imagemcapa?.split('|||')[0]}" class="vehicle-img" onerror="this.src='https://via.placeholder.com/85x60'">
+                <div class="vehicle-content">
+                    <h4>${v.marca} ${v.modelo} <span class="badge badge-disponivel">${v.estado || 'Disponível'}</span></h4>
+                    <p style="color:gray; font-size:13px">${Number(v.preco).toLocaleString()}€ • ${v.ano} • ${v.kms}km</p>
+                </div>
+                <div class="actions">
+                    <i data-lucide="pencil" onclick="editarVeiculo(${JSON.stringify(v).replace(/"/g, '&quot;')})"></i>
+                    <i data-lucide="trash-2" onclick="eliminar(${v.id})"></i>
+                </div>
+            </div>
+        `).join('');
+        lucide.createIcons();
+    }
 
-            // 1. Atualizar Estatísticas
-            document.getElementById('st-total').innerText = veiculos.length;
-            document.getElementById('count-anuncios').innerText = veiculos.length;
-            
-            const disp = veiculos.filter(v => (v.estado || '').toLowerCase() === 'disponível' || !v.estado).length;
-            document.getElementById('st-disp').innerText = disp;
-            
-            const reser = veiculos.filter(v => (v.estado || '').toLowerCase() === 'reservado').length;
-            document.getElementById('st-res').innerText = reser;
+    // Lógica do Modal
+    function abrirModal() {
+        document.getElementById('veiculoForm').reset();
+        document.getElementById('veiculoId').value = "";
+        document.getElementById('modal-titulo').innerText = "Publicar Veículo";
+        document.getElementById('modalVeiculo').style.display = 'flex';
+    }
 
-            const totalPreco = veiculos.reduce((acc, v) => acc + Number(v.preco || 0), 0);
-            document.getElementById('st-val').innerText = totalPreco.toLocaleString('pt-PT') + " €";
+    function fecharModal() { document.getElementById('modalVeiculo').style.display = 'none'; }
 
-            // 2. Renderizar Lista de Veículos
-            const listContainer = document.getElementById('vehicle-list');
-            
-            if (veiculos.length === 0) {
-                listContainer.innerHTML = "<p style='color:rgba(255,255,255,0.3)'>Nenhum veículo encontrado.</p>";
-                return;
-            }
+    function editarVeiculo(v) {
+        abrirModal();
+        document.getElementById('modal-titulo').innerText = "Editar Veículo";
+        document.getElementById('veiculoId').value = v.id;
+        document.getElementById('marca').value = v.marca;
+        document.getElementById('modelo').value = v.modelo;
+        document.getElementById('preco').value = v.preco;
+        document.getElementById('ano').value = v.ano;
+        document.getElementById('kms').value = v.kms;
+        document.getElementById('estado').value = v.estado || "Disponível";
+        document.getElementById('imagemcapa').value = v.imagemcapa;
+    }
 
-            listContainer.innerHTML = veiculos.map(v => {
-                // Trata a imagemcapa do seu SQL (pega a primeira antes do |||)
-                const imgUrl = v.imagemcapa ? v.imagemcapa.split('|||')[0] : '';
-                const estado = v.estado || 'Disponível';
-                const badgeClass = `badge-${estado.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`;
+    // Submeter (Criar ou Editar)
+    document.getElementById('veiculoForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('veiculoId').value;
+        const payload = {
+            vendedorId: 1, marca: document.getElementById('marca').value,
+            modelo: document.getElementById('modelo').value, preco: document.getElementById('preco').value,
+            ano: document.getElementById('ano').value, kms: document.getElementById('kms').value,
+            estado: document.getElementById('estado').value, imagemcapa: document.getElementById('imagemcapa').value
+        };
 
-                return `
-                    <div class="vehicle-item">
-                        <img src="${imgUrl}" class="vehicle-img" onerror="this.src='https://via.placeholder.com/90x60?text=Garmotor'">
-                        <div class="vehicle-content">
-                            <div class="vehicle-header">
-                                <h4 class="vehicle-name">${v.marca} ${v.modelo}</h4>
-                                <span class="badge ${badgeClass}">${estado.toUpperCase()}</span>
-                            </div>
-                            <div class="vehicle-details">
-                                ${Number(v.preco).toLocaleString('pt-PT')} € · ${v.ano} · ${Number(v.kms).toLocaleString()} km · ${v.combustivel || 'N/D'}
-                            </div>
-                        </div>
-                        <div class="actions">
-                            <button class="btn-action" onclick="editarVeiculo(${v.id})" title="Editar">
-                                <i data-lucide="pencil" size="18"></i>
-                            </button>
-                            <button class="btn-action btn-delete" onclick="eliminarVeiculo(${v.id})" title="Eliminar">
-                                <i data-lucide="trash-2" size="18"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${API_URL}/${id}` : `${API_URL}/adicionar`;
 
-            lucide.createIcons(); // Recarrega ícones após gerar HTML
-        } catch (err) {
-            console.error("Erro no Dashboard:", err);
+        await fetch(url, {
+            method: method,
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+
+        fecharModal();
+        loadData();
+    };
+
+    async function eliminar(id) {
+        if(confirm("Deseja apagar?")) {
+            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+            loadData();
         }
     }
 
-    // Função para Eliminar (Conecta ao seu DELETE /api/veiculos/:id)
-    async function eliminarVeiculo(id) {
-        if (!confirm("Tem a certeza que deseja eliminar este anúncio permanentemente?")) return;
-
-        try {
-            const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                loadDashboard(); // Recarrega a lista
-            } else {
-                alert("Erro ao eliminar o veículo.");
-            }
-        } catch (err) {
-            alert("Erro de ligação ao servidor.");
-        }
-    }
-
-    // Função para Editar (Redireciona)
-    function editarVeiculo(id) {
-        window.location.href = `EditarVeiculo.html?id=${id}`;
-    }
-
-    window.onload = loadDashboard;
+    window.onload = loadData;
 </script>
 </body>
 </html>
