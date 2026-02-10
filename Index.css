@@ -101,24 +101,27 @@ body {
 
 /* --- BOTÃO DE GESTÃO PREMIUM --- */
 .btn-admin {
-    background: #d4af37; /* Dourado */
-    color: #000 !important;
-    padding: 8px 18px;
-    border-radius: 50px;
+    background-color: #d4af37; /* Tom dourado premium */
+    color: #000 !important; /* Texto preto para contraste */
+    padding: 8px 20px;
+    border-radius: 50px; /* Formato de cápsula */
     font-weight: 800;
     font-size: 0.75rem;
     text-transform: uppercase;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin-left: 20px; /* Afasta do Sobre Nós */
-    transition: 0.3s;
-    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+    gap: 8px;
+    margin-left: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    border: none;
+    text-decoration: none;
 }
 
 .btn-admin:hover {
-    background: #fff;
-    transform: scale(1.05);
+    background-color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
 }
 
 /* --- HERO SECTION --- */
