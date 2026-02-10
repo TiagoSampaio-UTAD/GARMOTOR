@@ -100,29 +100,24 @@ body {
 
 /* --- BOTÃO DE GESTÃO PREMIUM --- */
 .btn-admin {
-    background: var(--gold); /* Usa o dourado que definimos no :root */
-    color: #000 !important; /* Texto preto para contraste no dourado */
-    padding: 10px 22px;
+    background: var(--gold);
+    color: #000 !important;
+    padding: 8px 18px; /* Ligeiramente mais pequeno para caber no menu */
     border-radius: 50px;
     font-weight: 800;
-    font-size: 0.8rem;
-    letter-spacing: 0.5px;
+    font-size: 0.75rem;
     text-transform: uppercase;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-    display: inline-flex;
+    transition: 0.3s;
+    display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
 }
 
 .btn-admin:hover {
+    transform: scale(1.05);
     background: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
-}
-
-.btn-admin i {
-    font-size: 0.9rem;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
 }
 
 /* --- HERO SECTION --- */
@@ -349,6 +344,11 @@ body {
 .footer-logo { height: 50px; margin-bottom: 15px; }
 .footer-links a { color: #bbb; margin-left: 25px; font-size: 14px; }
 .developer-credits { text-align: center; margin-top: 50px; padding-top: 30px; border-top: 1px solid #222; color: #666; font-size: 13px; }
+
+#menu-admin-container {
+    display: flex;
+    align-items: center;
+}
 
 @media (max-width: 768px) {
     .hero-content h2 { font-size: 2.2rem; }
