@@ -87,14 +87,24 @@
 
     /* BOTÃO GESTÃO ATIVO NO MENU */
     .btn-gestao {
-        color: var(--gold) !important;
-        border: 1px solid var(--gold);
-        padding: 5px 15px;
-        border-radius: 50px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gold) !important; /* Cor dourada no texto e ícone */
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: 0.3s;
+    margin-left: 10px;
+}
+
+.btn-gestao i {
+    font-size: 1.1rem;
+}
+
+.btn-gestao:hover {
+    filter: brightness(1.3);
+    transform: scale(1.05);
+}
 
     /* --- 3. AÇÕES DE UTILIZADOR (DIREITA) --- */
     .user-actions {
@@ -103,27 +113,22 @@
         gap: 20px;
     }
 
-    .welcome-text {
-        font-size: 0.8rem;
+   .btn-sair-min {
+        background: none;
+        border: none;
+        color: #f87171; /* Vermelho suave */
+        font-size: 0.7rem; /* Tamanho reduzido */
+        font-weight: 800;
+        cursor: pointer;
+        letter-spacing: 1px;
+        padding: 5px 10px;
+        transition: 0.3s;
         opacity: 0.8;
     }
 
-    .btn-sair-min { 
-        background: rgba(248, 113, 113, 0.1); 
-        border: 1px solid rgba(248, 113, 113, 0.2); 
-        color: #f87171; 
-        font-size: 0.7rem; 
-        font-weight: 800; 
-        cursor: pointer; 
-        padding: 6px 12px; 
-        border-radius: 6px;
-        transition: 0.3s; 
-    }
-
-    .btn-sair-min:hover { 
-        background: #f87171; 
-        color: white; 
-        transform: scale(1.05); 
+    .btn-sair-min:hover {
+        opacity: 1;
+        transform: scale(1.1);
     }
 
     /* --- 4. CONTEÚDO DO DASHBOARD (CARDS E TABELAS) --- */
