@@ -217,6 +217,25 @@ body {
     transform: translateY(-10px);
 }
 
+.car-card:hover h4, 
+.car-card:hover .btn-ver-mais {
+    color: var(--gold) !important;
+    transition: color 0.3s ease;
+}
+
+/* Quando CLICAS no card (efeito active) */
+.car-card:active h4, 
+.car-card:active .btn-ver-mais {
+    filter: brightness(1.2); /* Dá um brilho extra no clique */
+}
+
+/* Garante que o ícone do Ver Mais também mude */
+.car-card:hover .btn-ver-mais i {
+    color: var(--gold);
+    transform: translateX(5px); /* Pequeno movimento de seta */
+    transition: all 0.3s ease;
+}
+
 .car-img-container {
     position: relative;
     width: 100%;
