@@ -584,33 +584,24 @@ input:focus, select:focus { border-color: var(--gold); outline: none; }
         }
 
         // SESSÃO
-       function verificarSessao() {
+function verificarSessao() {
     const authContainer = document.getElementById('nav-auth');
     const linkSobre = document.getElementById('link-sobre');
-    
     const nome = localStorage.getItem('vendedorNome');
     const tipo = localStorage.getItem('userTipo');
 
-    const btnAntigo = document.querySelector('.btn-gestao');
-    if (btnAntigo) btnAntigo.remove();
-
     if (nome) {
-        // 1. Inserir Gestão no MEIO (à frente de Sobre Nós)
         if ((tipo === 'Admin' || tipo === 'Vendedor') && linkSobre) {
-    linkSobre.insertAdjacentHTML('afterend', `
-        <a href="Dashboard.html" class="btn-gestao">
-            <i class="fa-solid fa-table-cells-large"></i> Gestão
-        </a>
-    `);
-}
-
-        // 2. Lado DIREITO (Nome e Sair Pequeno)
+            linkSobre.insertAdjacentHTML('afterend', `
+                <a href="Dashboard.html" class="btn-gestao">
+                    <i class="fa-solid fa-table-cells-large"></i> Gestão
+                </a>
+            `);
+        }
         authContainer.innerHTML = `
             <div style="display:flex; align-items:center; gap:20px;">
                 <span style="color:white; font-size:0.8rem; opacity:0.8;">Bem Vindo, ${nome}!</span>
-                <button onclick="fazerLogout()" class="btn-sair-min">
-                    SAIR
-                </button>
+                <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
             </div>`;
     } else {
         authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">Portal de Gestão</a>`;
@@ -618,10 +609,8 @@ input:focus, select:focus { border-color: var(--gold); outline: none; }
 }
 
 function fazerLogout() {
-    if(confirm("Deseja encerrar a sessão?")) {
-        localStorage.clear();
-        window.location.href = "Index.html";
-    }
+    localStorage.clear();
+    window.location.reload();
 }
     </script>
 </body>

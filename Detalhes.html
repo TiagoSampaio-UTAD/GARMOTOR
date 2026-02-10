@@ -531,6 +531,35 @@ body {
     else nav.classList.remove('scrolled');
 });
 
+        function verificarSessao() {
+    const authContainer = document.getElementById('nav-auth');
+    const linkSobre = document.getElementById('link-sobre');
+    const nome = localStorage.getItem('vendedorNome');
+    const tipo = localStorage.getItem('userTipo');
+
+    if (nome) {
+        if ((tipo === 'Admin' || tipo === 'Vendedor') && linkSobre) {
+            linkSobre.insertAdjacentHTML('afterend', `
+                <a href="Dashboard.html" class="btn-gestao">
+                    <i class="fa-solid fa-table-cells-large"></i> Gestão
+                </a>
+            `);
+        }
+        authContainer.innerHTML = `
+            <div style="display:flex; align-items:center; gap:20px;">
+                <span style="color:white; font-size:0.8rem; opacity:0.8;">Bem Vindo, ${nome}!</span>
+                <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
+            </div>`;
+    } else {
+        authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">Portal de Gestão</a>`;
+    }
+}
+
+function fazerLogout() {
+    localStorage.clear();
+    window.location.reload();
+}
+
         async function carregarDados() {
             const id = new URLSearchParams(window.location.search).get('id');
             if (!id) { window.location.href = 'Index.html'; return; }
