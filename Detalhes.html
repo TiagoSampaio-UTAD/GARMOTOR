@@ -9,21 +9,27 @@
     <link rel="stylesheet" href="Index.css">
     
     <style>
-        :root {
-            --gold: #d4af37;
-            --glass: rgba(0, 0, 0, 0.8);
-            --border: rgba(255, 255, 255, 0.1);
-        }
+       :root {
+    --gold: #d4af37;
+    --dark-bg: #000000f2;
+}
 
-        /* Background Fixo e Completo */
-        body {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), 
-                        url('img/GARMOTOR_PLACE.png') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-            margin: 0;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+}
 
+body {
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    color: #333;
+    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), 
+                url('img/GARMOTOR_PLACE.png') no-repeat center center;
+    background-size: cover;
+    background-attachment: fixed;
+}
 /* --- HEADER / NAVEGAÇÃO --- */
 .top-nav {
     position: fixed;
@@ -443,9 +449,80 @@
                     <p style="font-size: 0.8rem; color: #bbb;">Viatura verificada em 120 pontos chave antes da entrega ao cliente.</p>
                 </div>
             </aside>
-
         </div>
     </main>
+
+    <footer class="main-footer">
+
+    <div class="footer-container">
+
+        <div class="footer-grid">
+
+    <div class="footer-column brand-info">
+
+        <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="footer-logo">
+
+        <p class="footer-tagline">Qualidade que conduz. Veículos selecionados com inspeção em 120 pontos.</p>
+
+    </div>
+
+
+
+    <div class="footer-column">
+
+        <h4 class="footer-title">Links</h4>
+
+        <nav class="footer-nav">
+
+            <a href="#">Início</a>
+
+            <a href="#h">Veículos</a>
+
+            <a href="#">Sobre Nós</a>
+
+            <a href="#">Privacidade</a>
+
+        </nav>
+
+    </div>
+
+
+
+    <div class="footer-column">
+
+        <h4 class="footer-title">Contactos</h4>
+
+        <div class="footer-contacts">
+
+            <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
+
+            <a href="https://www.instagram.com/garmotor.automovel/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
+
+            <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+        <div class="footer-bottom">
+
+            <div class="bottom-content">
+
+                <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
+
+                <p class="dev-credits">Desenvolvido por <a href="https://linktr.ee/tiagoalvessampaio12" target="_blank">Tiago Sampaio</a></p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
 
     <script>
         async function carregarDados() {
