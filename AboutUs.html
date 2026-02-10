@@ -28,7 +28,7 @@
         <nav class="main-menu">
             <a href="Index.html">INÍCIO</a>
             <a href="Index.html#h">VEÍCULOS</a>
-            <a href="AboutUs.html" class="active" style="color: #d4af37;">SOBRE NÓS</a>
+            <a href="AboutUs.html" class="active">SOBRE NÓS</a>
         </nav>
         <div id="nav-auth" class="user-actions">
             <a href="Authentication.html" class="btn-admin">Portal de Gestão</a>
@@ -114,35 +114,37 @@
         </section>
     </div>
 
-    <footer class="main-footer" style="background: #000; border-top: 1px solid #222; padding: 60px 10%;">
-        <div class="footer-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
-            <div class="footer-about">
-                <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" style="height: 50px; margin-bottom: 20px;">
-                <p style="color: #666; font-size: 0.9rem; line-height: 1.6;">
-                    Qualidade que conduz. Veículos selecionados com inspeção em 120 pontos para garantir a sua total segurança e satisfação.
-                </p>
-            </div>
-            
-            <div class="footer-links">
-                <h4 style="color: #d4af37; margin-bottom: 20px; font-size: 0.8rem; letter-spacing: 2px;">PÁGINAS</h4>
-                <ul style="list-style: none; padding: 0; color: #888; font-size: 0.9rem; line-height: 2.5;">
-                    <li><a href="Index.html" style="color: inherit;">Início</a></li>
-                    <li><a href="Index.html#h" style="color: inherit;">Veículos</a></li>
-                    <li><a href="AboutUs.html" style="color: inherit;">Sobre Nós</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-contact">
-                <h4 style="color: #d4af37; margin-bottom: 20px; font-size: 0.8rem; letter-spacing: 2px;">CONTACTOS</h4>
-                <p style="color: #888; font-size: 0.9rem; margin-bottom: 10px;"><i class="fa-solid fa-phone" style="margin-right: 10px;"></i> 919 741 045</p>
-                <div style="display: flex; gap: 15px; margin-top: 20px;">
-                    <a href="#" style="color: #d4af37; font-size: 1.2rem;"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#" style="color: #d4af37; font-size: 1.2rem;"><i class="fa-brands fa-instagram"></i></a>
+     <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-grid">
+                <div class="footer-column brand-info">
+                    <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="footer-logo">
+                    <p class="footer-tagline">Qualidade que conduz. Veículos selecionados com inspeção em 120 pontos.</p>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title">Links</h4>
+                    <nav class="footer-nav">
+                        <a href="Index.html">Início</a>
+                        <a href="Index.html#h">Veículos</a>
+                        <a href="AboutUs.html">Sobre Nós</a>
+                        <a href="#">Privacidade</a>
+                    </nav>
+                </div>
+                <div class="footer-column">
+                    <h4 class="footer-title">Contactos</h4>
+                    <div class="footer-contacts">
+                        <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
+                        <a href="https://www.instagram.com/garmotor.automovel/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
+                        <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="footer-bottom" style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #111; text-align: center; font-size: 0.7rem; color: #444; letter-spacing: 1px;">
-            <p>© 2024 GARMOTOR. DESENVOLVIDO POR TIAGO SAMPAIO.</p>
+            <div class="footer-bottom">
+                <div class="bottom-content">
+                    <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
+                    <p class="dev-credits">Desenvolvido por <a href="https://linktr.ee/tiagoalvessampaio12" target="_blank">Tiago Sampaio</a></p>
+                </div>
+            </div>
         </div>
     </footer>
 
