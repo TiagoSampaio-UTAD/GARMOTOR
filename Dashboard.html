@@ -460,12 +460,12 @@
     if (nome) {
         // 1. Inserir Gestão no MEIO (à frente de Sobre Nós)
         if ((tipo === 'Admin' || tipo === 'Vendedor') && linkSobre) {
-            linkSobre.insertAdjacentHTML('afterend', `
-                <a href="Dashboard.html" class="btn-gestao">
-                    <i class="fa-solid fa-table-cells-large"></i> Gestão
-                </a>
-            `);
-        }
+    linkSobre.insertAdjacentHTML('afterend', `
+        <a href="Dashboard.html" class="btn-gestao">
+            <i class="fa-solid fa-table-cells-large"></i> Gestão
+        </a>
+    `);
+}
 
         // 2. Lado DIREITO (Nome e Sair Pequeno)
         authContainer.innerHTML = `
