@@ -22,6 +22,48 @@
         .btn-novo { background: var(--gold); color: black; padding: 12px 26px; border-radius: 12px; font-weight: 800; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
         .btn-novo:hover { transform: scale(1.05); }
 
+        .user-actions {
+    display: flex;
+    align-items: center;
+}
+
+.btn-sair-min {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 6px 15px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.3s;
+    letter-spacing: 1px;
+}
+
+.btn-sair-min:hover {
+    background: var(--gold);
+    color: black;
+}
+
+.main-menu {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.main-menu a {
+    color: white;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.main-menu a:hover {
+    color: var(--gold);
+}
+
         .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
         .stat-value { font-size: 24px; font-weight: 800; display: block; color: var(--gold); }
@@ -60,17 +102,18 @@
 <body>
     <header class="top-nav">
     <div class="logo-area">
-        <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" onclick="window.location.href='Index.html'" />
+        <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" onclick="window.location.href='Index.html'" style="cursor:pointer" />
     </div>
 
     <nav class="main-menu">
         <a href="Index.html">INÍCIO</a>
         <a href="Index.html#h">VEÍCULOS</a>
-            <a href="Index.html" id="link-sobre">SOBRE NÓS</a>
+        <a href="#" id="link-sobre">SOBRE NÓS</a> 
         </nav>
 
-        <div id="nav-auth" class="user-actions"></div>
-    </header>
+    <div id="nav-auth" class="user-actions">
+        </div>
+</header>
 
     <div class="container">
         <div class="header-actions" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
@@ -279,40 +322,50 @@
     const nome = localStorage.getItem('vendedorNome');
     const tipo = localStorage.getItem('userTipo');
 
-    // Limpa botões de gestão duplicados se houver
+    // Limpa duplicados
     const btnAntigo = document.querySelector('.btn-gestao');
     if (btnAntigo) btnAntigo.remove();
 
     if (nome) {
-        // 1. Inserir botão Gestão no menu (opcional, já que já está no Dashboard)
+        // 1. Inserir link de Gestão no Menu (com destaque por já estar no dashboard)
         if ((tipo === 'Admin' || tipo === 'Vendedor') && linkSobre) {
             linkSobre.insertAdjacentHTML('afterend', `
-                <a href="Dashboard.html" class="btn-gestao" style="color: var(--gold); font-weight: bold;">
-                    <i class="fa-solid fa-table-cells-large"></i> Gestão
+                <a href="Dashboard.html" class="btn-gestao" style="color: var(--gold); font-weight: 800;">
+                    <i data-lucide="layout-dashboard" style="width:14px; margin-right:5px"></i>GESTÃO
                 </a>
             `);
         }
 
-        // 2. Exibir Boas-vindas e Sair no canto direito
+        // 2. Lado DIREITO (Saudação e Botão Sair com estilo do Dashboard)
         authContainer.innerHTML = `
             <div style="display:flex; align-items:center; gap:20px;">
-                <span style="color:white; font-size:0.8rem; opacity:0.8;">Olá, ${nome}</span>
-                <button onclick="fazerLogout()" class="btn-sair-min" style="background:none; border: 1px solid rgba(255,255,255,0.3); color:white; padding: 5px 10px; border-radius: 5px; cursor:pointer; font-size: 0.7rem;">
+                <span style="color:white; font-size:12px; font-weight:600; opacity:0.9;">Olá, ${nome}</span>
+                <button onclick="fazerLogout()" class="btn-sair-min">
                     SAIR
                 </button>
             </div>`;
+        
+        // Se usar ícones Lucide, recarrega-os
+        if(window.lucide) lucide.createIcons();
+        
     } else {
-        // Se não estiver logado, redireciona para login por segurança
+        // SEGURANÇA: Se não houver nome no localStorage, volta para o login
         window.location.href = "Authentication.html";
     }
 }
 
 function fazerLogout() {
-    localStorage.clear();
-    window.location.href = "Index.html";
+    if(confirm("Deseja encerrar a sessão?")) {
+        localStorage.clear();
+        window.location.href = "Index.html";
+    }
 }
 
-        window.onload = load;
+// Chame a função logo no início do window.onload
+window.onload = function() {
+    verificarSessao();
+    load(); // A sua função que já carrega os dados do dashboard
+};
 
 </script>
 </body>
