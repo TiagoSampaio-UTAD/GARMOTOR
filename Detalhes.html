@@ -24,6 +24,179 @@
             margin: 0;
         }
 
+/* --- HEADER / NAVEGAÇÃO --- */
+.top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    height: 90px;
+    transition: all 0.4s ease;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+.top-nav.scrolled {
+    background: rgba(0, 0, 0, 0.95);
+    height: 80px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.logo-area {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: auto;
+    max-height: 80px;
+    transition: all 0.4s ease;
+}
+
+.main-menu {
+    display: flex;
+    gap: 30px;
+}
+
+.main-menu a {
+    color: white;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.main-menu a:hover, .main-menu a.active {
+    color: var(--gold);
+}
+
+/* --- FOOTER COMPLETO --- */
+.main-footer {
+    background: #000000;
+    padding: 80px 5% 30px;
+    color: white;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    margin-top: 50px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1.2fr;
+    gap: 60px;
+    margin-bottom: 60px;
+}
+
+.footer-logo {
+    width: 250px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.footer-tagline {
+    color: #888;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 320px;
+}
+
+.footer-title {
+    color: var(--gold);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+}
+
+.footer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-nav a, .footer-contacts a, .footer-contacts p {
+    color: #ccc;
+    font-size: 0.95rem;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-nav a:hover, .footer-contacts a:hover {
+    color: var(--gold);
+    transform: translateX(5px);
+}
+
+.footer-contacts i {
+    color: var(--gold);
+    width: 20px;
+    text-align: center;
+}
+
+/* RODAPÉ INFERIOR (Créditos) */
+.footer-bottom {
+    padding-top: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.bottom-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.dev-credits a {
+    color: var(--gold);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* --- RESPONSIVIDADE PARA O FOOTER --- */
+@media (max-width: 992px) {
+    .footer-grid {
+        grid-template-columns: 1.5fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        text-align: center;
+    }
+    
+    .footer-logo, .footer-tagline {
+        margin: 0 auto 20px;
+    }
+
+    .footer-nav a, .footer-contacts a, .footer-contacts p {
+        justify-content: center;
+    }
+
+    .bottom-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .main-menu {
+        display: none; /* Idealmente aqui usarias um menu hamburguer */
+    }
+}
+
         .details-container {
             max-width: 1200px;
             margin: 140px auto 60px;
@@ -179,12 +352,29 @@
 <body>
 
     <header class="top-nav">
+
         <div class="logo-area">
-            <a href="Index.html"><img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" /></a>
+
+            <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" />
+
         </div>
+
+       
+
         <nav class="main-menu">
-            <a href="Index.html"><i class="fa-solid fa-arrow-left"></i> VOLTAR AO STOCK</a>
+
+            <a href="Index.html">INÍCIO</a>
+
+            <a href="Index.html#h">VEÍCULOS</a>
+
+            <a href="AboutUs.html" id="link-sobre">SOBRE NÓS</a>
+
         </nav>
+
+       
+
+        <div id="nav-auth" class="user-actions"></div>
+
     </header>
 
     <main class="details-container">
