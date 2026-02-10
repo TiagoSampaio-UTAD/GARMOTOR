@@ -447,39 +447,36 @@
         }
 
         // SESSÃO
-        function verificarSessao() {
+       function verificarSessao() {
     const authContainer = document.getElementById('nav-auth');
     const linkSobre = document.getElementById('link-sobre');
     
     const nome = localStorage.getItem('vendedorNome');
     const tipo = localStorage.getItem('userTipo');
 
-    // Limpa botões antigos para evitar duplicados ao recarregar
     const btnAntigo = document.querySelector('.btn-gestao');
     if (btnAntigo) btnAntigo.remove();
 
     if (nome) {
-        // 1. Inserir botão GESTÃO no meio do menu (após o link 'Sobre Nós')
+        // 1. Inserir Gestão no MEIO (à frente de Sobre Nós)
         if ((tipo === 'Admin' || tipo === 'Vendedor') && linkSobre) {
             linkSobre.insertAdjacentHTML('afterend', `
                 <a href="Dashboard.html" class="btn-gestao">
-                    <i class="fa-solid fa-table-cells-large"></i> GESTÃO
+                    <i class="fa-solid fa-table-cells-large"></i> Gestão
                 </a>
             `);
         }
 
-        // 2. Lado DIREITO (Boas-vindas e Sair)
-        // Criamos uma estrutura flexível para alinhar o texto e o botão
+        // 2. Lado DIREITO (Nome e Sair Pequeno)
         authContainer.innerHTML = `
-            <div class="user-logged-info">
-                <span class="welcome-text">Bem-vindo, <strong>${nome}</strong></span>
+            <div style="display:flex; align-items:center; gap:20px;">
+                <span style="color:white; font-size:0.8rem; opacity:0.8;">Bem Vindo, ${nome}!</span>
                 <button onclick="fazerLogout()" class="btn-sair-min">
-                    <i class="fa-solid fa-arrow-right-from-bracket"></i> SAIR
+                    SAIR
                 </button>
             </div>`;
     } else {
-        // Se não estiver logado, mostra o botão de login original
-        authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">PORTAL DE GESTÃO</a>`;
+        authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">Portal de Gestão</a>`;
     }
 }
 
