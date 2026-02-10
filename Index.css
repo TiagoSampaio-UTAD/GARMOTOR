@@ -428,3 +428,36 @@ body {
     .filter-bar { grid-template-columns: 1fr; }
     .footer-grid { grid-template-columns: 1fr; text-align: center; }
 }
+
+/* Card principal com fundo preto e padding generoso */
+.map-container-dark {
+    background: #000000 !important; /* Fundo totalmente preto como na imagem */
+    padding: 40px !important;
+    border-radius: 24px;
+}
+
+.map-container-dark h3 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+.map-subtitle {
+    color: #888;
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+}
+
+/* Moldura arredondada do mapa (o segredo está aqui) */
+.map-frame {
+    height: 350px;
+    border-radius: 30px; /* Cantos muito arredondados conforme a referência */
+    overflow: hidden; /* Corta o mapa para obedecer ao arredondamento */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.map-frame iframe {
+    filter: grayscale(0.1) contrast(1.1); /* Toque premium opcional */
+}
