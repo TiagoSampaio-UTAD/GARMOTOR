@@ -150,6 +150,7 @@ body {
 .featured-section {
     padding: 0 5%;
     margin-top: -50px;
+    margin-bottom: 100px; /* Adiciona este espaço generoso antes do footer */
     position: relative;
     z-index: 50;
 }
@@ -359,10 +360,11 @@ body {
 
 /* Coluna da Marca */
 .footer-logo {
-    height: 60px;
-    width: auto;
-    margin-bottom: 20px;
-    filter: brightness(0) invert(1); /* Torna o logo branco se for escuro */
+    height: auto;
+    width: 280px; /* Tamanho aproximado ao da imagem de referência */
+    max-width: 100%;
+    margin-bottom: 25px;
+    display: block;
 }
 
 .footer-tagline {
@@ -401,9 +403,16 @@ body {
     transform: translateX(5px);
 }
 
+.footer-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .footer-contacts i {
     color: var(--gold);
     width: 20px;
+    min-width: 20px;
 }
 
 /* Rodapé Final */
@@ -421,7 +430,7 @@ body {
 }
 
 .dev-credits a {
-    color: #888;
+    color: #d4af37;
     font-weight: 600;
 }
 
