@@ -104,33 +104,30 @@
 
 function verificarSessao() {
     const authContainer = document.getElementById('nav-auth');
-    const linkSobre = document.getElementById('link-sobre'); // Onde vamos "colar" o botão
+    const linkSobre = document.getElementById('link-sobre');
     
     const nome = localStorage.getItem('vendedorNome');
     const tipo = localStorage.getItem('userTipo');
 
-    // Limpa botão de gestão anterior para não duplicar
     const btnAntigo = document.querySelector('.btn-gestao');
     if (btnAntigo) btnAntigo.remove();
 
     if (nome) {
-        // INSERIR BOTÃO GESTÃO NO MEIO (À frente do Sobre Nós)
+        // 1. Inserir Gestão no MEIO (à frente de Sobre Nós)
         if ((tipo === 'Admin' || tipo === 'Vendedor') && linkSobre) {
             linkSobre.insertAdjacentHTML('afterend', `
                 <a href="Dashboard.html" class="btn-gestao">
-                    <i class="fa-solid fa-gauge-high"></i> GESTÃO
+                    <i class="fa-solid fa-table-cells-large"></i> Gestão
                 </a>
             `);
         }
 
-        // LADO DIREITO (Nome e Sair)
+        // 2. Lado DIREITO (Nome e Sair Pequeno)
         authContainer.innerHTML = `
-            <div style="display:flex; align-items:center; gap:15px;">
-                <div style="text-align:right">
-                    <p style="color:white; font-size:0.8rem; font-weight:700; margin:0;">Bem Vindo, ${nome}!</p>
-                </div>
-                <button onclick="fazerLogout()" style="background:none; border:none; color:#f87171; cursor:pointer; font-size:1.0rem;" title="Sair">
-                    <i>SAIR</i>
+            <div style="display:flex; align-items:center; gap:20px;">
+                <span style="color:white; font-size:0.8rem; opacity:0.8;">Olá, ${nome}</span>
+                <button onclick="fazerLogout()" class="btn-sair-min">
+                    SAIR
                 </button>
             </div>`;
     } else {
