@@ -57,14 +57,19 @@ body {
     max-height: 100px;
     width: auto;
     display: block;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Transição suave e com "elasticidade" */
-    filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0)); /* Sombra invisível inicialmente */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+    cursor: pointer;
+}
+
+.logo-img:hover {
+    animation: pulse-soft 1.5s infinite ease-in-out;
 }
 
 .top-nav.scrolled .logo-img {
-    max-height: 85px; /* Ajustei para não encolher tanto e manter presença */
-    transform: scale(1.05); 
-    filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5)) brightness(1.2);  
+    max-height: 85px; 
+    transform: scale(1.05); /* Fica ligeiramente maior para se destacar no fundo preto */
+    filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.4)) brightness(1.1); /* Brilho dourado suave */
 }
 
 .main-menu {
@@ -93,13 +98,31 @@ body {
     gap: 20px;
 }
 
+/* --- BOTÃO DE GESTÃO PREMIUM --- */
 .btn-admin {
-    background: #222222;
-    color: white;
-    padding: 12px 28px;
+    background: var(--gold); /* Usa o dourado que definimos no :root */
+    color: #000 !important; /* Texto preto para contraste no dourado */
+    padding: 10px 22px;
     border-radius: 50px;
-    font-weight: 700;
-    transition: 0.3s;
+    font-weight: 800;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-admin:hover {
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
+
+.btn-admin i {
+    font-size: 0.9rem;
 }
 
 /* --- HERO SECTION --- */
@@ -331,4 +354,19 @@ body {
     .hero-content h2 { font-size: 2.2rem; }
     .main-menu { display: none; }
     .top-nav { height: 80px; }
+}
+
+@keyframes pulse-soft {
+    0% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.2)) brightness(1.1);
+    }
+    50% {
+        transform: scale(1.12); /* Aumenta suavemente */
+        filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6)) brightness(1.2); /* Brilha mais intensamente */
+    }
+    100% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.2)) brightness(1.1);
+    }
 }

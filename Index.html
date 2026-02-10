@@ -145,7 +145,7 @@
             container.innerHTML = `
                 <div style="display:flex; align-items:center; gap:15px;">
                     <span style="color:white; font-size:0.8rem;">Olá, ${nome}</span>
-                    ${(tipo === 'Admin' || tipo === 'Vendedor') ? '<a href="Dashboard.html" class="btn-admin" style="background:#28a745; padding:8px 15px;">Gestão</a>' : ''}
+                    ${(tipo === 'Admin' || tipo === 'Vendedor') ? '<a href="Dashboard.html" class="btn-admin">Gestão</a>' : ''}
                     <button onclick="localStorage.clear(); location.reload();" style="background:none; border:none; color:#f87171; cursor:pointer; font-weight:700;">SAIR</button>
                 </div>`;
         } else {
