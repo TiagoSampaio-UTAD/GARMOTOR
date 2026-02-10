@@ -75,6 +75,7 @@ body {
 .main-menu {
     position: absolute;
     left: 50%;
+    align-items: center;
     transform: translateX(-50%);
     display: flex;
     gap: 30px;
@@ -100,24 +101,24 @@ body {
 
 /* --- BOTÃO DE GESTÃO PREMIUM --- */
 .btn-admin {
-    background: var(--gold);
+    background: #d4af37; /* Dourado */
     color: #000 !important;
-    padding: 8px 18px; /* Ligeiramente mais pequeno para caber no menu */
+    padding: 8px 18px;
     border-radius: 50px;
     font-weight: 800;
     font-size: 0.75rem;
     text-transform: uppercase;
-    transition: 0.3s;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.2);
+    margin-left: 20px; /* Afasta do Sobre Nós */
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
 }
 
 .btn-admin:hover {
-    transform: scale(1.05);
     background: #fff;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+    transform: scale(1.05);
 }
 
 /* --- HERO SECTION --- */
