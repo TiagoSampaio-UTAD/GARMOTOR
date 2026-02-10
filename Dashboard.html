@@ -29,13 +29,79 @@
             padding: 0 20px; 
         }
 
-        /* 2. NAVEGAÇÃO E MENU */
-        .main-menu { display: flex; gap: 25px; align-items: center; }
-        .main-menu a { color: white; text-decoration: none; font-size: 11px; font-weight: 700; letter-spacing: 1px; transition: 0.3s; }
-        .main-menu a:hover { color: var(--gold); }
+        .top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 2%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    height: 90px;
+    transition: all 0.4s ease;
+    
+    /* EFEITO BLUR INICIAL */
+    background: rgba(0, 0, 0, 0.2); /* Fundo muito leve para o blur funcionar */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px); /* Suporte para Safari */
+}
+
+/* Classe aplicada via JavaScript ao fazer scroll */
+.top-nav.scrolled {
+    background: rgba(0, 0, 0, 0.95); /* Fundo preto com ligeira transparência */
+    height: 80px; /* Reduz um pouco a altura para ficar mais elegante */
+    padding: 10px 2%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    opacity: 0.95; 
+
+}
+
+.logo-img {
+    height: 100%;
+    max-height: 100px;
+    width: auto;
+    display: block;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+    cursor: pointer;
+}
+
+.top-nav.scrolled .logo-img {
+    max-height: 85px; 
+    transform: scale(1.05); /* Fica ligeiramente maior para se destacar no fundo preto */
+    filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.4)) brightness(1.1); /* Brilho dourado suave */
+}
+
+.main-menu {
+    position: absolute;
+    left: 50%;
+    align-items: center;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+}
+
+.main-menu a {
+    color: white;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.main-menu a:hover, .main-menu a.active {
+    color: var(--gold);
+}
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
         /* 3. AÇÕES DE UTILIZADOR */
-        .user-actions { display: flex; align-items: center; }
         .btn-sair-min { background: none; border: none; color: #f87171; font-size: 0.7rem; font-weight: 800; cursor: pointer; letter-spacing: 1px; padding: 5px 10px; transition: 0.3s; opacity: 0.8; }
         .btn-sair-min:hover { opacity: 1; transform: scale(1.1); }
         .btn-novo { background: var(--gold); color: black; padding: 12px 26px; border-radius: 12px; font-weight: 800; border: none; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; }
