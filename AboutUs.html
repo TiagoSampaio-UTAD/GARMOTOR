@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nós - GARMOTOR</title>
+    <link rel="stylesheet" href="Index.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Ajuste para o conteúdo não ficar por baixo do header fixo */
+        body { background-color: #000; }
+        .page-content { padding-top: 100px; }
+        .gold-text { color: #d4af37; }
+        .card-gray { background-color: #111; border: 1px solid #222; transition: 0.3s; }
+        .card-gray:hover { border-color: #d4af37; }
+        
+        /* Forçar estilos do teu Index.css que o Tailwind pode conflitar */
+        .top-nav { background: rgba(0,0,0,0.9) !important; }
+    </style>
+</head>
+<body>
+
+    <header class="top-nav">
+        <div class="logo-area">
+            <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" onclick="window.location.href='Index.html'" style="cursor:pointer" />
+        </div>
+        <nav class="main-menu">
+            <a href="Index.html">INÍCIO</a>
+            <a href="Index.html#h">VEÍCULOS</a>
+            <a href="AboutUs.html" class="active" style="color: #d4af37;">SOBRE NÓS</a>
+        </nav>
+        <div id="nav-auth" class="user-actions">
+            <a href="Authentication.html" class="btn-admin">Portal de Gestão</a>
+        </div>
+    </header>
+
+    <div class="page-content">
+        <section class="relative h-[400px] flex items-center px-10 bg-cover bg-center" style="background-image: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.5)), url('img/GARMOTOR_PLACE.png');">
+            <div class="max-w-2xl">
+                <h4 class="gold-text uppercase tracking-widest text-sm mb-4">Sobre Nós</h4>
+                <h1 class="text-white text-5xl font-bold mb-6 italic">Qualidade que Conduz</h1>
+                <p class="text-gray-300 leading-relaxed text-lg">
+                    A GARMOTOR é referência na venda de veículos usados de qualidade premium. Com rigorosos critérios de seleção e um compromisso inabalável com a satisfação do cliente.
+                </p>
+            </div>
+        </section>
+
+        <section class="py-20 px-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="card-gray p-8 rounded-xl text-center">
+                    <i class="fa-solid fa-shield-halved gold-text text-3xl mb-4"></i>
+                    <h3 class="text-white font-bold mb-2">Qualidade Garantida</h3>
+                    <p class="text-gray-400 text-sm">Inspeção rigorosa de 120 pontos em todos os veículos.</p>
+                </div>
+                <div class="card-gray p-8 rounded-xl text-center">
+                    <i class="fa-solid fa-gem gold-text text-3xl mb-4"></i>
+                    <h3 class="text-white font-bold mb-2">Seleção Premium</h3>
+                    <p class="text-gray-400 text-sm">Apenas as melhores marcas e modelos no nosso stock.</p>
+                </div>
+                <div class="card-gray p-8 rounded-xl text-center">
+                    <i class="fa-solid fa-headset gold-text text-3xl mb-4"></i>
+                    <h3 class="text-white font-bold mb-2">Atendimento</h3>
+                    <p class="text-gray-400 text-sm">Apoio personalizado em todo o processo de compra.</p>
+                </div>
+                <div class="card-gray p-8 rounded-xl text-center">
+                    <i class="fa-solid fa-calendar-check gold-text text-3xl mb-4"></i>
+                    <h3 class="text-white font-bold mb-2">18 Meses Garantia</h3>
+                    <p class="text-gray-400 text-sm">Tranquilidade total incluída no seu novo automóvel.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="pb-20 px-10 flex flex-col md:flex-row gap-10">
+            <div class="md:w-1/2 bg-zinc-900 p-10 rounded-3xl border border-zinc-800">
+                <h2 class="text-white text-3xl font-bold mb-8">Visite-nos em Fonte Coberta</h2>
+                
+                <div class="space-y-6 mb-10">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 flex items-center justify-center bg-black rounded-full border border-zinc-700">
+                            <i class="fa-solid fa-location-dot gold-text"></i>
+                        </div>
+                        <p class="text-gray-300">R. da Devesa nº 676, 4755-093 Fonte Coberta</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 flex items-center justify-center bg-black rounded-full border border-zinc-700">
+                            <i class="fa-solid fa-phone gold-text"></i>
+                        </div>
+                        <p class="text-gray-300">+351 919 741 045</p>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 flex items-center justify-center bg-black rounded-full border border-zinc-700 mt-1">
+                            <i class="fa-solid fa-clock gold-text"></i>
+                        </div>
+                        <div class="text-gray-300 text-sm">
+                            <p><b>Segunda a Sexta:</b> 09:30 — 19:00</p>
+                            <p><b>Sábado:</b> 09:30 — 18:30</p>
+                            <p class="text-zinc-500 italic mt-1">Domingos e Feriados: Por marcação</p>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="https://wa.me/351919741045" class="inline-flex items-center justify-center w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl transition">
+                    <i class="fa-brands fa-whatsapp mr-3 text-xl"></i> CONTACTAR VIA WHATSAPP
+                </a>
+            </div>
+
+            <div class="md:w-1/2 rounded-3xl overflow-hidden border border-zinc-800 min-h-[400px]">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3001.0!2d-8.6!3d41.5!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDMwJzAwLjAiTiA4wrAzNycwMC4wIlc!5e0!3m2!1spt-PT!2spt!4v1700000000000" 
+                    width="100%" height="100%" style="border:0; filter: grayscale(1) invert(0.9);" allowfullscreen="" loading="lazy">
+                </iframe>
+            </div>
+        </section>
+    </div>
+
+    <footer class="main-footer" style="background: #000; border-top: 1px solid #222; padding: 60px 10%;">
+        <div class="footer-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px;">
+            <div class="footer-about">
+                <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" style="height: 50px; margin-bottom: 20px;">
+                <p style="color: #666; font-size: 0.9rem; line-height: 1.6;">
+                    Qualidade que conduz. Veículos selecionados com inspeção em 120 pontos para garantir a sua total segurança e satisfação.
+                </p>
+            </div>
+            
+            <div class="footer-links">
+                <h4 style="color: #d4af37; margin-bottom: 20px; font-size: 0.8rem; letter-spacing: 2px;">PÁGINAS</h4>
+                <ul style="list-style: none; padding: 0; color: #888; font-size: 0.9rem; line-height: 2.5;">
+                    <li><a href="Index.html" style="color: inherit;">Início</a></li>
+                    <li><a href="Index.html#h" style="color: inherit;">Veículos</a></li>
+                    <li><a href="AboutUs.html" style="color: inherit;">Sobre Nós</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contact">
+                <h4 style="color: #d4af37; margin-bottom: 20px; font-size: 0.8rem; letter-spacing: 2px;">CONTACTOS</h4>
+                <p style="color: #888; font-size: 0.9rem; margin-bottom: 10px;"><i class="fa-solid fa-phone" style="margin-right: 10px;"></i> 919 741 045</p>
+                <div style="display: flex; gap: 15px; margin-top: 20px;">
+                    <a href="#" style="color: #d4af37; font-size: 1.2rem;"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#" style="color: #d4af37; font-size: 1.2rem;"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom" style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #111; text-align: center; font-size: 0.7rem; color: #444; letter-spacing: 1px;">
+            <p>© 2024 GARMOTOR. DESENVOLVIDO POR TIAGO SAMPAIO.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Script para manter o comportamento do header igual ao index
+        window.onscroll = function() {
+            const nav = document.querySelector('.top-nav');
+            if (window.pageYOffset > 50) {
+                nav.style.background = "rgba(0, 0, 0, 0.95)";
+                nav.style.height = "70px";
+            } else {
+                nav.style.background = "rgba(0, 0, 0, 0.2)";
+                nav.style.height = "90px";
+            }
+        };
+    </script>
+</body>
+</html>
