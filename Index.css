@@ -62,10 +62,6 @@ body {
     cursor: pointer;
 }
 
-.logo-img:hover {
-    animation: pulse-soft 1.5s infinite ease-in-out;
-}
-
 .top-nav.scrolled .logo-img {
     max-height: 85px; 
     transform: scale(1.05); /* Fica ligeiramente maior para se destacar no fundo preto */
@@ -382,12 +378,104 @@ body {
 .car-price { font-size: 1.4rem; font-weight: 800; color: #0084ff; }
 .btn-ver-mais { color: #1a1a1a; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
 
-/* FOOTER */
-.main-footer { background-color: #111; padding: 80px 5% 40px; color: white; }
-.footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-.footer-logo { height: 50px; margin-bottom: 15px; }
-.footer-links a { color: #bbb; margin-left: 25px; font-size: 14px; }
-.developer-credits { text-align: center; margin-top: 50px; padding-top: 30px; border-top: 1px solid #222; color: #666; font-size: 13px; }
+.main-footer {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 60px 0 30px;
+    color: white;
+    margin-top: 50px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr; /* Coluna da marca maior */
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-logo {
+    height: 45px;
+    margin-bottom: 20px;
+}
+
+.footer-tagline {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 300px;
+}
+
+.footer-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 20px;
+}
+
+.footer-nav, .footer-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-nav a, .footer-contacts a, .footer-contacts p {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.85rem;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-nav a:hover, .footer-contacts a:hover {
+    color: var(--gold);
+}
+
+.footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 30px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.dev-credits {
+    margin-top: 10px;
+}
+
+.dev-credits a {
+    color: rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.dev-credits a:hover {
+    color: var(--gold);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .footer-tagline {
+        margin: 0 auto;
+    }
+    .footer-nav a, .footer-contacts a, .footer-contacts p {
+        justify-content: center;
+    }
+}
 
 #menu-admin-container {
     display: flex;
@@ -400,17 +488,3 @@ body {
     .top-nav { height: 80px; }
 }
 
-@keyframes pulse-soft {
-    0% {
-        transform: scale(1.05);
-        filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.2)) brightness(1.1);
-    }
-    50% {
-        transform: scale(1.12); /* Aumenta suavemente */
-        filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.6)) brightness(1.2); /* Brilha mais intensamente */
-    }
-    100% {
-        transform: scale(1.05);
-        filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.2)) brightness(1.1);
-    }
-}
