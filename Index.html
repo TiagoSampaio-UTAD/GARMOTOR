@@ -222,21 +222,21 @@ function aplicarFiltros() {
 
 function renderizarGrid(veiculos) {
     const grid = document.querySelector('.featured-grid');
-    if (veiculos.length === 0) {
-        grid.innerHTML = `<p style="grid-column:1/-1; color:#666; text-align:center; padding: 40px;">Nenhum veículo corresponde aos filtros.</p>`;
-        return;
-    }
-
+    
     grid.innerHTML = veiculos.map(carro => {
-        // Tratamento da imagem de capa
-        const imagem = (carro.imagemcapa && carro.imagemcapa.includes('http')) 
-            ? carro.imagemcapa.split('|||')[0] 
-            : 'img/placeholder-car.jpg';
+        // Lógica para pegar a primeira imagem da string ou usar um placeholder
+        let imagemUrl = 'img/placeholder-car.jpg';
+        if (carro.imagemcapa) {
+            // Se houver múltiplas imagens separadas por |||, pega a primeira
+            imagemUrl = carro.imagemcapa.includes('|||') 
+                ? carro.imagemcapa.split('|||')[0] 
+                : carro.imagemcapa;
+        }
 
         return `
             <div class="car-card" onclick="window.location.href='Detalhes.html?id=${carro.id}'">
                 <div class="car-img-container">
-                    <img src="${imagem}" alt="${carro.marca} ${carro.modelo}" loading="lazy">
+                    <img src="${imagemUrl}" alt="${carro.marca} ${carro.modelo}" onerror="this.src='img/placeholder-car.jpg'">
                     
                     <span class="badge-ano">${carro.ano}</span>
                     
@@ -244,7 +244,7 @@ function renderizarGrid(veiculos) {
                 </div>
 
                 <div class="car-info">
-                    <h4>${carro.marca} <span>${carro.modelo}</span></h4>
+                    <h4>${carro.marca} <span style="font-weight:400; color:#666">${carro.modelo}</span></h4>
                     
                     <div class="car-specs">
                         <span><i class="fa-solid fa-gauge-high"></i> ${Number(carro.kms).toLocaleString()} km</span>
