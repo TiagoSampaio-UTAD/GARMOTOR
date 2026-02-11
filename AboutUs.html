@@ -447,13 +447,8 @@ function verificarSessao() {
                 <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
             </div>
         `;
-    } else {
-        // 3. Se não houver sessão, mostra botão de Login
-        authContainer.innerHTML = `
-            <a href="Authentication.html" class="btn-login-header">
-                <i class="fa-solid fa-user"></i> ACESSO
-            </a>
-        `;
+     } else {
+        authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">Portal de Gestão</a>`;
     }
 }
 
