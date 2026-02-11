@@ -494,37 +494,40 @@ main-footer {
         </div>
     </main>
 
-    <footer class="footer-premium">
-    <div class="footer-grid">
-        <div class="footer-section">
-            <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR Logo" class="footer-logo-img">
-            <p class="footer-description">Qualidade que conduz. Selecionamos os melhores veículos para garantir a sua total satisfação e segurança na estrada.</p>
-        </div>
+    <footer class="main-footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+    <div class="footer-column brand-info">
+        <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="footer-logo">
+        <p class="footer-tagline">Qualidade que conduz. Veículos selecionados com inspeção em 120 pontos.</p>
+    </div>
 
-        <div class="footer-section">
-            <h4>Links Rápidos</h4>
-            <ul>
-                <li><a href="Index.html">Início</a></li>
-                <li><a href="Index.html#h">Stock de Veículos</a></li>
-                <li><a href="AboutUs.html">Sobre a GARMOTOR</a></li>
-            </ul>
-        </div>
+    <div class="footer-column">
+        <h4 class="footer-title">Links</h4>
+        <nav class="footer-nav">
+            <a href="#">Início</a>
+            <a href="#h">Veículos</a>
+            <a href="#">Sobre Nós</a>
+            <a href="#">Privacidade</a>
+        </nav>
+    </div>
 
-        <div class="footer-section">
-            <h4>Contacto</h4>
-            <div class="contact-info">
-                <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
-                <p><i class="fa-solid fa-location-dot"></i> Portugal</p>
-                <div class="social-icons-footer">
-                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://wa.me/351919741045"><i class="fa-brands fa-whatsapp"></i></a>
-                </div>
-            </div>
+    <div class="footer-column">
+        <h4 class="footer-title">Contactos</h4>
+        <div class="footer-contacts">
+            <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
+            <a href="https://www.instagram.com/garmotor.automovel/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
+            <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
         </div>
     </div>
-    <div class="footer-bottom">
-        <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
+</div>
+
+        <div class="footer-bottom">
+            <div class="bottom-content">
+                <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
+                <p class="dev-credits">Desenvolvido por <a href="https://linktr.ee/tiagoalvessampaio12" target="_blank">Tiago Sampaio</a></p>
+            </div>
+        </div>
     </div>
 </footer>
 
@@ -558,7 +561,7 @@ function verificarSessao() {
         // 2. Mostra Nome e Botão Sair no canto direito
         authContainer.innerHTML = `
             <div class="user-logged">
-                <span>Olá, <strong>${nome}</strong></span>
+                <span style="color:white; font-size:0.8rem; opacity:0.8;"><strong>Bem Vindo, ${nome}!</strong></span>
                 <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
             </div>
         `;
