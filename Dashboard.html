@@ -626,6 +626,8 @@
                 document.getElementById('st-total').innerText = data.length;
                 document.getElementById('st-disp').innerText = data.filter(v => v.estado === 'Disponível').length;
                 document.getElementById('st-res').innerText = data.filter(v => v.estado === 'Reservado').length;
+                document.getElementById('st-ven').innerText = data.filter(v => v.estado === 'Vendido').length;
+
                 const totalVal = data.reduce((sum, v) => sum + Number(v.preco), 0);
                 document.getElementById('st-val').innerText = totalVal.toLocaleString() + ' €';
 
@@ -635,7 +637,7 @@
                         <img src="${v.imagemcapa?.split('|||')[0]}" class="vehicle-img" onerror="this.src='img/placeholder.jpg'">
                         <div style="flex:1">
                             <h4 style="margin:0">${v.marca} ${v.modelo}</h4>
-                            <span style="font-size:12px; opacity:0.5">${v.ano} • ${Number(v.preco).toLocaleString()}€ • <b style="color:${v.estado === 'Disponível' ? '#4ade80' : '#fbbf24'}">${v.estado}</b></span>
+                            <span style="font-size:12px; opacity:0.5">${v.ano} • ${Number(v.preco).toLocaleString()}€ • <b style="color:${v.estado === 'Disponível' ? '#4ade80' : v.estado === 'Reservado' ? '#fbbf24' : '#f87171'}">${v.estado}</b></span>
                         </div>
                         <div class="actions">
                             <i class="fa-solid fa-pencil" onclick='editarVeiculo(${JSON.stringify(v)})'></i>
