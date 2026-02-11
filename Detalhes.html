@@ -31,7 +31,6 @@ body {
     background-attachment: fixed;
 }
 /* --- HEADER / NAVEGAÇÃO --- */
-/* --- NAVEGAÇÃO --- */
 .top-nav {
     position: fixed;
     top: 0;
@@ -44,212 +43,183 @@ body {
     z-index: 1000;
     height: 90px;
     transition: all 0.4s ease;
-    background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    background: rgba(0, 0, 0, 0.2); /* Fundo semi-transparente inicial */
 }
 
-.top-nav.scrolled {
+/* Efeito quando o utilizador faz scroll (ativado via JS) */
+.nav-scrolled {
     background: rgba(0, 0, 0, 0.95);
-    height: 80px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    height: 70px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
-.logo-img {
-    height: 100%;
-    max-height: 100px;
-    width: auto;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.top-nav.scrolled .logo-img {
-    max-height: 85px; 
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.4)) brightness(1.1);
+.logo-area .logo-img {
+    height: 50px;
+    transition: transform 0.3s ease;
 }
 
 .main-menu {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
     gap: 30px;
 }
 
 .main-menu a {
-    color: white;
-    font-weight: 700;
-    font-size: 0.95rem;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
     letter-spacing: 1px;
-    transition: 0.3s;
+    transition: color 0.3s;
+    text-transform: uppercase;
 }
 
-.main-menu a:hover, .main-menu a.active {
-    color: var(--gold);
+.main-menu a:hover, 
+.main-menu a.active {
+    color: var(--gold); /* #d4af37 */
 }
-
 /* --- ACÇÕES DO UTILIZADOR --- */
 .user-actions {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
 }
 
-.btn-admin {
-    background-color: var(--gold);
-    color: #000 !important;
-    padding: 8px 20px;
-    border-radius: 50px;
-    font-weight: 800;
+.btn-login-header, .btn-gestao {
+    padding: 8px 18px;
+    border-radius: 5px;
     font-size: 0.75rem;
-    text-transform: uppercase;
-    transition: 0.3s ease;
-    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-    border: none;
+    font-weight: 700;
+    transition: all 0.3s;
 }
 
-.btn-admin:hover {
-    background-color: #fff;
-    transform: translateY(-2px);
+.btn-login-header {
+    border: 1px solid var(--gold);
+    color: var(--gold);
+}
+
+.btn-login-header:hover {
+    background: var(--gold);
+    color: #000;
 }
 
 .btn-gestao {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--gold) !important;
-    font-weight: 700;
-    transition: 0.3s;
+    background: var(--gold);
+    color: #000;
 }
 
 .btn-sair-min {
-    background: none;
-    border: none;
-    color: #f87171;
-    font-size: 0.7rem;
-    font-weight: 800;
+    background: transparent;
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    padding: 4px 10px;
+    font-size: 0.65rem;
     cursor: pointer;
-    padding: 5px 10px;
-    transition: 0.3s;
+    border-radius: 3px;
+}
+
+.btn-sair-min:hover {
+    background: #ff4444;
+    color: #fff;
 }
 
 /* --- FOOTER COMPLETO --- */
-.main-footer {
-    background: #000000;
+.footer-premium {
+    background: #0a0a0a;
     padding: 80px 5% 30px;
-    color: white;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    margin-top: 50px;
-}
-
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
+    border-top: 1px solid rgba(212, 175, 55, 0.1);
+    color: #fff;
+    margin-top: 100px;
 }
 
 .footer-grid {
     display: grid;
-    grid-template-columns: 2fr 1fr 1.2fr;
+    grid-template-columns: 1.5fr 1fr 1fr;
     gap: 60px;
-    margin-bottom: 60px;
 }
 
-.footer-logo {
-    width: 250px;
-    height: auto;
+.footer-section h4 {
+    color: var(--gold);
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    margin-bottom: 25px;
+    letter-spacing: 2px;
+}
+
+.footer-description {
+    color: #999;
+    line-height: 1.6;
+    font-size: 0.9rem;
+    max-width: 300px;
+}
+
+.footer-logo-img {
+    height: 40px;
     margin-bottom: 20px;
 }
 
-.footer-tagline {
-    color: #888;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    max-width: 320px;
+.footer-section ul li {
+    margin-bottom: 12px;
 }
 
-.footer-title {
-    color: var(--gold);
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 2px;
-    margin-bottom: 25px;
-}
-
-.footer-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.footer-nav a, .footer-contacts a, .footer-contacts p {
+.footer-section ul li a {
     color: #ccc;
-    font-size: 0.95rem;
-    transition: 0.3s;
+    font-size: 0.85rem;
+    transition: color 0.3s;
+}
+
+.footer-section ul li a:hover {
+    color: var(--gold);
+}
+
+.contact-info p {
+    color: #ccc;
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+}
+
+.social-icons-footer {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    gap: 15px;
+    margin-top: 20px;
 }
 
-.footer-nav a:hover, .footer-contacts a:hover {
+.social-icons-footer a {
+    color: #fff;
+    font-size: 1.2rem;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.social-icons-footer a:hover {
     color: var(--gold);
-    transform: translateX(5px);
+    transform: translateY(-3px);
 }
 
-.footer-contacts i {
-    color: var(--gold);
-    width: 20px;
-    text-align: center;
-}
-
-/* RODAPÉ INFERIOR (Créditos) */
 .footer-bottom {
-    padding-top: 30px;
+    margin-top: 60px;
+    padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.bottom-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.8rem;
+    text-align: center;
+    font-size: 0.75rem;
     color: #666;
+    letter-spacing: 1px;
 }
 
-.dev-credits a {
-    color: var(--gold);
-    font-weight: 600;
-    text-decoration: none;
-}
-
-/* --- RESPONSIVIDADE PARA O FOOTER --- */
-@media (max-width: 992px) {
-    .footer-grid {
-        grid-template-columns: 1.5fr 1fr;
-    }
-}
-
+/* --- RESPONSIVIDADE --- */
 @media (max-width: 768px) {
+    .main-menu {
+        display: none; /* Menu escondido em mobile - requer menu hamburguer se necessário */
+    }
+    
     .footer-grid {
         grid-template-columns: 1fr;
-        gap: 40px;
         text-align: center;
     }
     
-    .footer-logo, .footer-tagline {
-        margin: 0 auto 20px;
+    .footer-description {
+        margin: 0 auto;
     }
-
-    .footer-nav a, .footer-contacts a, .footer-contacts p {
+    
+    .social-icons-footer {
         justify-content: center;
-    }
-
-    .bottom-content {
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    .main-menu {
-        display: none; /* Idealmente aqui usarias um menu hamburguer */
     }
 }
 
