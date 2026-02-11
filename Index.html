@@ -241,6 +241,7 @@ function renderizarGrid(veiculos) {
                 <img src="${imagemUrl}" alt="${carro.marca}">
                 <span class="badge-ano">${carro.ano}</span>
                 ${carro.estado === 'Reservado' ? '<span class="badge-reservado-top">RESERVADO</span>' : ''}
+                ${carro.estado === 'Vendido' ? '<span class="badge-vendido-top">VENDIDO</span>' : ''}
             </div>
             <div class="car-info">
                 <h4>${carro.marca} <span>${carro.modelo}</span></h4>

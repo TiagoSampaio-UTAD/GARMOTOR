@@ -272,19 +272,39 @@ body {
 }
 
 /* Selo Reservado (Retângulo Amarelo conforme a Imagem 3) */
-.badge-reservado-top {
+/* Estilo do Retângulo VENDIDO */
+.badge-vendido-top {
     position: absolute;
-    top: 12px;
-    left: 12px;
-    background: #f1c40f; /* Cor amarela ouro */
+    top: 15px;
+    right: 15px;
+    background: #ff4444; /* Vermelho vibrante */
     color: white;
-    padding: 5px 12px;
-    border-radius: 6px;
+    padding: 5px 15px;
     font-size: 0.7rem;
     font-weight: 800;
-    text-transform: uppercase;
-    z-index: 2;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    letter-spacing: 1px;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Opcional: Escurecer a imagem se estiver vendido para dar mais ênfase */
+.img-vendido {
+    filter: grayscale(0.5) brightness(0.7);
+}
+
+/* Se quiser que o Reservado e Vendido não fiquem um em cima do outro */
+.badge-reservado-top {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #2196F3; /* Azul para reservado */
+    color: white;
+    padding: 5px 15px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    border-radius: 4px;
+    z-index: 10;
 }
 
 .car-info {
