@@ -408,29 +408,18 @@ body {
 <body>
 
     <header class="top-nav">
-
-        <div class="logo-area">
-
-            <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" />
-
-        </div>
-
-       
-
-        <nav class="main-menu">
-
-            <a href="Index.html">INÍCIO</a>
-
-            <a href="Index.html#h">VEÍCULOS</a>
-
-            <a href="AboutUs.html" id="link-sobre">SOBRE NÓS</a>
-
+    <div class="logo-area">
+        <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" onclick="window.location.href='Index.html'" style="cursor:pointer;" />
+    </div>
+    
+    <nav class="main-menu">
+        <a href="Index.html">INÍCIO</a>
+        <a href="Index.html#h">VEÍCULOS</a>
+        <a href="AboutUs.html" id="link-sobre">SOBRE NÓS</a>
         </nav>
-
-       
-
-        <div id="nav-auth" class="user-actions"></div>
-
+    
+    <div id="nav-auth" class="user-actions">
+        </div>
     </header>
 
     <main class="details-container">
@@ -502,76 +491,38 @@ body {
         </div>
     </main>
 
-    <footer class="main-footer">
-
-    <div class="footer-container">
-
-        <div class="footer-grid">
-
-    <div class="footer-column brand-info">
-
-        <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="footer-logo">
-
-        <p class="footer-tagline">Qualidade que conduz. Veículos selecionados com inspeção em 120 pontos.</p>
-
-    </div>
-
-
-
-    <div class="footer-column">
-
-        <h4 class="footer-title">Links</h4>
-
-        <nav class="footer-nav">
-
-            <a href="#">Início</a>
-
-            <a href="#h">Veículos</a>
-
-            <a href="#">Sobre Nós</a>
-
-            <a href="#">Privacidade</a>
-
-        </nav>
-
-    </div>
-
-
-
-    <div class="footer-column">
-
-        <h4 class="footer-title">Contactos</h4>
-
-        <div class="footer-contacts">
-
-            <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
-
-            <a href="https://www.instagram.com/garmotor.automovel/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
-
-            <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
-
+    <footer class="footer-premium">
+    <div class="footer-grid">
+        <div class="footer-section">
+            <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR Logo" class="footer-logo-img">
+            <p class="footer-description">Qualidade que conduz. Selecionamos os melhores veículos para garantir a sua total satisfação e segurança na estrada.</p>
         </div>
 
-    </div>
+        <div class="footer-section">
+            <h4>Links Rápidos</h4>
+            <ul>
+                <li><a href="Index.html">Início</a></li>
+                <li><a href="Index.html#h">Stock de Veículos</a></li>
+                <li><a href="AboutUs.html">Sobre a GARMOTOR</a></li>
+            </ul>
+        </div>
 
-</div>
-
-
-
-        <div class="footer-bottom">
-
-            <div class="bottom-content">
-
-                <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
-
-                <p class="dev-credits">Desenvolvido por <a href="https://linktr.ee/tiagoalvessampaio12" target="_blank">Tiago Sampaio</a></p>
-
+        <div class="footer-section">
+            <h4>Contacto</h4>
+            <div class="contact-info">
+                <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
+                <p><i class="fa-solid fa-location-dot"></i> Portugal</p>
+                <div class="social-icons-footer">
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://wa.me/351919741045"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
             </div>
-
         </div>
-
     </div>
-
+    <div class="footer-bottom">
+        <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
+    </div>
 </footer>
 
     <script>
@@ -581,35 +532,60 @@ body {
     else nav.classList.remove('scrolled');
 });
 
-        function verificarSessao() {
+function verificarSessao() {
     const authContainer = document.getElementById('nav-auth');
     const linkSobre = document.getElementById('link-sobre');
     const nome = localStorage.getItem('vendedorNome');
     const tipo = localStorage.getItem('userTipo');
 
+    // Limpa botões de gestão antigos para evitar duplicados
+    const btnAntigo = document.querySelector('.btn-gestao');
+    if (btnAntigo) btnAntigo.remove();
+
     if (nome) {
+        // 1. Se for Admin/Vendedor, adiciona link de Gestão no Menu
         if ((tipo === 'Admin' || tipo === 'Vendedor') && linkSobre) {
             linkSobre.insertAdjacentHTML('afterend', `
                 <a href="Dashboard.html" class="btn-gestao">
-                    <i class="fa-solid fa-table-cells-large"></i> Gestão
+                    <i class="fa-solid fa-table-cells-large"></i> GESTÃO
                 </a>
             `);
         }
+
+        // 2. Mostra Nome e Botão Sair no canto direito
         authContainer.innerHTML = `
-            <div style="display:flex; align-items:center; gap:20px;">
-                <span style="color:white; font-size:0.8rem; opacity:0.8;">Bem Vindo, ${nome}!</span>
+            <div class="user-logged">
+                <span>Olá, <strong>${nome}</strong></span>
                 <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
-            </div>`;
+            </div>
+        `;
     } else {
-        authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">Portal de Gestão</a>`;
+        // 3. Se não houver sessão, mostra botão de Login
+        authContainer.innerHTML = `
+            <a href="Authentication.html" class="btn-login-header">
+                <i class="fa-solid fa-user"></i> ACESSO
+            </a>
+        `;
     }
 }
 
 function fazerLogout() {
     localStorage.clear();
-    window.location.reload();
+    window.location.href = "Index.html";
 }
 
+// Executa ao carregar a página
+window.addEventListener('DOMContentLoaded', verificarSessao);
+
+// Efeito de scroll no Header (opcional, para estética)
+window.onscroll = function() {
+    const nav = document.querySelector('.top-nav');
+    if (window.pageYOffset > 50) {
+        nav.classList.add('nav-scrolled');
+    } else {
+        nav.classList.remove('nav-scrolled');
+    }
+};
         async function carregarDados() {
             const id = new URLSearchParams(window.location.search).get('id');
             if (!id) { window.location.href = 'Index.html'; return; }

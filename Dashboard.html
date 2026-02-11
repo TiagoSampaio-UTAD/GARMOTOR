@@ -287,19 +287,20 @@
 </head>
 <body>
 
-    <header class="top-nav" id="navbar">
-        <div class="logo-area">
-            <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" onclick="window.location.href='Index.html'" />
-        </div>
-        
-        <nav class="main-menu">
-            <a href="Index.html">INÍCIO</a>
-            <a href="Index.html#h">VEÍCULOS</a>
-            <a href="AboutUs.html" id="link-sobre">SOBRE NÓS</a>
+    <header class="top-nav">
+    <div class="logo-area">
+        <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" onclick="window.location.href='Index.html'" style="cursor:pointer;" />
+    </div>
+    
+    <nav class="main-menu">
+        <a href="Index.html">INÍCIO</a>
+        <a href="Index.html#h">VEÍCULOS</a>
+        <a href="AboutUs.html" id="link-sobre">SOBRE NÓS</a>
         </nav>
-        
-        <div id="nav-auth" class="user-actions"></div>
-    </header>
+    
+    <div id="nav-auth" class="user-actions">
+        </div>
+</header>
 
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
@@ -423,34 +424,39 @@
         </div>
     </div>
 
-    <footer class="main-footer">
-        <div class="footer-grid">
-            <div>
-                <img src="img/GARMOTOR_LOGO(1).png" class="footer-logo">
-                <p style="color: #666; font-size: 14px; line-height: 1.6;">A sua escolha premium no mercado automóvel. Rigor, transparência e qualidade em cada quilómetro.</p>
-            </div>
-            <div>
-                <h4 class="footer-title">Navegação</h4>
-                <nav class="footer-nav">
-                    <a href="Index.html">Início</a>
-                    <a href="Index.html#h">Veículos</a>
-                    <a href="AboutUs.html">Sobre Nós</a>
-                </nav>
-            </div>
-            <div>
-                <h4 class="footer-title">Suporte</h4>
-                <nav class="footer-nav">
-                    <a href="#">Termos e Condições</a>
-                    <a href="#">Privacidade</a>
-                    <a href="tel:919741045">+351 919 741 045</a>
-                </nav>
+    <footer class="footer-premium">
+    <div class="footer-grid">
+        <div class="footer-section">
+            <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR Logo" class="footer-logo-img">
+            <p class="footer-description">Qualidade que conduz. Selecionamos os melhores veículos para garantir a sua total satisfação e segurança na estrada.</p>
+        </div>
+
+        <div class="footer-section">
+            <h4>Links Rápidos</h4>
+            <ul>
+                <li><a href="Index.html">Início</a></li>
+                <li><a href="Index.html#h">Stock de Veículos</a></li>
+                <li><a href="AboutUs.html">Sobre a GARMOTOR</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>Contacto</h4>
+            <div class="contact-info">
+                <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
+                <p><i class="fa-solid fa-location-dot"></i> Portugal</p>
+                <div class="social-icons-footer">
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://wa.me/351919741045"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
-            <p>Dev by Tiago Sampaio</p>
-        </div>
-    </footer>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
+    </div>
+</footer>
 
     <script>
         const API = "/api/veiculos";
@@ -632,34 +638,61 @@
             }
         }
 
-        function verificarSessao() {
-            const authContainer = document.getElementById('nav-auth');
-            const linkSobre = document.getElementById('link-sobre');
-            const nome = localStorage.getItem('vendedorNome');
-            const tipo = localStorage.getItem('userTipo');
+function verificarSessao() {
+    const authContainer = document.getElementById('nav-auth');
+    const linkSobre = document.getElementById('link-sobre');
+    const nome = localStorage.getItem('vendedorNome');
+    const tipo = localStorage.getItem('userTipo');
 
-            if (nome) {
-                if ((tipo === 'Admin' || tipo === 'Vendedor') && linkSobre) {
-                    linkSobre.insertAdjacentHTML('afterend', `
-                        <a href="Dashboard.html" class="btn-gestao active">
-                            <i class="fa-solid fa-table-cells-large"></i> Gestão
-                        </a>
-                    `);
-                }
-                authContainer.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:15px;">
-                        <span style="font-size:0.8rem; font-weight:700;">${nome}</span>
-                        <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
-                    </div>`;
-            } else {
-                window.location.href = "Authentication.html";
-            }
+    // Limpa botões de gestão antigos para evitar duplicados
+    const btnAntigo = document.querySelector('.btn-gestao');
+    if (btnAntigo) btnAntigo.remove();
+
+    if (nome) {
+        // 1. Se for Admin/Vendedor, adiciona link de Gestão no Menu
+        if ((tipo === 'Admin' || tipo === 'Vendedor') && linkSobre) {
+            linkSobre.insertAdjacentHTML('afterend', `
+                <a href="Dashboard.html" class="btn-gestao">
+                    <i class="fa-solid fa-table-cells-large"></i> GESTÃO
+                </a>
+            `);
         }
 
-        function fazerLogout() {
-            localStorage.clear();
-            window.location.href = "Index.html";
-        }
-    </script>
+        // 2. Mostra Nome e Botão Sair no canto direito
+        authContainer.innerHTML = `
+            <div class="user-logged">
+                <span>Olá, <strong>${nome}</strong></span>
+                <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
+            </div>
+        `;
+    } else {
+        // 3. Se não houver sessão, mostra botão de Login
+        authContainer.innerHTML = `
+            <a href="Authentication.html" class="btn-login-header">
+                <i class="fa-solid fa-user"></i> ACESSO
+            </a>
+        `;
+    }
+}
+
+function fazerLogout() {
+    localStorage.clear();
+    window.location.href = "Index.html";
+}
+
+// Executa ao carregar a página
+window.addEventListener('DOMContentLoaded', verificarSessao);
+
+// Efeito de scroll no Header (opcional, para estética)
+window.onscroll = function() {
+    const nav = document.querySelector('.top-nav');
+    if (window.pageYOffset > 50) {
+        nav.classList.add('nav-scrolled');
+    } else {
+        nav.classList.remove('nav-scrolled');
+    }
+};
+
+</script>
 </body>
 </html>
