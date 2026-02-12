@@ -36,7 +36,7 @@ body {
     padding: 10px 2%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; /* Empurra user-actions para a direita */
     z-index: 1000;
     height: 90px;
     transition: all 0.4s ease;
@@ -54,12 +54,12 @@ body {
 .header-left {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 20px; /* Espaço entre o logo e o hambúrguer no mobile */
 }
 
 .logo-img {
-    height: 100%;
-    max-height: 100px;
+    height: auto;
+    max-height: 80px; /* Ajustado para não transbordar os 90px do nav */
     width: auto;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -136,7 +136,7 @@ body {
 
 /* --- BOTÃO HAMBÚRGUER --- */
 .menu-toggle {
-    display: none; /* <--- Oculto por padrão */
+    display: none; /* Escondido no PC */
     flex-direction: column;
     gap: 6px;
     cursor: pointer;
@@ -148,7 +148,6 @@ body {
     height: 3px;
     background: white;
     border-radius: 10px;
-    transition: 0.3s;
 }
 
 /* ==========================================================================
@@ -503,11 +502,14 @@ body {
 /* ==========================================================================
    MOBILE APP MODE - (Abaixo de 900px)
    ========================================================================== */
+/* ==========================================================================
+   MOBILE APP MODE - (Abaixo de 900px)
+   ========================================================================== */
 @media (max-width: 900px) {
 
     /* --- 1. AJUSTES GERAIS DE APP --- */
     body {
-        font-size: 16px; /* Texto maior para leitura fácil */
+        font-size: 16px;
         overflow-x: hidden;
     }
 
@@ -517,24 +519,63 @@ body {
         font-size: 1rem;
     }
 
-    /* --- 2. NAVEGAÇÃO (HEADER) --- */
+    /* --- 2. NAVEGAÇÃO (HEADER MOBILE) --- */
     .top-nav {
-        padding: 0 5%;
-        height: 70px;
+        padding: 0 15px !important;
+        height: 70px !important;
         background: rgba(0, 0, 0, 0.95);
-        justify-content: space-between;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+    /* Logótipo e Hambúrguer juntos à esquerda */
+    .header-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 15px !important; /* Espaçamento entre logo e ícone conforme a imagem */
+        order: 1;
     }
 
     .logo-img {
-        max-height: 45px; /* Logo mais pequeno para caber */
+        max-height: 35px !important;
+        width: auto;
     }
 
     .menu-toggle {
-        display: flex !important; /* Mostra o hambúrguer */
-        order: 3;
+        display: flex !important;
+        order: 2; /* Fica logo após o logo */
     }
 
-    /* Menu Full Screen (Tipo App) */
+    /* Boas-vindas e Sair à direita */
+    .user-actions {
+        order: 3;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+    }
+
+    .user-logged {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px;
+        text-align: right;
+    }
+
+    .user-logged span {
+        font-size: 0.75rem !important;
+        color: white;
+        white-space: nowrap;
+    }
+
+    .btn-sair-min {
+        font-size: 0.75rem !important;
+        padding: 0 !important;
+        color: #f87171 !important;
+    }
+
+    /* Menu Lateral (Drawer) */
     .main-menu {
         position: fixed;
         top: 0;
@@ -542,7 +583,7 @@ body {
         width: 100%;
         height: 100vh;
         background: rgba(0, 0, 0, 0.98);
-        flex-direction: column;
+        flex-direction: column !important;
         justify-content: center;
         align-items: center;
         gap: 40px;
@@ -567,7 +608,6 @@ body {
         line-height: 1.2;
     }
 
-    /* Filtros um por cima do outro */
     .filter-bar {
         display: flex;
         flex-direction: column;
@@ -579,13 +619,11 @@ body {
     }
 
     .featured-grid {
-        grid-template-columns: 1fr; /* 1 Carro por linha */
+        grid-template-columns: 1fr;
         gap: 40px;
     }
 
-    /* --- 4. DASHBOARD (CRÍTICO PARA ADICIONAR CARROS) --- */
-    
-    /* Layout do Painel */
+    /* --- 4. DASHBOARD & TABELAS --- */
     .dashboard-container {
         flex-direction: column;
         padding: 10px;
@@ -594,47 +632,18 @@ body {
     .sidebar {
         width: 100%;
         height: auto;
-        position: relative;
         margin-bottom: 20px;
-        border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
         display: flex;
-        overflow-x: auto; /* Menu de gestão com scroll lateral */
+        overflow-x: auto;
         padding-bottom: 10px;
     }
 
-    .sidebar a {
-        white-space: nowrap;
-        padding: 10px 20px;
-        margin-bottom: 0;
-    }
-
-    /* Formulários de Adicionar Veículo */
     .form-grid, .row, .input-group-row {
         display: flex;
         flex-direction: column !important;
-        grid-template-columns: 1fr !important;
         gap: 15px !important;
     }
 
-    .form-container {
-        padding: 20px;
-        width: 100%;
-    }
-
-    /* Inputs fáceis de tocar */
-    .form-group input, 
-    .form-group select, 
-    .form-group textarea {
-        width: 100%;
-        padding: 15px; /* Área de toque maior */
-        border-radius: 8px;
-        background: #333;
-        color: white;
-        border: 1px solid #555;
-    }
-
-    /* Tabelas (Lista de Carros) com Scroll */
     .table-responsive {
         display: block;
         width: 100%;
@@ -643,50 +652,22 @@ body {
     }
 
     table {
-        min-width: 600px; /* Força a tabela a ter tamanho, ativando o scroll */
+        min-width: 600px;
     }
 
-    /* --- 5. LOGIN / AUTHENTICATION --- */
-    .auth-card {
-        width: 90%;
-        padding: 30px 20px;
-        margin-top: 50px;
-    }
-
-    /* --- 6. PÁGINA DE DETALHES --- */
-    .details-container {
-        flex-direction: column;
-        margin-top: 80px;
-    }
-
-    .details-gallery, .details-info {
-        width: 100%;
-    }
-
-    .main-image {
-        height: 300px; /* Altura fixa para imagem não ocupar o ecrã todo */
-        object-fit: cover;
-    }
-
-    .thumb-gallery {
-        justify-content: flex-start;
-        overflow-x: auto;
-        padding-bottom: 10px;
-    }
-
-    /* --- 7. FOOTER --- */
+    /* --- 5. FOOTER (AJUSTADO E CURTO) --- */
     .main-footer {
-        padding: 40px 5% 20px !important; /* Reduzido de 80px para 40px */
+        padding: 40px 5% 20px !important; /* Espaço reduzido */
     }
 
     .footer-grid {
         grid-template-columns: 1fr !important;
-        gap: 30px !important; /* Espaço menor entre blocos */
+        gap: 30px !important;
         text-align: center;
     }
 
     .footer-logo {
-        width: 180px !important; /* Logo mais pequeno no mobile */
+        width: 180px !important;
         margin: 0 auto 15px auto !important;
     }
 
@@ -701,10 +682,6 @@ body {
         font-size: 0.8rem !important;
     }
 
-    .footer-nav, .footer-contacts {
-        gap: 8px !important; /* Links mais juntos */
-    }
-
     .footer-nav a, .footer-contacts a, .footer-contacts p {
         justify-content: center !important;
         font-size: 0.9rem !important;
@@ -713,6 +690,7 @@ body {
     .footer-bottom {
         margin-top: 30px !important;
         padding-top: 20px !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .bottom-content {
@@ -720,7 +698,6 @@ body {
         gap: 10px !important;
         text-align: center;
     }
-
 
     /* Esconder sidebar social flutuante */
     .social-sidebar { display: none; }
