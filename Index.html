@@ -163,61 +163,62 @@
 
     // --- LÓGICA DO MENU MOBILE ---
     function inicializarMenuMobile() {
-        const menuToggle = document.getElementById('mobile-menu');
-        const navMenu = document.getElementById('nav-menu');
+    const menuToggle = document.getElementById('mobile-menu');
+    const navMenu = document.getElementById('nav-menu');
+    const body = document.body;
 
-        if (!menuToggle || !navMenu) return;
+    if (!menuToggle || !navMenu) return;
 
-        menuToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-            
-            // Troca o ícone de barras por um X
-            const icon = menuToggle.querySelector('i');
-            if (navMenu.classList.contains('active')) {
-                icon.classList.replace('fa-bars', 'fa-xmark');
-            } else {
-                icon.classList.replace('fa-xmark', 'fa-bars');
-            }
-        });
-
-        // Fecha o menu automaticamente ao clicar num link
-        document.querySelectorAll('.main-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('active');
-                menuToggle.querySelector('i').classList.replace('fa-xmark', 'fa-bars');
-            });
-        });
-    }
-
-    // --- GESTÃO DE SESSÃO ---
-    function verificarSessao() {
-        const authContainer = document.getElementById('nav-auth');
-        const navMenu = document.getElementById('nav-menu'); // Agora adicionamos ao nav-menu
-        const nome = localStorage.getItem('vendedorNome');
-        const tipo = localStorage.getItem('userTipo');
-
-        if (!authContainer || !navMenu) return;
-
-        if (nome) {
-            // Se for Admin ou Vendedor, adiciona botão de Gestão no menu principal
-            if (tipo === 'Admin' || tipo === 'Vendedor') {
-                if (!document.querySelector('.btn-gestao')) {
-                    navMenu.insertAdjacentHTML('beforeend', `
-                        <a href="Dashboard.html" class="btn-gestao">
-                            <i class="fa-solid fa-table-cells-large"></i> GESTÃO
-                        </a>
-                    `);
-                }
-            }
-            authContainer.innerHTML = `
-                <div class="user-info-wrapper" style="display:flex; align-items:center; gap:15px;">
-                    <span class="welcome-text" style="color:white; font-size:0.75rem; opacity:0.8; font-weight:600;">Olá, ${nome}!</span>
-                    <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
-                </div>`;
+    menuToggle.addEventListener('click', () => {
+        menuToggle.classList.toggle('active');
+        navMenu.classList.toggle('active');
+        
+        // Bloqueia o scroll da página quando o menu está aberto
+        if (navMenu.classList.contains('active')) {
+            body.style.overflow = 'hidden';
         } else {
-            authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">Portal de Gestão</a>`;
+            body.style.overflow = 'auto';
         }
+    });
+
+    // Fecha ao clicar num link
+    document.querySelectorAll('.main-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            body.style.overflow = 'auto';
+        });
+    });
+}
+
+function verificarSessao() {
+    const authContainer = document.getElementById('nav-auth');
+    const navMenu = document.getElementById('nav-menu'); 
+    const nome = localStorage.getItem('vendedorNome');
+    const tipo = localStorage.getItem('userTipo');
+
+    if (!authContainer || !navMenu) return;
+
+    if (nome) {
+        // Injeta o botão de gestão no menu (quer seja mobile ou desktop)
+        if (tipo === 'Admin' || tipo === 'Vendedor') {
+            if (!document.querySelector('.btn-gestao')) {
+                navMenu.insertAdjacentHTML('beforeend', `
+                    <a href="Dashboard.html" class="btn-gestao" style="color:var(--gold)">
+                        <i class="fa-solid fa-table-cells-large"></i> GESTÃO
+                    </a>
+                `);
+            }
+        }
+        authContainer.innerHTML = `
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span class="welcome-text" style="color:white; font-size:0.75rem; font-weight:600;">Bem Vindo, ${nome}!</span>
+                <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
+            </div>`;
+    } else {
+        authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">PAINEL DE ADMIN</a>`;
     }
+}
 
     function fazerLogout() {
         localStorage.clear();

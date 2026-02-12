@@ -499,57 +499,53 @@ body {
    ========================================================================== */
 
 @media (max-width: 768px) {
-    /* Header e Menu Mobile */
-    .menu-toggle { display: block; } /* Mostra o hambúrguer */
+    .menu-toggle { display: flex; }
 
     .main-menu {
-        position: absolute;
-        top: 80px;
+        position: fixed;
+        top: 0;
         left: 0;
         width: 100%;
-        background: rgba(0,0,0,0.95);
+        height: 100vh; /* Ocupa o ecrã todo */
+        background: rgba(0, 0, 0, 0.98);
         flex-direction: column;
         align-items: center;
-        padding: 0;
-        height: 0; /* Escondido por padrão */
-        overflow: hidden;
-        transition: all 0.4s ease;
-        gap: 0;
+        justify-content: center;
+        gap: 30px;
+        transform: translateY(-100%); /* Começa escondido em cima */
+        transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+        z-index: 2500;
     }
 
-    /* Quando o menu está aberto */
     .main-menu.active {
-        height: 280px; /* Altura suficiente para os links */
-        padding: 20px 0;
-        border-bottom: 2px solid var(--gold);
+        transform: translateY(0); /* Desce para ocupar o ecrã */
     }
 
     .main-menu a {
-        padding: 15px;
-        width: 100%;
-        text-align: center;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        font-size: 1.8rem; /* Letras grandes para mobile */
     }
 
-    /* Centrar o Hero */
-    .hero-content h2 { font-size: 2.2rem; }
+    /* Animação do X no hambúrguer */
+    .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+    .menu-toggle.active span:nth-child(2) { opacity: 0; }
+    .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
     
-    /* Centrar Filtros */
-    .filter-bar { grid-template-columns: 1fr; }
-    .featured-container { padding: 20px; border-radius: 25px; }
+    .welcome-text { display: none; } /* Esconde o "Olá" no mobile para não amontoar */
+}
 
-    /* Grid de 1 coluna centrada */
-    .featured-grid { grid-template-columns: 1fr; }
-    .car-card { max-width: 400px; margin: 0 auto; } /* Centra o card no ecrã */
+/* --- BOTÃO HAMBÚRGUER (3 traços) --- */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 3000;
+}
 
-    /* Footer Centrado */
-    .footer-grid { 
-        grid-template-columns: 1fr; 
-        text-align: center; 
-    }
-    .footer-logo { margin: 0 auto 20px; width: 200px; }
-    .footer-nav a, .footer-contacts p { justify-content: center; }
-
-    /* Esconder sidebar social no mobile para não tapar o conteúdo */
-    .social-sidebar { display: none; }
+.menu-toggle span {
+    width: 30px;
+    height: 3px;
+    background: white;
+    border-radius: 10px;
+    transition: 0.3s;
 }
