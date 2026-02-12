@@ -228,78 +228,60 @@ body {
     font-weight: 600;
 }
 
-/* --- FOOTER RESPONSIVO (PARA TODAS AS PÁGINAS) --- */
-@media (max-width: 900px) {
-    .main-footer {
-        padding: 40px 5% 20px !important; /* Reduzido de 80px para 40px */
-    }
-
+/* Ajuste Responsivo */
+@media (max-width: 768px) {
     .footer-grid {
-        grid-template-columns: 1fr !important;
-        gap: 30px !important; /* Espaço menor entre blocos */
+        grid-template-columns: 1fr;
+        gap: 40px;
         text-align: center;
     }
-
-    .footer-logo {
-        width: 180px !important; /* Logo mais pequeno no mobile */
-        margin: 0 auto 15px auto !important;
-    }
-
+    
     .footer-tagline {
-        margin: 0 auto !important;
-        font-size: 0.85rem !important;
-        max-width: 250px !important;
+        margin: 0 auto;
     }
-
-    .footer-title {
-        margin-bottom: 15px !important;
-        font-size: 0.8rem !important;
-    }
-
-    .footer-nav, .footer-contacts {
-        gap: 8px !important; /* Links mais juntos */
-    }
-
+    
     .footer-nav a, .footer-contacts a, .footer-contacts p {
-        justify-content: center !important;
-        font-size: 0.9rem !important;
+        justify-content: center;
     }
-
-    .footer-bottom {
-        margin-top: 30px !important;
-        padding-top: 20px !important;
-    }
-
+    
     .bottom-content {
-        flex-direction: column !important;
-        gap: 10px !important;
-        text-align: center;
+        flex-direction: column;
+        gap: 15px;
     }
 }
+
+/* --- RESPONSIVIDADE PARA O FOOTER --- */
+@media (max-width: 992px) {
+    .footer-grid {
+        grid-template-columns: 1.5fr 1fr;
+    }
+}
+
+        body { background-color: #000; }
+        .page-content { padding-top: 100px; }
+        .gold-text { color: #d4af37; }
+        .card-gray { background-color: #111; border: 1px solid #222; transition: 0.3s; }
+        .card-gray:hover { border-color: #d4af37; }
+        
+        /* Forçar estilos do teu Index.css que o Tailwind pode conflitar */
+        .top-nav { background: rgba(0,0,0,0.9) !important; }
     </style>
 </head>
 <body>
-<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-    <header class="top-nav">
-        <div class="header-left">
-<div class="menu-toggle" onclick="toggleMenu()">
-                    <span></span>
-                <span></span>
-                <span></span>
-            </div>
 
-        <div class="logo-area">
-            <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" />
-        </div>
+    <header class="top-nav">
+    <div class="logo-area">
+        <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" onclick="window.location.href='Index.html'" style="cursor:pointer;" />
     </div>
     
-    <nav class="main-menu" id="nav-menu">
+    <nav class="main-menu">
         <a href="Index.html">INÍCIO</a>
         <a href="Index.html#h">VEÍCULOS</a>
-        <a href="AboutUs.html">SOBRE NÓS</a>
-    </nav>
+        <a href="AboutUs.html" id="link-sobre">SOBRE NÓS</a>
+        </nav>
     
-    <div id="nav-auth" class="user-actions"></div>
+    <div id="nav-auth" class="user-actions">
+        </div>
 </header>
 
     <div class="page-content">
@@ -384,39 +366,35 @@ body {
     <footer class="main-footer">
     <div class="footer-container">
         <div class="footer-grid">
-            <div class="footer-column brand-info">
-                <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="footer-logo">
-                <p class="footer-tagline">Qualidade que conduz. Veículos selecionados com inspeção em 120 pontos.</p>
-            </div>
+    <div class="footer-column brand-info">
+        <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="footer-logo">
+        <p class="footer-tagline">Qualidade que conduz. Veículos selecionados com inspeção em 120 pontos.</p>
+    </div>
 
-            <div class="footer-column">
-                <h4 class="footer-title">LINKS</h4>
-                <nav class="footer-nav">
-                    <a href="Index.html">Início</a>
-                    <a href="Index.html#h">Veículos</a>
-                    <a href="AboutUs.html">Sobre Nós</a>
-                    <a href="#">Privacidade</a>
-                </nav>
-            </div>
+    <div class="footer-column">
+        <h4 class="footer-title">Links</h4>
+        <nav class="footer-nav">
+            <a href="#">Início</a>
+            <a href="#h">Veículos</a>
+            <a href="#">Sobre Nós</a>
+            <a href="#">Privacidade</a>
+        </nav>
+    </div>
 
-            <div class="footer-column">
-                <h4 class="footer-title">CONTACTOS</h4>
-                <div class="footer-contacts">
-                    <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
-                    <a href="https://www.instagram.com/garmotor.automovel/" target="_blank">
-                        <i class="fa-brands fa-instagram"></i> Instagram
-                    </a>
-                    <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank">
-                        <i class="fa-brands fa-facebook"></i> Facebook
-                    </a>
-                </div>
-            </div>
+    <div class="footer-column">
+        <h4 class="footer-title">Contactos</h4>
+        <div class="footer-contacts">
+            <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
+            <a href="https://www.instagram.com/garmotor.automovel/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
+            <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
         </div>
+    </div>
+</div>
 
         <div class="footer-bottom">
             <div class="bottom-content">
                 <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
-                <p class="dev-credits">Desenvolvido por <a href="https://linktr.ee/tiagoalvessampaio12" target="_blank" style="color: #d4af37; font-weight: 600;">Tiago Sampaio</a></p>
+                <p class="dev-credits">Desenvolvido por <a href="https://linktr.ee/tiagoalvessampaio12" target="_blank">Tiago Sampaio</a></p>
             </div>
         </div>
     </div>
@@ -491,17 +469,6 @@ window.onscroll = function() {
         nav.classList.remove('nav-scrolled');
     }
 };
-
-function toggleMenu() {
-    const menu = document.querySelector('.main-menu');
-    const overlay = document.getElementById('menuOverlay');
-    
-    menu.classList.toggle('active');
-    overlay.classList.toggle('active');
-    
-    // Trava o scroll da página ao abrir o menu
-    document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : 'auto';
-}
 
 </script>
 </body>

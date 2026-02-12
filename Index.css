@@ -59,15 +59,14 @@ body {
 
 .logo-img {
     height: auto;
-    max-height: 80px; /* Ajustado para não transbordar os 90px do nav */
+    max-height: 50px; /* Ajustado para não transbordar os 90px do nav */
     width: auto;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .top-nav.scrolled .logo-img {
-    max-height: 85px; 
+    max-height: 50px; 
     transform: scale(1.05);
-    filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.4)) brightness(1.1);
 }
 
 .main-menu {
@@ -555,7 +554,7 @@ body {
     }
 
     .logo-img {
-        max-height: 28px !important;
+        max-height: 32px !important;
         width: auto;
     }
 
@@ -677,6 +676,4 @@ body {
         margin-top: 30px !important;
         padding-top: 20px !important;
     }
-
-    .social-sidebar { display: none; }
 }
