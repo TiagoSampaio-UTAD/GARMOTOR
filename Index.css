@@ -272,24 +272,20 @@ body {
 }
 
 .badge-status {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    padding: 5px 12px;
-    font-size: 0.7rem;
-    font-weight: 800;
-    border-radius: 4px;
-    letter-spacing: 1px;
-    z-index: 5;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
 .badge-status.vendido {
-    background: #ff4444; /* Vermelho */
+    background: rgba(220, 38, 38, 0.7); /* Vermelho translúcido */
     color: white;
 }
 
 .badge-status.reservado {
-    background: #d4af37; /* Dourado */
+    background: rgba(212, 175, 55, 0.7); /* Dourado translúcido */
     color: black;
 }
 
