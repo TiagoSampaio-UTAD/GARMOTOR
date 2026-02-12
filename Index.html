@@ -10,18 +10,22 @@
 <body>
 
     <header class="top-nav">
-        <div class="logo-area">
-            <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" />
-        </div>
-        
-        <nav class="main-menu">
-            <a href="Index.html">INÍCIO</a>
-            <a href="Index.html#h">VEÍCULOS</a>
-            <a href="AboutUs.html" id="link-sobre">SOBRE NÓS</a>
+    <div class="logo-area">
+        <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" />
+    </div>
+    
+    <div class="menu-toggle" id="mobile-menu">
+        <i class="fa-solid fa-bars"></i>
+    </div>
+    
+    <nav class="main-menu" id="nav-menu">
+        <a href="Index.html">INÍCIO</a>
+        <a href="Index.html#h">VEÍCULOS</a>
+        <a href="AboutUs.html">SOBRE NÓS</a>
         </nav>
-        
-        <div id="nav-auth" class="user-actions"></div>
-    </header>
+    
+    <div id="nav-auth" class="user-actions"></div>
+</header>
 
     <section class="main-hero">
         <div class="hero-content">
@@ -134,6 +138,7 @@
     window.onload = function() {
         verificarSessao();
         carregarVeiculos();
+        inicializarMenuMobile(); // Nova função para o menu
 
         // Eventos de Filtro em tempo real
         const searchInput = document.getElementById('search-input');
@@ -156,30 +161,57 @@
         });
     };
 
+    // --- LÓGICA DO MENU MOBILE ---
+    function inicializarMenuMobile() {
+        const menuToggle = document.getElementById('mobile-menu');
+        const navMenu = document.getElementById('nav-menu');
+
+        if (!menuToggle || !navMenu) return;
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            
+            // Troca o ícone de barras por um X
+            const icon = menuToggle.querySelector('i');
+            if (navMenu.classList.contains('active')) {
+                icon.classList.replace('fa-bars', 'fa-xmark');
+            } else {
+                icon.classList.replace('fa-xmark', 'fa-bars');
+            }
+        });
+
+        // Fecha o menu automaticamente ao clicar num link
+        document.querySelectorAll('.main-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                menuToggle.querySelector('i').classList.replace('fa-xmark', 'fa-bars');
+            });
+        });
+    }
+
     // --- GESTÃO DE SESSÃO ---
     function verificarSessao() {
         const authContainer = document.getElementById('nav-auth');
-        const linkSobre = document.getElementById('link-sobre');
+        const navMenu = document.getElementById('nav-menu'); // Agora adicionamos ao nav-menu
         const nome = localStorage.getItem('vendedorNome');
         const tipo = localStorage.getItem('userTipo');
 
-        if (!authContainer) return;
+        if (!authContainer || !navMenu) return;
 
         if (nome) {
-            // Se for Admin ou Vendedor, adiciona botão de Gestão
-            if ((tipo === 'Admin' || tipo === 'Vendedor') && linkSobre) {
-                // Evita duplicar o botão caso a função rode mais de uma vez
+            // Se for Admin ou Vendedor, adiciona botão de Gestão no menu principal
+            if (tipo === 'Admin' || tipo === 'Vendedor') {
                 if (!document.querySelector('.btn-gestao')) {
-                    linkSobre.insertAdjacentHTML('afterend', `
+                    navMenu.insertAdjacentHTML('beforeend', `
                         <a href="Dashboard.html" class="btn-gestao">
-                            <i class="fa-solid fa-table-cells-large"></i> Gestão
+                            <i class="fa-solid fa-table-cells-large"></i> GESTÃO
                         </a>
                     `);
                 }
             }
             authContainer.innerHTML = `
-                <div style="display:flex; align-items:center; gap:20px;">
-                    <span style="color:white; font-size:0.8rem; opacity:0.8;">Bem-vindo, ${nome}!</span>
+                <div class="user-info-wrapper" style="display:flex; align-items:center; gap:15px;">
+                    <span class="welcome-text" style="color:white; font-size:0.75rem; opacity:0.8; font-weight:600;">Olá, ${nome}!</span>
                     <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
                 </div>`;
         } else {
@@ -200,17 +232,13 @@
         grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #666;">A carregar o catálogo...</div>`;
 
         try {
-            // URL do seu servidor no Render
             const resposta = await fetch('https://garmotor.onrender.com/api/veiculos');
             todosVeiculos = await resposta.json();
-            
-            // Preencher o select de marcas dinamicamente baseado nos carros existentes
             preencherMarcas(todosVeiculos);
-            
             aplicarFiltros(); 
         } catch (e) {
             console.error("Erro ao carregar veículos:", e);
-            grid.innerHTML = `<p style="grid-column:1/-1; color:red; text-align:center;">Erro ao ligar ao servidor da GARMOTOR.</p>`;
+            grid.innerHTML = `<p style="grid-column:1/-1; color:red; text-align:center;">Erro ao ligar ao servidor.</p>`;
         }
     }
 
@@ -218,107 +246,94 @@
         const select = document.getElementById('filter-brand');
         if (!select) return;
 
-        // Extrai marcas únicas e ordena alfabeticamente
         const marcas = [...new Set(veiculos.map(v => v.marca))].sort();
-        
-        // Mantém a opção "Todas as Marcas" e adiciona as restantes
         select.innerHTML = '<option value="">Todas as Marcas</option>';
         marcas.forEach(marca => {
             select.innerHTML += `<option value="${marca}">${marca}</option>`;
         });
     }
 
-    // --- LÓGICA DE FILTROS E ORDENAÇÃO ---
-    // --- LÓGICA DE FILTROS E ORDENAÇÃO ---
-function aplicarFiltros() {
-    const termo = document.getElementById('search-input')?.value.toLowerCase() || "";
-    const marcaSel = document.getElementById('filter-brand')?.value || "";
-    const tipoSel = document.getElementById('filter-type')?.value || "";
-    const ordenacao = document.getElementById('filter-sort')?.value || "";
+    function aplicarFiltros() {
+        const termo = document.getElementById('search-input')?.value.toLowerCase() || "";
+        const marcaSel = document.getElementById('filter-brand')?.value || "";
+        const tipoSel = document.getElementById('filter-type')?.value || "";
+        const ordenacao = document.getElementById('filter-sort')?.value || "";
 
-    // 1. Filtrar (Removido o filtro que escondia os vendidos)
-    let filtrados = [...todosVeiculos]; 
+        let filtrados = [...todosVeiculos]; 
 
-    if (termo) {
-        filtrados = filtrados.filter(v => 
-            v.marca.toLowerCase().includes(termo) || 
-            v.modelo.toLowerCase().includes(termo)
-        );
-    }
-    
-    if (marcaSel) filtrados = filtrados.filter(v => v.marca === marcaSel);
-    if (tipoSel) filtrados = filtrados.filter(v => v.combustivel === tipoSel);
+        if (termo) {
+            filtrados = filtrados.filter(v => 
+                v.marca.toLowerCase().includes(termo) || 
+                v.modelo.toLowerCase().includes(termo)
+            );
+        }
+        
+        if (marcaSel) filtrados = filtrados.filter(v => v.marca === marcaSel);
+        if (tipoSel) filtrados = filtrados.filter(v => v.combustivel === tipoSel);
 
-    // 2. Ordenar
-    if (ordenacao === 'price-asc') {
-        filtrados.sort((a, b) => parseFloat(a.preco) - parseFloat(b.preco));
-    } else if (ordenacao === 'price-desc') {
-        filtrados.sort((a, b) => parseFloat(b.preco) - parseFloat(a.preco));
-    } else {
-        filtrados.sort((a, b) => b.id - a.id);
-    }
-
-    // Opcional: Colocar os vendidos no fim da lista para não "atrapalhar" as vendas
-    filtrados.sort((a, b) => (a.estado === 'Vendido' ? 1 : -1) - (b.estado === 'Vendido' ? 1 : -1));
-
-    renderizarGrid(filtrados);
-}
-
-// --- RENDERIZAÇÃO NA TELA ---
-function renderizarGrid(veiculos) {
-    const grid = document.querySelector('.featured-grid');
-    if (!grid) return;
-
-    if (veiculos.length === 0) {
-        grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:50px; color:#999;">Nenhum veículo encontrado.</p>`;
-        return;
-    }
-
-    grid.innerHTML = veiculos.map(carro => {
-        let imagemUrl = 'img/placeholder-car.jpg';
-        if (carro.imagemcapa) {
-            imagemUrl = carro.imagemcapa.includes('|||') ? carro.imagemcapa.split('|||')[0] : carro.imagemcapa;
+        // Ordenar
+        if (ordenacao === 'price-asc') {
+            filtrados.sort((a, b) => parseFloat(a.preco) - parseFloat(b.preco));
+        } else if (ordenacao === 'price-desc') {
+            filtrados.sort((a, b) => parseFloat(b.preco) - parseFloat(a.preco));
+        } else {
+            filtrados.sort((a, b) => b.id - a.id);
         }
 
-        const precoFormatado = Number(carro.preco).toLocaleString('pt-PT');
-        const kmsFormatados = Number(carro.kms).toLocaleString('pt-PT');
-        
-        // Verifica estados
-        const isVendido = carro.estado === 'Vendido';
-        const isReservado = carro.estado === 'Reservado';
+        // Vendidos para o fim
+        filtrados.sort((a, b) => (a.estado === 'Vendido' ? 1 : -1) - (b.estado === 'Vendido' ? 1 : -1));
 
-        return `
-        <div class="car-card ${isVendido ? 'card-vendido' : ''}" 
-             onclick="${isVendido ? '' : `window.location.href='Detalhes.html?id=${carro.id}'`}">
-            
-            <div class="car-img-container">
-                <img src="${imagemUrl}" alt="${carro.marca}" class="${isVendido ? 'img-grayscale' : ''}" loading="lazy">
-                
-                <span class="badge-ano">${carro.ano}</span>
-                
-                ${isVendido ? '<span class="badge-status vendido">VENDIDO</span>' : ''}
-                ${isReservado ? '<span class="badge-status reservado">RESERVADO</span>' : ''}
-            </div>
+        renderizarGrid(filtrados);
+    }
 
-            <div class="car-info">
-                <h4>${carro.marca} <span>${carro.modelo}</span></h4>
-            
-                <div class="car-specs">
-                    <span><i class="fa-solid fa-gauge-high"></i> ${kmsFormatados} km</span>
-                    <span><i class="fa-solid fa-gas-pump"></i> ${carro.combustivel}</span>
+    function renderizarGrid(veiculos) {
+        const grid = document.querySelector('.featured-grid');
+        if (!grid) return;
+
+        if (veiculos.length === 0) {
+            grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:50px; color:#999;">Nenhum veículo encontrado.</p>`;
+            return;
+        }
+
+        grid.innerHTML = veiculos.map(carro => {
+            let imagemUrl = 'img/placeholder-car.jpg';
+            if (carro.imagemcapa) {
+                imagemUrl = carro.imagemcapa.includes('|||') ? carro.imagemcapa.split('|||')[0] : carro.imagemcapa;
+            }
+
+            const precoFormatado = Number(carro.preco).toLocaleString('pt-PT');
+            const kmsFormatados = Number(carro.kms).toLocaleString('pt-PT');
+            const isVendido = carro.estado === 'Vendido';
+            const isReservado = carro.estado === 'Reservado';
+
+            return `
+            <div class="car-card ${isVendido ? 'card-vendido' : ''}" 
+                 onclick="${isVendido ? '' : `window.location.href='Detalhes.html?id=${carro.id}'`}">
+                
+                <div class="car-img-container">
+                    <img src="${imagemUrl}" alt="${carro.marca}" class="${isVendido ? 'img-grayscale' : ''}" loading="lazy">
+                    <span class="badge-ano">${carro.ano}</span>
+                    ${isVendido ? '<span class="badge-status vendido">VENDIDO</span>' : ''}
+                    ${isReservado ? '<span class="badge-status reservado">RESERVADO</span>' : ''}
                 </div>
 
-                <div class="car-footer">
-                    <p class="car-price">${precoFormatado} €</p>
-                    ${isVendido ? 
-                        '<div class="btn-indisponivel">INDISPONÍVEL</div>' : 
-                        '<div class="btn-ver-mais">VER MAIS <i class="fa-solid fa-arrow-right"></i></div>'
-                    }
+                <div class="car-info">
+                    <h4>${carro.marca} <span>${carro.modelo}</span></h4>
+                    <div class="car-specs">
+                        <span><i class="fa-solid fa-gauge-high"></i> ${kmsFormatados} km</span>
+                        <span><i class="fa-solid fa-gas-pump"></i> ${carro.combustivel}</span>
+                    </div>
+                    <div class="car-footer">
+                        <p class="car-price">${precoFormatado} €</p>
+                        ${isVendido ? 
+                            '<div class="btn-indisponivel">INDISPONÍVEL</div>' : 
+                            '<div class="btn-ver-mais">VER MAIS <i class="fa-solid fa-arrow-right"></i></div>'
+                        }
+                    </div>
                 </div>
-            </div>
-        </div>`;
-    }).join('');
-}
+            </div>`;
+        }).join('');
+    }
 </script>
 </body>
 </html>

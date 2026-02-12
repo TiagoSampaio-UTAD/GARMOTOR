@@ -1,8 +1,10 @@
-/* --- RESET E BASE --- */
+/* ==========================================================================
+   1. RESET E VARIÁVEIS BASE
+   ========================================================================== */
 :root {
     --gold: #d4af37;
     --dark-bg: #000000f2;
-    --filter-bg: #666; /* Cor da barra de filtros da imagem */
+    --filter-bg: #666;
 }
 
 * {
@@ -20,9 +22,11 @@ body {
                 url('img/GARMOTOR_PLACE.png') no-repeat center center;
     background-size: cover;
     background-attachment: fixed;
+    overflow-x: hidden; /* Evita scrolls laterais manhosos */
 }
-
-/* --- NAVEGAÇÃO --- */
+/* ==========================================================================
+   2. NAVEGAÇÃO (TOP NAV)
+   ========================================================================== */
 .top-nav {
     position: fixed;
     top: 0;
@@ -79,7 +83,7 @@ body {
     color: var(--gold);
 }
 
-/* --- ACÇÕES DO UTILIZADOR --- */
+/* Acções do Utilizador (Portal/Login) */
 .user-actions {
     display: flex;
     align-items: center;
@@ -124,10 +128,12 @@ body {
     transition: 0.3s;
 }
 
-/* --- HERO SECTION --- */
+/* ==========================================================================
+   3. HERO SECTION
+   ========================================================================== */
 .main-hero {
     width: 100%;
-    min-height: 80vh; /* Reduzido para dar foco aos veículos */
+    min-height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -144,13 +150,21 @@ body {
     font-size: 3.5rem;
     font-weight: 900;
     margin-bottom: 15px;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
-/* --- SECÇÃO DE INVENTÁRIO (MODERNA) --- */
+.hero-content p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* ==========================================================================
+   4. INVENTÁRIO (FILTROS E GRID)
+   ========================================================================== */
 .featured-section {
     padding: 0 5%;
     margin-top: -50px;
-    margin-bottom: 100px; /* Adiciona este espaço generoso antes do footer */
+    margin-bottom: 100px;
     position: relative;
     z-index: 50;
 }
@@ -162,9 +176,9 @@ body {
     box-shadow: 0 20px 50px rgba(0,0,0,0.15);
 }
 
-/* Barra de Filtros Estilo Dark/Grey */
+/* Barra de Filtros */
 .filters-container {
-    background: #666666; /* Cinza escuro da imagem */
+    background: #666666;
     padding: 20px 30px;
     border-radius: 15px;
     margin-bottom: 40px;
@@ -193,6 +207,7 @@ body {
     color: white;
     width: 100%;
     outline: none;
+    font-size: 0.9rem;
 }
 
 .filter-group select option { color: #333; }
@@ -209,9 +224,9 @@ body {
     background: #ffffff;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.08); /* Sombra suave */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     transition: transform 0.3s ease;
-    border: none;
+    cursor: pointer;
 }
 
 .car-card:hover {
@@ -221,41 +236,26 @@ body {
 .car-card:hover h4, 
 .car-card:hover .btn-ver-mais {
     color: var(--gold) !important;
-    transition: color 0.3s ease;
 }
 
-/* Quando CLICAS no card (efeito active) */
-.car-card:active h4, 
-.car-card:active .btn-ver-mais {
-    filter: brightness(1.2); /* Dá um brilho extra no clique */
-}
-
-/* Garante que o ícone do Ver Mais também mude */
-.car-card:hover .btn-ver-mais i {
-    color: var(--gold);
-    transform: translateX(5px); /* Pequeno movimento de seta */
-    transition: all 0.3s ease;
-}
-
+/* Imagens e Badges */
 .car-img-container {
     position: relative;
     width: 100%;
-    height: 220px; /* Altura fixa para manter o padrão dos cards */
+    height: 220px;
     overflow: hidden;
-    background-color: #f0f0f0; /* Cor de fundo enquanto a imagem carrega */
+    background-color: #f0f0f0;
 }
 
 .car-img-container img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Garante que a imagem preencha o espaço sem esticar */
-    display: block;
+    object-fit: cover;
     transition: transform 0.5s ease;
 }
 
 .car-card:hover .car-img-container img {
-    transform: scale(1.1); /* Efeito de zoom suave ao passar o rato */
-    
+    transform: scale(1.1);
 }
 
 .badge-ano {
@@ -271,13 +271,14 @@ body {
     z-index: 5;
 }
 
+/* Badge Vertical Lateral */
 .badge-status {
     position: absolute;
     top: 0;
     right: 0;
-    height: 100%; /* Ocupa a altura toda da imagem na lateral */
+    height: 100%;
     width: 40px;
-    writing-mode: vertical-rl; /* Texto na vertical */
+    writing-mode: vertical-rl;
     text-orientation: mixed;
     display: flex;
     align-items: center;
@@ -286,47 +287,18 @@ body {
     letter-spacing: 3px;
     color: white;
     text-transform: uppercase;
+    font-size: 0.75rem;
+    z-index: 10;
 }
 
 .badge-status.vendido { background: rgba(220, 38, 38, 0.9); }
 .badge-status.reservado { background: rgba(212, 175, 55, 0.9); }
 
-/* Efeito ao passar o rato no card (opcional) */
-.car-card:hover .badge-status {
-    transform: scale(1.05);
-}
-
 .img-grayscale {
     filter: grayscale(1) brightness(0.6);
 }
 
-.btn-indisponivel {
-    background: #333;
-    color: #666;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-size: 0.7rem;
-    font-weight: 700;
-}
-/* Opcional: Escurecer a imagem se estiver vendido para dar mais ênfase */
-.img-vendido {
-    filter: grayscale(0.5) brightness(0.7);
-}
-
-/* Se quiser que o Reservado e Vendido não fiquem um em cima do outro */
-.badge-reservado-top {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: #2196F3; /* Azul para reservado */
-    color: white;
-    padding: 5px 15px;
-    font-size: 0.7rem;
-    font-weight: 800;
-    border-radius: 4px;
-    z-index: 10;
-}
-
+/* Info do Carro */
 .car-info {
     padding: 25px;
 }
@@ -364,7 +336,7 @@ body {
 .car-price {
     font-size: 1.6rem;
     font-weight: 900;
-    color: #d4af37; /* Dourado Garmotor */
+    color: var(--gold);
 }
 
 .btn-ver-mais {
@@ -376,19 +348,58 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    transition: 0.3s;
 }
 
-/* --- FOOTER MODERNO --- */
+.car-card:hover .btn-ver-mais i {
+    transform: translateX(5px);
+}
+
+.btn-indisponivel {
+    background: #333;
+    color: #666;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   5. MAPA E RODAPÉ (FOOTER)
+   ========================================================================== */
+.map-section-premium {
+    background: #000000 !important;
+    padding: 35px !important;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 50px;
+}
+
+.map-section-premium h3 {
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    color: #fff;
+}
+
+.map-section-premium p {
+    color: #888;
+    margin-bottom: 25px;
+}
+
+.map-viewport {
+    height: 350px;
+    width: 100%;
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+}
+
 .main-footer {
     background: #000000;
     padding: 80px 5% 30px;
     color: white;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
 }
 
 .footer-grid {
@@ -398,23 +409,11 @@ body {
     margin-bottom: 60px;
 }
 
-/* Coluna da Marca */
 .footer-logo {
-    height: auto;
-    width: 280px; /* Tamanho aproximado ao da imagem de referência */
-    max-width: 100%;
+    width: 280px;
     margin-bottom: 25px;
-    display: block;
 }
 
-.footer-tagline {
-    color: #888;
-    line-height: 1.6;
-    max-width: 300px;
-    font-size: 0.9rem;
-}
-
-/* Títulos e Nav */
 .footer-title {
     color: var(--gold);
     text-transform: uppercase;
@@ -423,13 +422,13 @@ body {
     margin-bottom: 25px;
 }
 
-.footer-nav {
+.footer-nav, .footer-contacts {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.footer-nav a, .footer-contacts a, .footer-contacts p {
+.footer-nav a, .footer-contacts p, .footer-contacts a {
     color: #ccc;
     font-size: 0.95rem;
     transition: 0.3s;
@@ -438,65 +437,23 @@ body {
     gap: 10px;
 }
 
-.footer-nav a:hover, .footer-contacts a:hover {
+.footer-nav a:hover {
     color: var(--gold);
     transform: translateX(5px);
 }
 
-.footer-contacts {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.footer-contacts i {
-    color: var(--gold);
-    width: 20px;
-    min-width: 20px;
-}
-
-/* Rodapé Final */
 .footer-bottom {
     padding-top: 30px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.bottom-content {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     font-size: 0.8rem;
     color: #666;
 }
 
-.dev-credits a {
-    color: #d4af37;
-    font-weight: 600;
-}
-
-/* Ajuste Responsivo */
-@media (max-width: 768px) {
-    .footer-grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
-        text-align: center;
-    }
-    
-    .footer-tagline {
-        margin: 0 auto;
-    }
-    
-    .footer-nav a, .footer-contacts a, .footer-contacts p {
-        justify-content: center;
-    }
-    
-    .bottom-content {
-        flex-direction: column;
-        gap: 15px;
-    }
-}
-
-/* SIDEBAR SOCIAL CORRIGIDA */
+/* ==========================================================================
+   6. SIDEBAR SOCIAL
+   ========================================================================== */
 .social-sidebar {
     position: fixed;
     right: 0;
@@ -512,101 +469,87 @@ body {
 .social-item {
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* Garante que o ícone fique na ponta direita */
+    justify-content: flex-end;
     background: #fff;
     color: #333;
     padding: 12px;
     border-radius: 30px 0 0 30px;
-    text-decoration: none;
-    box-shadow: -2px 5px 15px rgba(0,0,0,0.1);
-    transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s, color 0.3s;
     width: 55px;
     height: 50px;
     overflow: hidden;
-    white-space: nowrap;
-    cursor: pointer;
+    transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s;
 }
 
 .social-item:hover {
     width: 200px;
-    color: #fff !important; /* Texto e ícone ficam brancos no hover */
+    color: #fff !important;
 }
 
-.social-item i {
-    font-size: 1.4rem;
-    min-width: 30px;
-    display: flex;
-    justify-content: center;
-    order: 2; /* Mantém o ícone à direita */
-}
+.social-item i { font-size: 1.4rem; min-width: 30px; order: 2; text-align: center; }
+.social-item span { font-weight: 600; margin-right: 15px; opacity: 0; order: 1; transition: 0.3s; }
+.social-item:hover span { opacity: 1; }
 
-.social-item span {
-    font-weight: 600;
-    margin-right: 15px;
-    opacity: 0;
-    order: 1; /* Mantém o texto à esquerda do ícone */
-    transition: opacity 0.3s ease;
-}
+.social-item:nth-child(1):hover { background: #0084ff; }
+.social-item:nth-child(2):hover { background: #25D366; }
+.social-item:nth-child(3):hover { background: #1877F2; }
+.social-item:nth-child(4):hover { background: #E4405F; }
 
-.social-item:hover span { 
-    opacity: 1; 
-}
-
-/* CORES ESPECÍFICAS PARA CADA ITEM NO HOVER */
-.social-item:nth-child(1):hover { background: #0084ff; } /* Telefone (Azul Garmotor) */
-.social-item:nth-child(2):hover { background: #25D366; } /* WhatsApp */
-.social-item:nth-child(3):hover { background: #1877F2; } /* Facebook */
-.social-item:nth-child(4):hover { background: #E4405F; } /* Instagram */
-
-/* Garante que o ícone não mude de cor sozinho se houver outras regras */
-.social-item:hover i {
-    color: #fff;
-}
-/* Responsividade */
-@media (max-width: 992px) {
-    .filter-bar { grid-template-columns: 1fr 1fr; }
-    .featured-section { padding: 0 2%; }
-}
+/* ==========================================================================
+   7. RESPONSIVIDADE (MOBILE & TABLET)
+   ========================================================================== */
 
 @media (max-width: 768px) {
+    /* Header e Menu Mobile */
+    .menu-toggle { display: block; } /* Mostra o hambúrguer */
+
+    .main-menu {
+        position: absolute;
+        top: 80px;
+        left: 0;
+        width: 100%;
+        background: rgba(0,0,0,0.95);
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+        height: 0; /* Escondido por padrão */
+        overflow: hidden;
+        transition: all 0.4s ease;
+        gap: 0;
+    }
+
+    /* Quando o menu está aberto */
+    .main-menu.active {
+        height: 280px; /* Altura suficiente para os links */
+        padding: 20px 0;
+        border-bottom: 2px solid var(--gold);
+    }
+
+    .main-menu a {
+        padding: 15px;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* Centrar o Hero */
     .hero-content h2 { font-size: 2.2rem; }
-    .main-menu { display: none; }
+    
+    /* Centrar Filtros */
     .filter-bar { grid-template-columns: 1fr; }
-    .footer-grid { grid-template-columns: 1fr; text-align: center; }
-}
+    .featured-container { padding: 20px; border-radius: 25px; }
 
-/* O contentor principal (fundo preto) */
-.map-section-premium {
-    background: #000000 !important;
-    padding: 35px !important;
-    border-radius: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
+    /* Grid de 1 coluna centrada */
+    .featured-grid { grid-template-columns: 1fr; }
+    .car-card { max-width: 400px; margin: 0 auto; } /* Centra o card no ecrã */
 
-.map-section-premium h3 {
-    font-weight: 800;
-    font-size: 1.5rem;
-    margin-bottom: 5px;
-    color: #fff;
-}
+    /* Footer Centrado */
+    .footer-grid { 
+        grid-template-columns: 1fr; 
+        text-align: center; 
+    }
+    .footer-logo { margin: 0 auto 20px; width: 200px; }
+    .footer-nav a, .footer-contacts p { justify-content: center; }
 
-.map-section-premium p {
-    color: #888;
-    margin-bottom: 25px;
-}
-
-/* A moldura que corta o mapa (o truque é o overflow) */
-.map-viewport {
-    height: 350px;
-    width: 100%;
-    border-radius: 40px; /* Cantos bem redondos como na foto */
-    overflow: hidden;    /* Isto obriga o iframe a ficar redondo */
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.map-viewport iframe {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    /* Esconder sidebar social no mobile para não tapar o conteúdo */
+    .social-sidebar { display: none; }
 }
