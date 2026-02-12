@@ -390,6 +390,8 @@
 
         /* --- MODO TELEMÓVEL (RESPONSIVIDADE) --- */
         @media (max-width: 900px) {
+
+
             .container { margin-top: 110px; }
 
             .main-menu { display: none; } /* Ocultar menu central no mobile */
@@ -408,14 +410,52 @@
 
             .modal-content { padding: 20px; }
 
-            .footer-grid {
-                grid-template-columns: 1fr;
-                text-align: center;
+            .main-footer {
+                padding: 40px 5% 20px !important; /* Reduzido de 80px para 40px */
             }
 
-            .footer-tagline { margin: 0 auto; }
-            .footer-nav a, .footer-contacts a, .footer-contacts p { justify-content: center; }
-            .bottom-content { flex-direction: column; gap: 15px; }
+        .footer-grid {
+            grid-template-columns: 1fr !important;
+        gap: 30px !important; /* Espaço menor entre blocos */
+        text-align: center;
+    }
+
+    .footer-logo {
+        width: 180px !important; /* Logo mais pequeno no mobile */
+        margin: 0 auto 15px auto !important;
+    }
+
+    .footer-tagline {
+        margin: 0 auto !important;
+        font-size: 0.85rem !important;
+        max-width: 250px !important;
+    }
+
+    .footer-title {
+        margin-bottom: 15px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .footer-nav, .footer-contacts {
+        gap: 8px !important; /* Links mais juntos */
+    }
+
+    .footer-nav a, .footer-contacts a, .footer-contacts p {
+        justify-content: center !important;
+        font-size: 0.9rem !important;
+    }
+
+        .footer-bottom {
+            margin-top: 30px !important;
+            padding-top: 20px !important;
+        }
+
+        .bottom-content {
+            flex-direction: column !important;
+            gap: 10px !important;
+            text-align: center;
+        }
+
             
             table { min-width: 700px; } /* Ativa scroll lateral na tabela */
         }
@@ -580,41 +620,45 @@
     </div>
 
     <footer class="main-footer">
-        <div class="footer-container">
-            <div class="footer-grid">
-                <div class="footer-column brand-info">
-                    <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="footer-logo">
-                    <p class="footer-tagline">Qualidade que conduz. Veículos selecionados com inspeção em 120 pontos.</p>
-                </div>
-
-                <div class="footer-column">
-                    <h4 class="footer-title">Links</h4>
-                    <nav class="footer-nav">
-                        <a href="Index.html">Início</a>
-                        <a href="Index.html#h">Veículos</a>
-                        <a href="AboutUs.html">Sobre Nós</a>
-                        <a href="#">Privacidade</a>
-                    </nav>
-                </div>
-
-                <div class="footer-column">
-                    <h4 class="footer-title">Contactos</h4>
-                    <div class="footer-contacts">
-                        <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
-                        <a href="https://www.instagram.com/garmotor.automovel/" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
-                        <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
-                    </div>
-                </div>
+    <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-column brand-info">
+                <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="footer-logo">
+                <p class="footer-tagline">Qualidade que conduz. Veículos selecionados com inspeção em 120 pontos.</p>
             </div>
 
-            <div class="footer-bottom">
-                <div class="bottom-content">
-                    <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
-                    <p class="dev-credits">Desenvolvido por <a href="https://linktr.ee/tiagoalvessampaio12" target="_blank">Tiago Sampaio</a></p>
+            <div class="footer-column">
+                <h4 class="footer-title">LINKS</h4>
+                <nav class="footer-nav">
+                    <a href="Index.html">Início</a>
+                    <a href="Index.html#h">Veículos</a>
+                    <a href="AboutUs.html">Sobre Nós</a>
+                    <a href="#">Privacidade</a>
+                </nav>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">CONTACTOS</h4>
+                <div class="footer-contacts">
+                    <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
+                    <a href="https://www.instagram.com/garmotor.automovel/" target="_blank">
+                        <i class="fa-brands fa-instagram"></i> Instagram
+                    </a>
+                    <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank">
+                        <i class="fa-brands fa-facebook"></i> Facebook
+                    </a>
                 </div>
             </div>
         </div>
-    </footer>
+
+        <div class="footer-bottom">
+            <div class="bottom-content">
+                <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
+                <p class="dev-credits">Desenvolvido por <a href="https://linktr.ee/tiagoalvessampaio12" target="_blank" style="color: #d4af37; font-weight: 600;">Tiago Sampaio</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
 
     <script>
         const API = "/api/veiculos";

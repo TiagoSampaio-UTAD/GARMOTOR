@@ -675,12 +675,52 @@ body {
     }
 
     /* --- 7. FOOTER --- */
-    .footer-bottom {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-        padding-bottom: 80px; /* Espaço extra no fundo */
+    .main-footer {
+        padding: 40px 5% 20px !important; /* Reduzido de 80px para 40px */
     }
+
+    .footer-grid {
+        grid-template-columns: 1fr !important;
+        gap: 30px !important; /* Espaço menor entre blocos */
+        text-align: center;
+    }
+
+    .footer-logo {
+        width: 180px !important; /* Logo mais pequeno no mobile */
+        margin: 0 auto 15px auto !important;
+    }
+
+    .footer-tagline {
+        margin: 0 auto !important;
+        font-size: 0.85rem !important;
+        max-width: 250px !important;
+    }
+
+    .footer-title {
+        margin-bottom: 15px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .footer-nav, .footer-contacts {
+        gap: 8px !important; /* Links mais juntos */
+    }
+
+    .footer-nav a, .footer-contacts a, .footer-contacts p {
+        justify-content: center !important;
+        font-size: 0.9rem !important;
+    }
+
+    .footer-bottom {
+        margin-top: 30px !important;
+        padding-top: 20px !important;
+    }
+
+    .bottom-content {
+        flex-direction: column !important;
+        gap: 10px !important;
+        text-align: center;
+    }
+
 
     /* Esconder sidebar social flutuante */
     .social-sidebar { display: none; }
