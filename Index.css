@@ -33,15 +33,16 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    padding: 0 5%; /* Padding lateral fixo */
+    padding: 10px 2%;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Logo esquerda, Menu Centro (ou direita), Auth direita */
+    justify-content: space-between;
     z-index: 1000;
     height: 90px;
-    background: rgba(0, 0, 0, 0.8);
+    transition: all 0.4s ease;
+    background: rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(15px);
-    transition: 0.4s;
+    -webkit-backdrop-filter: blur(15px);
 }
 
 .top-nav.scrolled {
@@ -57,8 +58,10 @@ body {
 }
 
 .logo-img {
+    height: 100%;
     max-height: 100px;
     width: auto;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .top-nav.scrolled .logo-img {
@@ -68,7 +71,9 @@ body {
 }
 
 .main-menu {
+    position: absolute;
     left: 50%;
+    transform: translateX(-50%);
     display: flex;
     gap: 30px;
 }
@@ -131,10 +136,11 @@ body {
 
 /* --- BOTÃO HAMBÚRGUER --- */
 .menu-toggle {
-    display: none;
+    display: none; /* <--- Oculto por padrão */
     flex-direction: column;
     gap: 6px;
     cursor: pointer;
+    z-index: 3000;
 }
 
 .menu-toggle span {
@@ -387,11 +393,10 @@ body {
 }
 
 .main-footer {
-    background: #000;
-    padding: 60px 5% 30px;
+    background: #000000;
+    padding: 80px 5% 30px;
     color: white;
-    text-align: center; /* Centra textos por padrão */
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .footer-grid {
@@ -429,26 +434,6 @@ body {
     gap: 10px;
 }
 
-.footer-social-row {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 30px;
-}
-
-.footer-social-row a {
-    color: white;
-    font-size: 1.8rem;
-    transition: 0.3s;
-}
-
-.footer-social-row a:hover { color: var(--gold); }
-
-.footer-info p {
-    color: #888;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-}
 
 
 .footer-nav a:hover {
@@ -457,15 +442,16 @@ body {
 }
 
 .footer-bottom {
-    margin-top: 40px;
-    padding-top: 25px;
+    padding-top: 30px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
-    flex-direction: column; /* Um por cima do outro para ser mais limpo */
-    align-items: center;
-    gap: 10px;
+    justify-content: center; 
+    align-items: center;     
+    gap: 20px;              
     font-size: 0.8rem;
-    color: #555;
+    color: #666;
+    text-align: center;     
+    flex-direction: column; 
 }
 
 
@@ -515,47 +501,40 @@ body {
 .social-item:nth-child(4):hover { background: #E4405F; }
 
 /* ==========================================================================
-   7. RESPONSIVIDADE (MOBILE & TABLET)
+   MOBILE APP MODE - (Abaixo de 900px)
    ========================================================================== */
+@media (max-width: 900px) {
 
-@media (min-width: 480px) {
-    .footer-bottom {
-        flex-direction: row;
-        gap: 20px;
+    /* --- 1. AJUSTES GERAIS DE APP --- */
+    body {
+        font-size: 16px; /* Texto maior para leitura fácil */
+        overflow-x: hidden;
     }
-}
 
-/* ==========================================================================
-   CORREÇÃO TOTAL MOBILE (Abaixo de 768px)
-   ========================================================================== */
-@media (max-width: 768px) {
-    
-    /* 1. HEADER: Alinha Logo à esquerda e Hambúrguer à direita */
+    /* Botões maiores para o toque do dedo */
+    button, .btn, input[type="submit"], select, input {
+        min-height: 50px;
+        font-size: 1rem;
+    }
+
+    /* --- 2. NAVEGAÇÃO (HEADER) --- */
     .top-nav {
-        height: 70px;
         padding: 0 5%;
+        height: 70px;
+        background: rgba(0, 0, 0, 0.95);
         justify-content: space-between;
     }
 
-    .header-left {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    /* Ajuste do tamanho do Logo no telemóvel */
     .logo-img {
-        max-height: 50px !important; 
-        width: auto;
+        max-height: 45px; /* Logo mais pequeno para caber */
     }
 
-    /* 2. MENU HAMBÚRGUER: Garante que aparece e fica visível */
     .menu-toggle {
-        display: flex !important; /* Força a aparição no mobile */
-        order: 3; /* Garante que fica na ponta direita */
+        display: flex !important; /* Mostra o hambúrguer */
+        order: 3;
     }
 
-    /* 3. MENU OVERLAY: Ocupa o ecrã todo quando aberto */
+    /* Menu Full Screen (Tipo App) */
     .main-menu {
         position: fixed;
         top: 0;
@@ -564,10 +543,11 @@ body {
         height: 100vh;
         background: rgba(0, 0, 0, 0.98);
         flex-direction: column;
-        align-items: center;
         justify-content: center;
+        align-items: center;
+        gap: 40px;
         transform: translateX(-100%);
-        transition: 0.4s;
+        transition: transform 0.3s ease-in-out;
         z-index: 2000;
     }
 
@@ -576,40 +556,132 @@ body {
     }
 
     .main-menu a {
-        font-size: 1.8rem;
-        font-weight: 800;
-        color: white;
+        font-size: 1.5rem;
+        display: block;
+        padding: 10px;
     }
 
-    /* 4. CONTEÚDO E GRID: Alinha tudo ao centro */
-    .hero-content h2 { 
-        font-size: 2rem; 
-        padding: 0 10px;
+    /* --- 3. HOME & FILTROS --- */
+    .hero-content h2 {
+        font-size: 2rem;
+        line-height: 1.2;
     }
 
-    .filter-bar { 
-        grid-template-columns: 1fr; /* Filtros em coluna única */
-    }
-
-    .featured-grid { 
-        grid-template-columns: 1fr; /* Um carro por linha */
-    }
-
-    .car-card { 
-        max-width: 100%; 
-        margin: 0 auto; 
-    }
-
-    /* 5. FOOTER BOTTOM: Tudo centrado e com espaço */
-    .footer-bottom {
-        flex-direction: column !important; /* Empilha os textos */
+    /* Filtros um por cima do outro */
+    .filter-bar {
+        display: flex;
+        flex-direction: column;
         gap: 15px;
-        text-align: center;
-        padding: 30px 0;
     }
 
-    /* Esconde a barra social lateral para não tapar o conteúdo */
-    .social-sidebar { 
-        display: none; 
+    .filter-group {
+        width: 100%;
     }
+
+    .featured-grid {
+        grid-template-columns: 1fr; /* 1 Carro por linha */
+        gap: 40px;
+    }
+
+    /* --- 4. DASHBOARD (CRÍTICO PARA ADICIONAR CARROS) --- */
+    
+    /* Layout do Painel */
+    .dashboard-container {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        margin-bottom: 20px;
+        border-right: none;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        display: flex;
+        overflow-x: auto; /* Menu de gestão com scroll lateral */
+        padding-bottom: 10px;
+    }
+
+    .sidebar a {
+        white-space: nowrap;
+        padding: 10px 20px;
+        margin-bottom: 0;
+    }
+
+    /* Formulários de Adicionar Veículo */
+    .form-grid, .row, .input-group-row {
+        display: flex;
+        flex-direction: column !important;
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+
+    .form-container {
+        padding: 20px;
+        width: 100%;
+    }
+
+    /* Inputs fáceis de tocar */
+    .form-group input, 
+    .form-group select, 
+    .form-group textarea {
+        width: 100%;
+        padding: 15px; /* Área de toque maior */
+        border-radius: 8px;
+        background: #333;
+        color: white;
+        border: 1px solid #555;
+    }
+
+    /* Tabelas (Lista de Carros) com Scroll */
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+        min-width: 600px; /* Força a tabela a ter tamanho, ativando o scroll */
+    }
+
+    /* --- 5. LOGIN / AUTHENTICATION --- */
+    .auth-card {
+        width: 90%;
+        padding: 30px 20px;
+        margin-top: 50px;
+    }
+
+    /* --- 6. PÁGINA DE DETALHES --- */
+    .details-container {
+        flex-direction: column;
+        margin-top: 80px;
+    }
+
+    .details-gallery, .details-info {
+        width: 100%;
+    }
+
+    .main-image {
+        height: 300px; /* Altura fixa para imagem não ocupar o ecrã todo */
+        object-fit: cover;
+    }
+
+    .thumb-gallery {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+
+    /* --- 7. FOOTER --- */
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+        padding-bottom: 80px; /* Espaço extra no fundo */
+    }
+
+    /* Esconder sidebar social flutuante */
+    .social-sidebar { display: none; }
 }
