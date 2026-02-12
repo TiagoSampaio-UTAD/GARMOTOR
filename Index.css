@@ -511,16 +511,40 @@ body {
     }
 }
 
+/* ==========================================================================
+   CORREÇÃO TOTAL MOBILE (Abaixo de 768px)
+   ========================================================================== */
 @media (max-width: 768px) {
-    .menu-toggle {
-         display: flex; 
-    }
-
+    
+    /* 1. HEADER: Alinha Logo à esquerda e Hambúrguer à direita */
     .top-nav {
+        height: 80px;
         padding: 0 5%;
-        justify-content: space-between;
+        display: flex;
+        justify-content: space-between; /* Empurra os itens para as pontas */
+        align-items: center;
+        background: rgba(0, 0, 0, 0.95); /* Garante visibilidade */
     }
 
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    /* Ajuste do tamanho do Logo no telemóvel */
+    .logo-img {
+        max-height: 50px !important; 
+        width: auto;
+    }
+
+    /* 2. MENU HAMBÚRGUER: Garante que aparece e fica visível */
+    .menu-toggle {
+        display: flex !important; /* Força a aparição no mobile */
+        order: 3; /* Garante que fica na ponta direita */
+    }
+
+    /* 3. MENU OVERLAY: Ocupa o ecrã todo quando aberto */
     .main-menu {
         position: fixed;
         top: 0;
@@ -532,12 +556,14 @@ body {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 35px;
+        gap: 30px;
         
-        /* Remove o centramento do PC */
+        /* Reset das regras de PC */
         transform: translateX(-100%); 
-        left: 0; 
+        left: 0;
         margin: 0;
+        transition: transform 0.4s ease-in-out;
+        z-index: 2500;
     }
 
     .main-menu.active {
@@ -545,20 +571,40 @@ body {
     }
 
     .main-menu a {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
         font-weight: 800;
-        padding: 15px;
-        width: 100%;
-        text-align: center;
+        color: white;
     }
 
-    .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
-    .menu-toggle.active span:nth-child(2) { opacity: 0; }
-    .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+    /* 4. CONTEÚDO E GRID: Alinha tudo ao centro */
+    .hero-content h2 { 
+        font-size: 2rem; 
+        padding: 0 10px;
+    }
 
-    .hero-content h2 { font-size: 2.2rem; }
-    .filter-bar { grid-template-columns: 1fr; }
-    .featured-grid { grid-template-columns: 1fr; }
-    .car-card { max-width: 400px; margin: 0 auto; }
-    .social-sidebar { display: none; }
+    .filter-bar { 
+        grid-template-columns: 1fr; /* Filtros em coluna única */
+    }
+
+    .featured-grid { 
+        grid-template-columns: 1fr; /* Um carro por linha */
+    }
+
+    .car-card { 
+        max-width: 100%; 
+        margin: 0 auto; 
+    }
+
+    /* 5. FOOTER BOTTOM: Tudo centrado e com espaço */
+    .footer-bottom {
+        flex-direction: column !important; /* Empilha os textos */
+        gap: 15px;
+        text-align: center;
+        padding: 30px 0;
+    }
+
+    /* Esconde a barra social lateral para não tapar o conteúdo */
+    .social-sidebar { 
+        display: none; 
+    }
 }
