@@ -271,39 +271,25 @@ body {
     z-index: 5;
 }
 
-.badge-status {
+.badge-status-lateral {
     position: absolute;
-    top: 20px; /* Um pouco mais afastado do topo que o ano */
-    right: 20px;
-    padding: 8px 24px; /* Mais largo para parecer mais importante */
-    border-radius: 50px;
-    font-size: 0.8rem; /* Texto ligeiramente maior */
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1.5px; /* Estilo mais moderno */
+    top: 0;
+    right: 0;
+    height: 100%; /* Ocupa a altura toda da imagem na lateral */
+    width: 40px;
+    writing-mode: vertical-rl; /* Texto na vertical */
+    text-orientation: mixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    letter-spacing: 3px;
     color: white;
-    z-index: 30;
-    
-    /* Sombra e borda para dar profundidade */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
+    text-transform: uppercase;
 }
 
-/* Cor Reservado: Dourado GARMOTOR com um leve degradê */
-.badge-status.reservado {
-    background: linear-gradient(135deg, #d4af37 0%, #b8962e 100%);
-}
-
-/* Cor Vendido: Vermelho Intenso com um leve degradê */
-.badge-status.vendido {
-    background: linear-gradient(135deg, #ff4b2b 0%, #dc3545 100%);
-}
-
-/* Efeito ao passar o rato no card (opcional) */
-.car-card:hover .badge-status {
-    transform: scale(1.05);
-}
+.badge-status-lateral.vendido { background: rgba(220, 38, 38, 0.9); }
+.badge-status-lateral.reservado { background: rgba(212, 175, 55, 0.9); }
 
 .img-grayscale {
     filter: grayscale(1) brightness(0.6);
