@@ -33,16 +33,15 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    padding: 10px 2%;
+    padding: 0 5%; /* Padding lateral fixo */
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; /* Logo esquerda, Menu Centro (ou direita), Auth direita */
     z-index: 1000;
     height: 90px;
-    transition: all 0.4s ease;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    transition: 0.4s;
 }
 
 .top-nav.scrolled {
@@ -58,10 +57,8 @@ body {
 }
 
 .logo-img {
-    height: 100%;
     max-height: 100px;
     width: auto;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .top-nav.scrolled .logo-img {
@@ -71,9 +68,7 @@ body {
 }
 
 .main-menu {
-    position: absolute;
     left: 50%;
-    transform: translateX(-50%);
     display: flex;
     gap: 30px;
 }
@@ -136,11 +131,10 @@ body {
 
 /* --- BOTÃO HAMBÚRGUER --- */
 .menu-toggle {
-    display: none; /* <--- Oculto por padrão */
+    display: none;
     flex-direction: column;
     gap: 6px;
     cursor: pointer;
-    z-index: 3000;
 }
 
 .menu-toggle span {
@@ -393,10 +387,11 @@ body {
 }
 
 .main-footer {
-    background: #000000;
-    padding: 80px 5% 30px;
+    background: #000;
+    padding: 60px 5% 30px;
     color: white;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center; /* Centra textos por padrão */
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footer-grid {
@@ -434,6 +429,26 @@ body {
     gap: 10px;
 }
 
+.footer-social-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.footer-social-row a {
+    color: white;
+    font-size: 1.8rem;
+    transition: 0.3s;
+}
+
+.footer-social-row a:hover { color: var(--gold); }
+
+.footer-info p {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
 
 
 .footer-nav a:hover {
@@ -442,16 +457,15 @@ body {
 }
 
 .footer-bottom {
-    padding-top: 30px;
+    margin-top: 40px;
+    padding-top: 25px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
-    justify-content: center; 
-    align-items: center;     
-    gap: 20px;              
+    flex-direction: column; /* Um por cima do outro para ser mais limpo */
+    align-items: center;
+    gap: 10px;
     font-size: 0.8rem;
-    color: #666;
-    text-align: center;     
-    flex-direction: column; 
+    color: #555;
 }
 
 
@@ -518,12 +532,9 @@ body {
     
     /* 1. HEADER: Alinha Logo à esquerda e Hambúrguer à direita */
     .top-nav {
-        height: 80px;
+        height: 70px;
         padding: 0 5%;
-        display: flex;
-        justify-content: space-between; /* Empurra os itens para as pontas */
-        align-items: center;
-        background: rgba(0, 0, 0, 0.95); /* Garante visibilidade */
+        justify-content: space-between;
     }
 
     .header-left {
@@ -552,18 +563,12 @@ body {
         width: 100%;
         height: 100vh;
         background: rgba(0, 0, 0, 0.98);
-        display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 30px;
-        
-        /* Reset das regras de PC */
-        transform: translateX(-100%); 
-        left: 0;
-        margin: 0;
-        transition: transform 0.4s ease-in-out;
-        z-index: 2500;
+        transform: translateX(-100%);
+        transition: 0.4s;
+        z-index: 2000;
     }
 
     .main-menu.active {
@@ -571,7 +576,7 @@ body {
     }
 
     .main-menu a {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
         font-weight: 800;
         color: white;
     }
