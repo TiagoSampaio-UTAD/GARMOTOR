@@ -271,42 +271,22 @@ body {
     z-index: 5;
 }
 
-/* Badge Base */
 .badge-status {
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 0 70px 70px 0; /* Define o tamanho do triângulo */
-    z-index: 20;
-}
-
-/* Cor do triângulo e posicionamento do texto */
-.badge-status.vendido { border-color: transparent #ef4444 transparent transparent; }
-.badge-status.reservado { border-color: transparent #d4af37 transparent transparent; }
-
-/* Texto inclinado dentro do triângulo */
-.badge-status::after {
-    content: attr(data-text); /* Pega o texto do HTML */
-    position: absolute;
-    top: 15px;
-    right: -65px;
-    transform: rotate(45deg);
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%); /* Centraliza */
+    padding: 4px 16px;
+    border-radius: 50px; /* Formato de pílula */
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
     color: white;
-    font-size: 0.6rem;
-    font-weight: 800;
-    width: 80px;
-    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-/* Estilo para Carro Vendido */
-.card-vendido {
-    opacity: 0.8;
-    transform: none !important; /* Remove o efeito de hover/levantar */
-    border: 1px solid #333 !important;
-}
+.badge-status.vendido { background: #ef4444; }
+.badge-status.reservado { background: #d4af37; } /* Estilo para Carro Vendido */ 
 
 .img-grayscale {
     filter: grayscale(1) brightness(0.6);
