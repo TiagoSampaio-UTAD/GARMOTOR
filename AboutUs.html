@@ -30,7 +30,9 @@ body {
     background-size: cover;
     background-attachment: fixed;
 }
-/* --- HEADER / NAVEGAÇÃO --- */
+/* ==========================================================================
+   2. NAVEGAÇÃO (TOP NAV)
+   ========================================================================== */
 .top-nav {
     position: fixed;
     top: 0;
@@ -39,7 +41,7 @@ body {
     padding: 10px 2%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-between; /* Empurra user-actions para a direita */
     z-index: 1000;
     height: 90px;
     transition: all 0.4s ease;
@@ -54,17 +56,22 @@ body {
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espaço entre o logo e o hambúrguer no mobile */
+}
+
 .logo-img {
-    height: 100%;
-    max-height: 100px;
+    height: auto;
+    max-height: 50px; /* Ajustado para não transbordar os 90px do nav */
     width: auto;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .top-nav.scrolled .logo-img {
-    max-height: 85px; 
+    max-height: 50px; 
     transform: scale(1.05);
-    filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.4)) brightness(1.1);
 }
 
 .main-menu {
@@ -87,7 +94,6 @@ body {
     color: var(--gold);
 }
 
-/* --- ACÇÕES DO UTILIZADOR --- */
 .user-actions {
     display: flex;
     align-items: center;
@@ -130,6 +136,22 @@ body {
     cursor: pointer;
     padding: 5px 10px;
     transition: 0.3s;
+}
+
+/* --- BOTÃO HAMBÚRGUER --- */
+.menu-toggle {
+    display: none; /* Escondido no PC */
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 3000;
+}
+
+.menu-toggle span {
+    width: 28px;
+    height: 3px;
+    background: white;
+    border-radius: 10px;
 }
 
 /* --- FOOTER COMPLETO --- */

@@ -39,106 +39,129 @@
             padding: 0 20px; 
         }
 
-        /* --- 2. HEADER / NAVEGAÇÃO --- */
-        .top-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 10px 2%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 1000;
-            height: 90px;
-            transition: all 0.4s ease;
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-        }
+        /* ==========================================================================
+   2. NAVEGAÇÃO (TOP NAV)
+   ========================================================================== */
+.top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 2%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Empurra user-actions para a direita */
+    z-index: 1000;
+    height: 90px;
+    transition: all 0.4s ease;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
 
-        .top-nav.scrolled {
-            background: rgba(0, 0, 0, 0.95);
-            height: 80px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-        }
+.top-nav.scrolled {
+    background: rgba(0, 0, 0, 0.95);
+    height: 80px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
 
-        .logo-img {
-            height: 100%;
-            max-height: 100px;
-            width: auto;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espaço entre o logo e o hambúrguer no mobile */
+}
 
-        .top-nav.scrolled .logo-img {
-            max-height: 85px; 
-            transform: scale(1.05);
-            filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.4)) brightness(1.1);
-        }
+.logo-img {
+    height: auto;
+    max-height: 50px; /* Ajustado para não transbordar os 90px do nav */
+    width: auto;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 
-        .main-menu {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 30px;
-        }
+.top-nav.scrolled .logo-img {
+    max-height: 50px; 
+    transform: scale(1.05);
+}
 
-        .main-menu a {
-            color: white;
-            font-weight: 700;
-            font-size: 0.95rem;
-            letter-spacing: 1px;
-            transition: 0.3s;
-        }
+.main-menu {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+}
 
-        .main-menu a:hover, .main-menu a.active {
-            color: var(--gold);
-        }
+.main-menu a {
+    color: white;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
 
-        .user-actions {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+.main-menu a:hover, .main-menu a.active {
+    color: var(--gold);
+}
 
-        .btn-admin {
-            background-color: var(--gold);
-            color: #000 !important;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-weight: 800;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            transition: 0.3s ease;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
-            border: none;
-        }
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
-        .btn-admin:hover {
-            background-color: #fff;
-            transform: translateY(-2px);
-        }
+.btn-admin {
+    background-color: var(--gold);
+    color: #000 !important;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+    border: none;
+}
 
-        .btn-gestao {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--gold) !important;
-            font-weight: 700;
-            transition: 0.3s;
-        }
+.btn-admin:hover {
+    background-color: #fff;
+    transform: translateY(-2px);
+}
 
-        .btn-sair-min {
-            background: none;
-            border: none;
-            color: #f87171;
-            font-size: 0.7rem;
-            font-weight: 800;
-            cursor: pointer;
-            padding: 5px 10px;
-            transition: 0.3s;
-        }
+.btn-gestao {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gold) !important;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.btn-sair-min {
+    background: none;
+    border: none;
+    color: #f87171;
+    font-size: 0.7rem;
+    font-weight: 800;
+    cursor: pointer;
+    padding: 5px 10px;
+    transition: 0.3s;
+}
+
+/* --- BOTÃO HAMBÚRGUER --- */
+.menu-toggle {
+    display: none; /* Escondido no PC */
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 3000;
+}
+
+.menu-toggle span {
+    width: 28px;
+    height: 3px;
+    background: white;
+    border-radius: 10px;
+}
 
         /* --- 3. DASHBOARD UI --- */
         .stats-grid { 
