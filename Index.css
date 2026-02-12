@@ -273,20 +273,37 @@ body {
 
 .badge-status {
     position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%); /* Centraliza */
-    padding: 4px 16px;
-    border-radius: 50px; /* Formato de pílula */
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
+    top: 20px; /* Um pouco mais afastado do topo que o ano */
+    right: 20px;
+    padding: 8px 24px; /* Mais largo para parecer mais importante */
+    border-radius: 50px;
+    font-size: 0.8rem; /* Texto ligeiramente maior */
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px; /* Estilo mais moderno */
     color: white;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 30;
+    
+    /* Sombra e borda para dar profundidade */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
 }
 
-.badge-status.vendido { background: #ef4444; }
-.badge-status.reservado { background: #d4af37; } /* Estilo para Carro Vendido */ 
+/* Cor Reservado: Dourado GARMOTOR com um leve degradê */
+.badge-status.reservado {
+    background: linear-gradient(135deg, #d4af37 0%, #b8962e 100%);
+}
+
+/* Cor Vendido: Vermelho Intenso com um leve degradê */
+.badge-status.vendido {
+    background: linear-gradient(135deg, #ff4b2b 0%, #dc3545 100%);
+}
+
+/* Efeito ao passar o rato no card (opcional) */
+.car-card:hover .badge-status {
+    transform: scale(1.05);
+}
 
 .img-grayscale {
     filter: grayscale(1) brightness(0.6);
