@@ -229,86 +229,96 @@
     }
 
     // --- LÓGICA DE FILTROS E ORDENAÇÃO ---
-    function aplicarFiltros() {
-        const termo = document.getElementById('search-input')?.value.toLowerCase() || "";
-        const marcaSel = document.getElementById('filter-brand')?.value || "";
-        const tipoSel = document.getElementById('filter-type')?.value || "";
-        const ordenacao = document.getElementById('filter-sort')?.value || "";
+    // --- LÓGICA DE FILTROS E ORDENAÇÃO ---
+function aplicarFiltros() {
+    const termo = document.getElementById('search-input')?.value.toLowerCase() || "";
+    const marcaSel = document.getElementById('filter-brand')?.value || "";
+    const tipoSel = document.getElementById('filter-type')?.value || "";
+    const ordenacao = document.getElementById('filter-sort')?.value || "";
 
-        // 1. Filtrar (Esconde os vendidos da página inicial se desejar)
-        let filtrados = todosVeiculos.filter(v => v.estado !== 'Vendido');
+    // 1. Filtrar (Removido o filtro que escondia os vendidos)
+    let filtrados = [...todosVeiculos]; 
 
-        if (termo) {
-            filtrados = filtrados.filter(v => 
-                v.marca.toLowerCase().includes(termo) || 
-                v.modelo.toLowerCase().includes(termo)
-            );
+    if (termo) {
+        filtrados = filtrados.filter(v => 
+            v.marca.toLowerCase().includes(termo) || 
+            v.modelo.toLowerCase().includes(termo)
+        );
+    }
+    
+    if (marcaSel) filtrados = filtrados.filter(v => v.marca === marcaSel);
+    if (tipoSel) filtrados = filtrados.filter(v => v.combustivel === tipoSel);
+
+    // 2. Ordenar
+    if (ordenacao === 'price-asc') {
+        filtrados.sort((a, b) => parseFloat(a.preco) - parseFloat(b.preco));
+    } else if (ordenacao === 'price-desc') {
+        filtrados.sort((a, b) => parseFloat(b.preco) - parseFloat(a.preco));
+    } else {
+        filtrados.sort((a, b) => b.id - a.id);
+    }
+
+    // Opcional: Colocar os vendidos no fim da lista para não "atrapalhar" as vendas
+    filtrados.sort((a, b) => (a.estado === 'Vendido' ? 1 : -1) - (b.estado === 'Vendido' ? 1 : -1));
+
+    renderizarGrid(filtrados);
+}
+
+// --- RENDERIZAÇÃO NA TELA ---
+function renderizarGrid(veiculos) {
+    const grid = document.querySelector('.featured-grid');
+    if (!grid) return;
+
+    if (veiculos.length === 0) {
+        grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:50px; color:#999;">Nenhum veículo encontrado.</p>`;
+        return;
+    }
+
+    grid.innerHTML = veiculos.map(carro => {
+        let imagemUrl = 'img/placeholder-car.jpg';
+        if (carro.imagemcapa) {
+            imagemUrl = carro.imagemcapa.includes('|||') ? carro.imagemcapa.split('|||')[0] : carro.imagemcapa;
         }
+
+        const precoFormatado = Number(carro.preco).toLocaleString('pt-PT');
+        const kmsFormatados = Number(carro.kms).toLocaleString('pt-PT');
         
-        if (marcaSel) filtrados = filtrados.filter(v => v.marca === marcaSel);
-        if (tipoSel) filtrados = filtrados.filter(v => v.combustivel === tipoSel);
+        // Verifica estados
+        const isVendido = carro.estado === 'Vendido';
+        const isReservado = carro.estado === 'Reservado';
 
-        // 2. Ordenar
-        if (ordenacao === 'price-asc') {
-            filtrados.sort((a, b) => parseFloat(a.preco) - parseFloat(b.preco));
-        } else if (ordenacao === 'price-desc') {
-            filtrados.sort((a, b) => parseFloat(b.preco) - parseFloat(a.preco));
-        } else {
-            // Ordenação por "Recentes" (ID maior = inserido mais tarde)
-            filtrados.sort((a, b) => b.id - a.id);
-        }
-
-        renderizarGrid(filtrados);
-    }
-
-    // --- RENDERIZAÇÃO NA TELA ---
-    function renderizarGrid(veiculos) {
-        const grid = document.querySelector('.featured-grid');
-        if (!grid) return;
-
-        if (veiculos.length === 0) {
-            grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:50px; color:#999;">Nenhum veículo encontrado com estes filtros.</p>`;
-            return;
-        }
-
-        grid.innerHTML = veiculos.map(carro => {
-            // Lógica de imagem (Primeira imagem da string ou placeholder)
-            let imagemUrl = 'img/placeholder-car.jpg';
-            if (carro.imagemcapa) {
-                imagemUrl = carro.imagemcapa.includes('|||') 
-                    ? carro.imagemcapa.split('|||')[0] 
-                    : carro.imagemcapa;
-            }
-
-            // Formatação de Preço e KM
-            const precoFormatado = Number(carro.preco).toLocaleString('pt-PT');
-            const kmsFormatados = Number(carro.kms).toLocaleString('pt-PT');
-
-            return `
-            <div class="car-card" onclick="window.location.href='Detalhes.html?id=${carro.id}'">
-                <div class="car-img-container">
-                    <img src="${imagemUrl}" alt="${carro.marca} ${carro.modelo}" loading="lazy">
-                    <span class="badge-ano">${carro.ano}</span>
-                    ${carro.estado === 'Reservado' ? '<span class="badge-reservado-top">RESERVADO</span>' : ''}
-                </div>
-                <div class="car-info">
-                    <h4>${carro.marca} <span>${carro.modelo}</span></h4>
+        return `
+        <div class="car-card ${isVendido ? 'card-vendido' : ''}" 
+             onclick="${isVendido ? '' : `window.location.href='Detalhes.html?id=${carro.id}'`}">
+            
+            <div class="car-img-container">
+                <img src="${imagemUrl}" alt="${carro.marca}" class="${isVendido ? 'img-grayscale' : ''}" loading="lazy">
                 
-                    <div class="car-specs">
-                        <span><i class="fa-solid fa-gauge-high"></i> ${kmsFormatados} km</span>
-                        <span><i class="fa-solid fa-gas-pump"></i> ${carro.combustivel}</span>
-                    </div>
+                <span class="badge-ano">${carro.ano}</span>
+                
+                ${isVendido ? '<span class="badge-status vendido">VENDIDO</span>' : ''}
+                ${isReservado ? '<span class="badge-status reservado">RESERVADO</span>' : ''}
+            </div>
 
-                    <div class="car-footer">
-                        <p class="car-price">${precoFormatado} €</p>
-                        <div class="btn-ver-mais">
-                            VER MAIS <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
+            <div class="car-info">
+                <h4>${carro.marca} <span>${carro.modelo}</span></h4>
+            
+                <div class="car-specs">
+                    <span><i class="fa-solid fa-gauge-high"></i> ${kmsFormatados} km</span>
+                    <span><i class="fa-solid fa-gas-pump"></i> ${carro.combustivel}</span>
                 </div>
-            </div>`;
-        }).join('');
-    }
+
+                <div class="car-footer">
+                    <p class="car-price">${precoFormatado} €</p>
+                    ${isVendido ? 
+                        '<div class="btn-indisponivel">INDISPONÍVEL</div>' : 
+                        '<div class="btn-ver-mais">VER MAIS <i class="fa-solid fa-arrow-right"></i></div>'
+                    }
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
 </script>
 </body>
 </html>
