@@ -8,11 +8,11 @@
     <link rel="stylesheet" href="Index.css">
 </head>
 <body>
-
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
     <header class="top-nav">
         <div class="header-left">
-            <div class="menu-toggle" id="mobile-menu">
-                <span></span>
+<div class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
                 <span></span>
                 <span></span>
             </div>
@@ -250,6 +250,23 @@ function verificarSessao() {
             grid.innerHTML = `<p style="grid-column:1/-1; color:red; text-align:center;">Erro ao ligar ao servidor.</p>`;
         }
     }
+
+    function toggleMenu() {
+    const menu = document.querySelector('.main-menu');
+    const overlay = document.getElementById('menuOverlay');
+    const body = document.body;
+
+    // Alterna a classe active
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+
+    // Bloqueia o scroll do site quando o menu está aberto
+    if (menu.classList.contains('active')) {
+        body.style.overflow = 'hidden';
+    } else {
+        body.style.overflow = 'auto';
+    }
+}
 
     function preencherMarcas(veiculos) {
         const select = document.getElementById('filter-brand');

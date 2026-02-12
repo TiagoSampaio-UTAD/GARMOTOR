@@ -228,28 +228,6 @@ body {
     font-weight: 600;
 }
 
-/* Ajuste Responsivo */
-@media (max-width: 768px) {
-    .footer-grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
-        text-align: center;
-    }
-    
-    .footer-tagline {
-        margin: 0 auto;
-    }
-    
-    .footer-nav a, .footer-contacts a, .footer-contacts p {
-        justify-content: center;
-    }
-    
-    .bottom-content {
-        flex-direction: column;
-        gap: 15px;
-    }
-}
-
 /* --- FOOTER RESPONSIVO (PARA TODAS AS PÁGINAS) --- */
 @media (max-width: 900px) {
     .main-footer {
@@ -301,21 +279,25 @@ body {
     </style>
 </head>
 <body>
-
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
     <header class="top-nav">
-    <div class="logo-area">
-        <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" />
-    </div>
-    
-    <div class="menu-toggle" id="mobile-menu">
-        <i class="fa-solid fa-bars"></i>
+        <div class="header-left">
+<div class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        <div class="logo-area">
+            <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" />
+        </div>
     </div>
     
     <nav class="main-menu" id="nav-menu">
         <a href="Index.html">INÍCIO</a>
         <a href="Index.html#h">VEÍCULOS</a>
         <a href="AboutUs.html">SOBRE NÓS</a>
-        </nav>
+    </nav>
     
     <div id="nav-auth" class="user-actions"></div>
 </header>
@@ -509,6 +491,17 @@ window.onscroll = function() {
         nav.classList.remove('nav-scrolled');
     }
 };
+
+function toggleMenu() {
+    const menu = document.querySelector('.main-menu');
+    const overlay = document.getElementById('menuOverlay');
+    
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+    
+    // Trava o scroll da página ao abrir o menu
+    document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : 'auto';
+}
 
 </script>
 </body>

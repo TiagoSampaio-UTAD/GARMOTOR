@@ -462,20 +462,28 @@
     </style>
 </head>
 <body>
-
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
     <header class="top-nav">
+        <div class="header-left">
+<div class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
         <div class="logo-area">
             <img src="img/GARMOTOR_LOGO(1).png" alt="GARMOTOR" class="logo-img" />
         </div>
-        
-        <nav class="main-menu" id="nav-menu">
-            <a href="Index.html">INÍCIO</a>
-            <a href="Index.html#h" id="link-veiculos">VEÍCULOS</a>
-            <a href="AboutUs.html" id="link-sobre">SOBRE NÓS</a>
-        </nav>
-        
-        <div id="nav-auth" class="user-actions"></div>
-    </header>
+    </div>
+    
+    <nav class="main-menu" id="nav-menu">
+        <a href="Index.html">INÍCIO</a>
+        <a href="Index.html#h">VEÍCULOS</a>
+        <a href="AboutUs.html">SOBRE NÓS</a>
+    </nav>
+    
+    <div id="nav-auth" class="user-actions"></div>
+</header>
 
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
@@ -869,6 +877,18 @@
             if (window.scrollY > 50) nav.classList.add('scrolled');
             else nav.classList.remove('scrolled');
         });
+
+        function toggleMenu() {
+    const menu = document.querySelector('.main-menu');
+    const overlay = document.getElementById('menuOverlay');
+    
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+    
+    // Trava o scroll da página ao abrir o menu
+    document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : 'auto';
+}
+
     </script>
 </body>
 </html>

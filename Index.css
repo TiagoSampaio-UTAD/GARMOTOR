@@ -502,24 +502,41 @@ body {
 /* ==========================================================================
    MOBILE APP MODE - (Abaixo de 900px)
    ========================================================================== */
-/* ==========================================================================
-   MOBILE APP MODE - (Abaixo de 900px)
-   ========================================================================== */
 @media (max-width: 900px) {
 
-    /* --- 1. AJUSTES GERAIS DE APP --- */
+    /* --- 1. AJUSTES GERAIS E OVERLAY --- */
     body {
         font-size: 16px;
         overflow-x: hidden;
     }
 
-    /* Botões maiores para o toque do dedo */
+    /* Sombra atrás do Menu Lateral */
+    .menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        z-index: 1999;
+        display: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .menu-overlay.active {
+        display: block;
+        opacity: 1;
+    }
+
+    /* Botões Mobile */
     button, .btn, input[type="submit"], select, input {
         min-height: 50px;
         font-size: 1rem;
     }
 
-    /* --- 2. NAVEGAÇÃO (HEADER MOBILE) --- */
+    /* --- 2. NAVEGAÇÃO (HEADER & SIDE DRAWER) --- */
     .top-nav {
         padding: 0 15px !important;
         height: 70px !important;
@@ -530,11 +547,10 @@ body {
         justify-content: space-between !important;
     }
 
-    /* Logótipo e Hambúrguer juntos à esquerda */
     .header-left {
         display: flex !important;
         align-items: center !important;
-        gap: 15px !important; /* Espaçamento entre logo e ícone conforme a imagem */
+        gap: 15px !important; /* Espaço entre logo e hamburguer */
         order: 1;
     }
 
@@ -545,10 +561,9 @@ body {
 
     .menu-toggle {
         display: flex !important;
-        order: 2; /* Fica logo após o logo */
+        order: 2;
     }
 
-    /* Boas-vindas e Sair à direita */
     .user-actions {
         order: 3;
         display: flex !important;
@@ -556,56 +571,60 @@ body {
         gap: 10px !important;
     }
 
-    .user-logged {
-        display: flex !important;
-        align-items: center !important;
-        gap: 8px;
-        text-align: right;
-    }
-
     .user-logged span {
         font-size: 0.75rem !important;
         color: white;
-        white-space: nowrap;
     }
 
-    .btn-sair-min {
-        font-size: 0.75rem !important;
-        padding: 0 !important;
-        color: #f87171 !important;
-    }
-
-    /* Menu Lateral (Drawer) */
+    /* Menu Lateral (Side Drawer) */
     .main-menu {
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.98);
+        width: 280px !important; /* Menu estreito */
+        height: 100vh !important;
+        background: #0a0a0a !important;
         flex-direction: column !important;
-        justify-content: center;
-        align-items: center;
-        gap: 40px;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease-in-out;
+        justify-content: flex-start !important;
+        align-items: flex-start !important;
+        padding: 100px 30px 40px !important;
+        gap: 20px !important;
+        transform: translateX(-100%) !important;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         z-index: 2000;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.5);
     }
 
     .main-menu.active {
-        transform: translateX(0);
+        transform: translateX(0) !important;
     }
 
     .main-menu a {
-        font-size: 1.5rem;
-        display: block;
-        padding: 10px;
+        font-size: 1.1rem !important;
+        color: white !important;
+        width: 100%;
+        padding-bottom: 15px !important;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        font-weight: 600;
+        text-align: left !important;
     }
 
-    /* --- 3. HOME & FILTROS --- */
-    .hero-content h2 {
-        font-size: 2rem;
-        line-height: 1.2;
+    /* --- 3. CONTEÚDO BRANCO (EDGE-TO-EDGE) --- */
+    .featured-section {
+        padding: 0 !important; /* Ocupa os lados */
+        margin-top: -30px !important;
+    }
+
+    .featured-container {
+        border-radius: 30px 30px 0 0 !important;
+        padding: 30px 15px !important;
+        width: 100% !important;
+        background: white !important;
+    }
+
+    .featured-grid {
+        grid-template-columns: 1fr !important; /* Anúncios em lista */
+        gap: 25px !important;
     }
 
     .filter-bar {
@@ -614,50 +633,9 @@ body {
         gap: 15px;
     }
 
-    .filter-group {
-        width: 100%;
-    }
-
-    .featured-grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
-
-    /* --- 4. DASHBOARD & TABELAS --- */
-    .dashboard-container {
-        flex-direction: column;
-        padding: 10px;
-    }
-
-    .sidebar {
-        width: 100%;
-        height: auto;
-        margin-bottom: 20px;
-        display: flex;
-        overflow-x: auto;
-        padding-bottom: 10px;
-    }
-
-    .form-grid, .row, .input-group-row {
-        display: flex;
-        flex-direction: column !important;
-        gap: 15px !important;
-    }
-
-    .table-responsive {
-        display: block;
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    table {
-        min-width: 600px;
-    }
-
-    /* --- 5. FOOTER (AJUSTADO E CURTO) --- */
+    /* --- 4. FOOTER CURTO --- */
     .main-footer {
-        padding: 40px 5% 20px !important; /* Espaço reduzido */
+        padding: 40px 5% 20px !important;
     }
 
     .footer-grid {
@@ -677,28 +655,14 @@ body {
         max-width: 250px !important;
     }
 
-    .footer-title {
-        margin-bottom: 15px !important;
-        font-size: 0.8rem !important;
-    }
-
     .footer-nav a, .footer-contacts a, .footer-contacts p {
         justify-content: center !important;
-        font-size: 0.9rem !important;
     }
 
     .footer-bottom {
         margin-top: 30px !important;
         padding-top: 20px !important;
-        border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .bottom-content {
-        flex-direction: column !important;
-        gap: 10px !important;
-        text-align: center;
-    }
-
-    /* Esconder sidebar social flutuante */
     .social-sidebar { display: none; }
 }
