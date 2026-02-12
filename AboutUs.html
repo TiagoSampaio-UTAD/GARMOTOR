@@ -451,40 +451,38 @@ body {
 
 function verificarSessao() {
     const authContainer = document.getElementById('nav-auth');
-    const linkSobre = document.getElementById('link-sobre');
+    const navMenu = document.getElementById('nav-menu'); 
     const nome = localStorage.getItem('vendedorNome');
     const tipo = localStorage.getItem('userTipo');
 
-    // Limpa botões de gestão antigos para evitar duplicados
-    const btnAntigo = document.querySelector('.btn-gestao');
-    if (btnAntigo) btnAntigo.remove();
+    if (!authContainer || !navMenu) return;
 
     if (nome) {
-        // 1. Se for Admin/Vendedor, adiciona link de Gestão no Menu
-        if ((tipo === 'Admin' || tipo === 'Vendedor') && linkSobre) {
-            linkSobre.insertAdjacentHTML('afterend', `
-                <a href="Dashboard.html" class="btn-gestao">
-                    <i class="fa-solid fa-table-cells-large"></i> GESTÃO
-                </a>
-            `);
+        // Injeta o botão de gestão no menu (quer seja mobile ou desktop)
+        if (tipo === 'Admin' || tipo === 'Vendedor') {
+            if (!document.querySelector('.btn-gestao')) {
+                navMenu.insertAdjacentHTML('beforeend', `
+                    <a href="Dashboard.html" class="btn-gestao" style="color:var(--gold)">
+                        <i class="fa-solid fa-table-cells-large"></i> GESTÃO
+                    </a>
+                `);
+            }
         }
-
-        // 2. Mostra Nome e Botão Sair no canto direito
         authContainer.innerHTML = `
-            <div class="user-logged">
-                <span style="color:white; font-size:0.8rem; opacity:0.8;"><strong>Bem Vindo, ${nome}!</strong></span>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span class="welcome-text" style="color:white; font-size:0.75rem; font-weight:600;">Bem Vindo, ${nome}!</span>
                 <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
-            </div>
-        `;
-     } else {
-        authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">Portal de Gestão</a>`;
+            </div>`;
+    } else {
+        authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">PAINEL DE ADMIN</a>`;
     }
 }
 
-function fazerLogout() {
-    localStorage.clear();
-    window.location.href = "Index.html";
-}
+    function fazerLogout() {
+        localStorage.clear();
+        window.location.reload();
+    }
+
 
 // Executa ao carregar a página
 window.addEventListener('DOMContentLoaded', verificarSessao);
