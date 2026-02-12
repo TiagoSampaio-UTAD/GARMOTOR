@@ -274,23 +274,31 @@ body {
 /* Badge Base */
 .badge-status {
     position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 70px 70px 0; /* Define o tamanho do triângulo */
+    z-index: 20;
+}
+
+/* Cor do triângulo e posicionamento do texto */
+.badge-status.vendido { border-color: transparent #ef4444 transparent transparent; }
+.badge-status.reservado { border-color: transparent #d4af37 transparent transparent; }
+
+/* Texto inclinado dentro do triângulo */
+.badge-status::after {
+    content: attr(data-text); /* Pega o texto do HTML */
+    position: absolute;
     top: 15px;
-    right: 15px;
-    padding: 5px 15px;
-    border-radius: 6px;
-    backdrop-filter: blur(5px); /* Efeito de vidro foscado */
-    -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    font-size: 0.65rem;
-    font-weight: 700;
-}
-
-.badge-status.vendido {
-    background: rgba(239, 68, 68, 0.8);
-}
-
-.badge-status.reservado {
-    background: rgba(212, 175, 55, 0.8); /* Dourado da GARMOTOR com transparência */
+    right: -65px;
+    transform: rotate(45deg);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 800;
+    width: 80px;
+    text-align: center;
 }
 
 /* Estilo para Carro Vendido */
