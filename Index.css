@@ -274,27 +274,23 @@ body {
 /* Badge Base */
 .badge-status {
     position: absolute;
-    top: 0;
-    right: 0;
-    padding: 8px 20px;
-    font-size: 0.7rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    border-bottom-left-radius: 12px; /* Suaviza o encontro com a imagem */
-    box-shadow: -2px 2px 10px rgba(0,0,0,0.2);
-    z-index: 20;
+    top: 15px;
+    right: 15px;
+    padding: 5px 15px;
+    border-radius: 6px;
+    backdrop-filter: blur(5px); /* Efeito de vidro foscado */
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 0.65rem;
+    font-weight: 700;
 }
 
-/* Cores sugeridas */
 .badge-status.vendido {
-    background-color: #ef4444; /* Vermelho vibrante mas moderno */
-    color: white;
+    background: rgba(239, 68, 68, 0.8);
 }
 
 .badge-status.reservado {
-    background-color: #f59e0b; /* Cor de alerta/laranja suave */
-    color: white;
+    background: rgba(212, 175, 55, 0.8); /* Dourado da GARMOTOR com transparência */
 }
 
 /* Estilo para Carro Vendido */
