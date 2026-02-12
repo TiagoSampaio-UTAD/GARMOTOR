@@ -281,12 +281,10 @@ body {
 
 .badge-status.vendido {
     background: rgba(220, 38, 38, 0.7); /* Vermelho translúcido */
-    color: white;
 }
 
 .badge-status.reservado {
     background: rgba(212, 175, 55, 0.7); /* Dourado translúcido */
-    color: black;
 }
 
 /* Estilo para Carro Vendido */
