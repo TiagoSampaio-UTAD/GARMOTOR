@@ -288,8 +288,8 @@ body {
     text-transform: uppercase;
 }
 
-.badge-status-vendido { background: rgba(220, 38, 38, 0.9); }
-.badge-status-reservado { background: rgba(212, 175, 55, 0.9); }
+.badge-status.vendido { background: rgba(220, 38, 38, 0.9); }
+.badge-status.reservado { background: rgba(212, 175, 55, 0.9); }
 
 /* Efeito ao passar o rato no card (opcional) */
 .car-card:hover .badge-status {
