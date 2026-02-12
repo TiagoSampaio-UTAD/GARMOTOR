@@ -271,20 +271,30 @@ body {
     z-index: 5;
 }
 
+/* Badge Base */
 .badge-status {
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 8px 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    border-bottom-left-radius: 12px; /* Suaviza o encontro com a imagem */
+    box-shadow: -2px 2px 10px rgba(0,0,0,0.2);
+    z-index: 20;
 }
 
+/* Cores sugeridas */
 .badge-status.vendido {
-    background: rgba(220, 38, 38, 0.7); /* Vermelho translúcido */
+    background-color: #ef4444; /* Vermelho vibrante mas moderno */
+    color: white;
 }
 
 .badge-status.reservado {
-    background: rgba(212, 175, 55, 0.7); /* Dourado translúcido */
+    background-color: #f59e0b; /* Cor de alerta/laranja suave */
+    color: white;
 }
 
 /* Estilo para Carro Vendido */
