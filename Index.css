@@ -22,8 +22,9 @@ body {
                 url('img/GARMOTOR_PLACE.png') no-repeat center center;
     background-size: cover;
     background-attachment: fixed;
-    overflow-x: hidden; /* Evita scrolls laterais manhosos */
+    overflow-x: hidden;
 }
+
 /* ==========================================================================
    2. NAVEGAÇÃO (TOP NAV)
    ========================================================================== */
@@ -48,6 +49,12 @@ body {
     background: rgba(0, 0, 0, 0.95);
     height: 80px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .logo-img {
@@ -83,7 +90,6 @@ body {
     color: var(--gold);
 }
 
-/* Acções do Utilizador (Portal/Login) */
 .user-actions {
     display: flex;
     align-items: center;
@@ -125,6 +131,23 @@ body {
     font-weight: 800;
     cursor: pointer;
     padding: 5px 10px;
+    transition: 0.3s;
+}
+
+/* --- BOTÃO HAMBÚRGUER --- */
+.menu-toggle {
+    display: none; /* <--- Oculto por padrão */
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 3000;
+}
+
+.menu-toggle span {
+    width: 28px;
+    height: 3px;
+    background: white;
+    border-radius: 10px;
     transition: 0.3s;
 }
 
@@ -176,7 +199,6 @@ body {
     box-shadow: 0 20px 50px rgba(0,0,0,0.15);
 }
 
-/* Barra de Filtros */
 .filters-container {
     background: #666666;
     padding: 20px 30px;
@@ -213,7 +235,6 @@ body {
 .filter-group select option { color: #333; }
 .filter-group i { color: #ccc; margin-right: 10px; }
 
-/* Grid de Veículos */
 .featured-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -229,16 +250,12 @@ body {
     cursor: pointer;
 }
 
-.car-card:hover {
-    transform: translateY(-10px);
-}
+.car-card:hover { transform: translateY(-10px); }
 
-.car-card:hover h4, 
-.car-card:hover .btn-ver-mais {
+.car-card:hover h4, .car-card:hover .btn-ver-mais {
     color: var(--gold) !important;
 }
 
-/* Imagens e Badges */
 .car-img-container {
     position: relative;
     width: 100%;
@@ -254,9 +271,7 @@ body {
     transition: transform 0.5s ease;
 }
 
-.car-card:hover .car-img-container img {
-    transform: scale(1.1);
-}
+.car-card:hover .car-img-container img { transform: scale(1.1); }
 
 .badge-ano {
     position: absolute;
@@ -271,7 +286,6 @@ body {
     z-index: 5;
 }
 
-/* Badge Vertical Lateral */
 .badge-status {
     position: absolute;
     top: 0;
@@ -294,14 +308,9 @@ body {
 .badge-status.vendido { background: rgba(220, 38, 38, 0.9); }
 .badge-status.reservado { background: rgba(212, 175, 55, 0.9); }
 
-.img-grayscale {
-    filter: grayscale(1) brightness(0.6);
-}
+.img-grayscale { filter: grayscale(1) brightness(0.6); }
 
-/* Info do Carro */
-.car-info {
-    padding: 25px;
-}
+.car-info { padding: 25px; }
 
 .car-info h4 {
     font-size: 1.3rem;
@@ -309,10 +318,7 @@ body {
     margin-bottom: 10px;
 }
 
-.car-info h4 span {
-    font-weight: 400;
-    color: #555;
-}
+.car-info h4 span { font-weight: 400; color: #555; }
 
 .car-specs {
     display: flex;
@@ -322,10 +328,7 @@ body {
     color: #888;
 }
 
-.car-specs i {
-    color: #ccc;
-    margin-right: 5px;
-}
+.car-specs i { color: #ccc; margin-right: 5px; }
 
 .car-footer {
     display: flex;
@@ -333,11 +336,7 @@ body {
     align-items: center;
 }
 
-.car-price {
-    font-size: 1.6rem;
-    font-weight: 900;
-    color: var(--gold);
-}
+.car-price { font-size: 1.6rem; font-weight: 900; color: var(--gold); }
 
 .btn-ver-mais {
     font-size: 0.85rem;
@@ -351,9 +350,7 @@ body {
     transition: 0.3s;
 }
 
-.car-card:hover .btn-ver-mais i {
-    transform: translateX(5px);
-}
+.car-card:hover .btn-ver-mais i { transform: translateX(5px); }
 
 .btn-indisponivel {
     background: #333;
@@ -437,6 +434,8 @@ body {
     gap: 10px;
 }
 
+
+
 .footer-nav a:hover {
     color: var(--gold);
     transform: translateX(5px);
@@ -446,9 +445,18 @@ body {
     padding-top: 30px;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Alinha horizontalmente ao centro */
+    align-items: center;     /* Garante que ficam alinhados verticalmente */
+    gap: 20px;               /* Dá um espaço entre o copyright e outros textos */
     font-size: 0.8rem;
     color: #666;
+    text-align: center;      /* Garante que o texto dentro dos elementos também centre */
+}
+
+.dev-credits a {
+    color: var(--gold);
+    font-weight: 600;
+    text-decoration: none;
 }
 
 /* ==========================================================================
@@ -480,11 +488,7 @@ body {
     transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.3s;
 }
 
-.social-item:hover {
-    width: 200px;
-    color: #fff !important;
-}
-
+.social-item:hover { width: 200px; color: #fff !important; }
 .social-item i { font-size: 1.4rem; min-width: 30px; order: 2; text-align: center; }
 .social-item span { font-weight: 600; margin-right: 15px; opacity: 0; order: 1; transition: 0.3s; }
 .social-item:hover span { opacity: 1; }
@@ -497,76 +501,43 @@ body {
 /* ==========================================================================
    7. RESPONSIVIDADE (MOBILE & TABLET)
    ========================================================================== */
-
 @media (max-width: 768px) {
-    /* Header e Menu Mobile */
-    .menu-toggle { display: block; } /* Mostra o hambúrguer */
+    .menu-toggle { display: flex; }
 
     .main-menu {
-        position: absolute;
-        top: 80px;
+        position: fixed;
+        top: 0;
         left: 0;
         width: 100%;
-        background: rgba(0,0,0,0.95);
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.98);
+        display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 0;
-        height: 0; /* Escondido por padrão */
-        overflow: hidden;
-        transition: all 0.4s ease;
-        gap: 0;
+        justify-content: center;
+        gap: 35px;
+        transform: translateX(-100%);
+        transition: transform 0.4s ease-in-out;
+        z-index: 2500;
     }
 
-    /* Quando o menu está aberto */
-    .main-menu.active {
-        height: 280px; /* Altura suficiente para os links */
-        padding: 20px 0;
-        border-bottom: 2px solid var(--gold);
-    }
+    .main-menu.active { transform: translateX(0); }
 
     .main-menu a {
+        font-size: 1.8rem;
+        font-weight: 800;
         padding: 15px;
         width: 100%;
         text-align: center;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
-    /* Centrar o Hero */
+    .menu-toggle.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+    .menu-toggle.active span:nth-child(2) { opacity: 0; }
+    .menu-toggle.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+
     .hero-content h2 { font-size: 2.2rem; }
-    
-    /* Centrar Filtros */
     .filter-bar { grid-template-columns: 1fr; }
-    .featured-container { padding: 20px; border-radius: 25px; }
-
-    /* Grid de 1 coluna centrada */
     .featured-grid { grid-template-columns: 1fr; }
-    .car-card { max-width: 400px; margin: 0 auto; } /* Centra o card no ecrã */
-
-    /* Footer Centrado */
-    .footer-grid { 
-        grid-template-columns: 1fr; 
-        text-align: center; 
-    }
-    .footer-logo { margin: 0 auto 20px; width: 200px; }
-    .footer-nav a, .footer-contacts p { justify-content: center; }
-
-    /* Esconder sidebar social no mobile para não tapar o conteúdo */
+    .car-card { max-width: 400px; margin: 0 auto; }
     .social-sidebar { display: none; }
-}
-
-/* --- BOTÃO HAMBÚRGUER (3 traços) --- */
-.menu-toggle {
-    display: none;
-    flex-direction: column;
-    gap: 6px;
-    cursor: pointer;
-    z-index: 3000;
-}
-
-.menu-toggle span {
-    width: 30px;
-    height: 3px;
-    background: white;
-    border-radius: 10px;
-    transition: 0.3s;
 }
