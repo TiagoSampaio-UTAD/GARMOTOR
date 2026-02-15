@@ -20,17 +20,30 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
-// --- CONFIGURAÇÃO DE EMAIL (CORRIGIDA PARA RENDER) ---
 const transporter = nodemailer.createTransport({
-    service: 'gmail', // O Nodemailer já tem configurações pré-definidas para o Gmail
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // true para porta 465
+    service: 'gmail',
     auth: {
         user: 'tiagoalvessampaio12@gmail.com',
         pass: 'ncairwlybqnxhpxa'
     },
-    family: 4 // Continua a ser obrigatório para evitar o erro de rede IPv6
+    family: 4, // Resolve o erro ENETUNREACH
+    tls: {
+        rejectUnauthorized: false
+    }
+});
+
+// TESTE DE DIAGNÓSTICO: Corre ao iniciar o servidor
+transporter.verify(function (error, success) {
+    if (error) {
+        console.error(">>> [DIAGNÓSTICO] O Google está a bloquear! Erro:");
+        console.error({
+            mensagem: error.message,
+            codigo: error.code, // Procura por 'EAUTH' ou 'ETIMEDOUT'
+            comando: error.command
+        });
+    } else {
+        console.log(">>> [DIAGNÓSTICO] Ligação ao Gmail: OK! O servidor está pronto para enviar emails.");
+    }
 });
 
 // --- INICIALIZAÇÃO DA BD ---
