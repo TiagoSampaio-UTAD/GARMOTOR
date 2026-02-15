@@ -23,26 +23,22 @@ const pool = new Pool({
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'tiagoalvessampaio12@gmail.com',
-        pass: 'ncairwlybqnxhpxa'
+        // O Node vai buscar automaticamente os valores que guardaste no Render
+        user: process.env.EMAIL_USER, 
+        pass: process.env.EMAIL_PASS  
     },
-    family: 4, // Resolve o erro ENETUNREACH
+    family: 4, // Resolve o erro ENETUNREACH que vimos antes
     tls: {
         rejectUnauthorized: false
     }
 });
 
-// TESTE DE DIAGNÓSTICO: Corre ao iniciar o servidor
+// Diagnóstico para veres o que acontece nos logs do Render
 transporter.verify(function (error, success) {
     if (error) {
-        console.error(">>> [DIAGNÓSTICO] O Google está a bloquear! Erro:");
-        console.error({
-            mensagem: error.message,
-            codigo: error.code, // Procura por 'EAUTH' ou 'ETIMEDOUT'
-            comando: error.command
-        });
+        console.log(">>> [ERRO] Gmail bloqueado: " + error.message);
     } else {
-        console.log(">>> [DIAGNÓSTICO] Ligação ao Gmail: OK! O servidor está pronto para enviar emails.");
+        console.log(">>> [OK] Gmail configurado com sucesso!");
     }
 });
 
