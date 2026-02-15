@@ -20,21 +20,20 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
-// --- CONFIGURAÇÃO DE EMAIL (NODEMAILER) ---
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // true para porta 465, false para outras
+    port: 587,
+    secure: false, // false para porta 587
+    requireTLS: true,
     auth: {
         user: 'tiagoalvessampaio12@gmail.com',
-        pass: 'ncai rwly bqnx hpxa' // Mantém a tua app password aqui
+        pass: 'ncai rwly bqnx hpxa' 
     },
     tls: {
-        rejectUnauthorized: false // Ajuda a evitar erros de certificado no Render
-    },
-    connectionTimeout: 10000, // 10 segundos de limite
-    greetingTimeout: 5000,
-    socketTimeout: 10000
+        // Esta linha é crucial para o Render não bloquear a ligação
+        rejectUnauthorized: false,
+        minVersion: 'TLSv1.2'
+    }
 });
 
 // --- INICIALIZAÇÃO DA BD ---
