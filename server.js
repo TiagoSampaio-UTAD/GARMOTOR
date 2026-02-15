@@ -23,17 +23,17 @@ const pool = new Pool({
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
-    secure: false, // false para porta 587
-    requireTLS: true,
+    secure: false, // Obrigatório para porta 587
     auth: {
         user: 'tiagoalvessampaio12@gmail.com',
-        pass: 'ncai rwly bqnx hpxa' 
+        pass: 'ncairwlybqnxhpxa' // Tenta colar sem espaços desta vez
     },
     tls: {
-        // Esta linha é crucial para o Render não bloquear a ligação
-        rejectUnauthorized: false,
-        minVersion: 'TLSv1.2'
-    }
+        rejectUnauthorized: false // Ignora erros de certificado que causam timeout no Render
+    },
+    connectionTimeout: 20000, // Dá 20 segundos para conectar
+    greetingTimeout: 15000,
+    socketTimeout: 20000
 });
 
 // --- INICIALIZAÇÃO DA BD ---
