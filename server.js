@@ -23,13 +23,11 @@ const pool = new Pool({
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER, // Vai ler tiagoalvessampaio12@gmail.com
-        pass: process.env.EMAIL_PASS  // Vai ler a pass sem espaços
+        user: process.env.EMAIL_USER, // Ele vai buscar ao Render
+        pass: process.env.EMAIL_PASS  // Ele vai buscar ao Render
     },
-    family: 4, // Obrigatório para evitar erros de rede no Render
-    tls: {
-        rejectUnauthorized: false
-    }
+    family: 4, 
+    tls: { rejectUnauthorized: false }
 });
 
 // Diagnóstico importante
