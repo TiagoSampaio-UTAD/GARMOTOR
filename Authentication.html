@@ -3,66 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GARMOTOR - Acesso</title>
+    <title>GARMOTOR - Painel de Gestão</title>
     <style>
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; background: #111; color: white; }
-        .auth-card { background: #fff; color: #333; width: 90%; max-width: 400px; padding: 40px; border-radius: 25px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
-        .logo { height: 50px; margin-bottom: 20px; }
-        input { width: 100%; padding: 15px; margin: 10px 0; background: #f1f5f9; border: 1px solid #ddd; border-radius: 10px; box-sizing: border-box; }
-        .btn-auth { width: 100%; padding: 15px; background: #111; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-auth:hover { background: #d4af37; color: black; }
-        .link-toggle { display: block; margin-top: 15px; color: #666; font-size: 14px; cursor: pointer; text-decoration: underline; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), 
+                        url('img/GARMOTOR_PLACE.png') no-repeat center center/cover;
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-card {
+            background: #ffffff;
+            width: 90%;
+            max-width: 400px;
+            padding: 50px 40px;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            text-align: center;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 28px;
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: bold;
+            line-height: 1;
+            transition: 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #ff4d4d;
+            transform: scale(1.1);
+        }
+
+        .logo-area-modal { margin-bottom: 30px; }
+        .logo-area-modal img { 
+            height: 60px; 
+            mix-blend-mode: multiply;
+        }
+
+        h2 { 
+            font-size: 26px; 
+            font-weight: 800; 
+            color: #111; 
+            letter-spacing: -1px; 
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .subtitle { 
+            color: #666; 
+            font-size: 15px; 
+            margin-bottom: 35px; 
+            line-height: 1.4;
+        }
+
+        .admin-badge {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .field input {
+            width: 100%;
+            padding: 18px 22px;
+            background: #f1f5f9; 
+            border: 2px solid transparent;
+            border-radius: 18px;
+            font-size: 16px;
+            font-weight: 500;
+            box-sizing: border-box;
+            transition: 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .field input:focus {
+            outline: none;
+            background: #fff;
+            border-color: #d4af37; /* Dourado para combinar com a marca */
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+        }
+
+        .btn-auth {
+            width: 100%;
+            padding: 18px;
+            background: #111;
+            color: white;
+            border: none;
+            border-radius: 18px;
+            font-weight: 700;
+            font-size: 17px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            transition: 0.3s;
+        }
+
+        .btn-auth:hover {
+            background: #d4af37;
+            color: #000;
+            transform: translateY(-2px);
+        }
+
+        .auth-footer { 
+            margin-top: 25px; 
+            color: #94a3b8; 
+            font-size: 13px; 
+        }
+
+        .link-toggle {
+            display: block;
+            margin-top: 15px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .link-toggle:hover {
+            color: #d4af37;
+        }
+
         .hidden { display: none; }
     </style>
 </head>
 <body>
     <div class="auth-card">
-        <img src="img/GARMOTOR_LOGO.png" class="logo">
-        
+        <a href="Index.html" class="close-btn" title="Voltar ao Início">&times;</a>
+
+        <div class="logo-area-modal">
+            <img src="img/GARMOTOR_LOGO.png" alt="GARMOTOR">
+        </div>
+
         <div id="section-login">
-            <h2>Login</h2>
-            <input type="email" id="loginEmail" placeholder="E-mail">
-            <input type="password" id="loginPass" placeholder="Palavra-passe">
-            <button onclick="executarLogin()" class="btn-auth">Entrar</button>
-            <span class="link-toggle" onclick="toggleAuth()">Esqueci-me da senha</span>
+            <div class="admin-badge">PAINEL DE GESTÃO</div>
+            <h2>Administração</h2>
+            <p class="subtitle">Acesso exclusivo para administradores e vendedores autorizados.</p>
+
+            <div class="field">
+                <input type="email" id="loginEmail" placeholder="E-mail profissional">
+            </div>
+            <div class="field">
+                <input type="password" id="loginPass" placeholder="Palavra-passe">
+            </div>
+            <button type="button" onclick="executarLogin()" class="btn-auth">Aceder ao Painel</button>
+            
+            <span class="link-toggle" onclick="toggleAuth()">Esqueceu-se da palavra-passe?</span>
         </div>
 
         <div id="section-recover" class="hidden">
-            <h2>Recuperar</h2>
-            <p>Insira o seu e-mail para receber o link.</p>
-            <input type="email" id="recoverEmail" placeholder="E-mail registado">
-            <button id="btnRecover" onclick="executarRecuperacao()" class="btn-auth">Enviar Link</button>
+            <div class="admin-badge" style="background: #fff7ed; color: #c2410c;">RECUPERAÇÃO</div>
+            <h2>Recuperar Senha</h2>
+            <p class="subtitle">Insira o seu e-mail para receber um link de alteração de password.</p>
+
+            <div class="field">
+                <input type="email" id="recoverEmail" placeholder="E-mail registado">
+            </div>
+            <button type="button" id="btnRecover" onclick="executarRecuperacao()" class="btn-auth">Enviar Link por E-mail</button>
+            
             <span class="link-toggle" onclick="toggleAuth()">Voltar ao Login</span>
+        </div>
+
+        <div class="auth-footer">
+            Problemas no acesso? Contacte o suporte técnico.
         </div>
     </div>
 
     <script>
+        // Alterna entre o formulário de Login e o de Recuperação
         function toggleAuth() {
             document.getElementById('section-login').classList.toggle('hidden');
             document.getElementById('section-recover').classList.toggle('hidden');
         }
 
+        // Função de Login (Já preparada para Hash/Bcrypt no backend)
         async function executarLogin() {
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const pass = document.getElementById('loginPass').value;
+
+            if(!email || !pass) return alert("Preencha todos os campos.");
+
             try {
                 const res = await fetch('/api/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, pass })
                 });
+                
                 const data = await res.json();
+                
                 if (res.ok) {
                     localStorage.setItem('vendedorNome', data.nome);
-                    window.location.href = "Index.html";
-                } else alert(data.mensagem);
-            } catch (e) { alert("Erro de ligação."); }
+                    localStorage.setItem('userTipo', data.tipo);
+                    alert("Bem-vindo, " + data.nome + "!");
+                    window.location.href = "Index.html"; 
+                } else {
+                    alert(data.mensagem || "Credenciais inválidas.");
+                }
+            } catch (e) {
+                alert("Erro ao ligar ao servidor.");
+            }
         }
 
+        // Função para Pedir Email de Recuperação
         async function executarRecuperacao() {
-            const email = document.getElementById('recoverEmail').value;
+            const email = document.getElementById('recoverEmail').value.trim();
             const btn = document.getElementById('btnRecover');
-            btn.innerText = "A ENVIAR..."; btn.disabled = true;
+
+            if(!email) return alert("Por favor, introduza o seu e-mail.");
+
+            // Feedback visual de carregamento
+            btn.innerText = "A ENVIAR...";
+            btn.disabled = true;
+            btn.style.opacity = "0.7";
 
             try {
                 const res = await fetch('/api/recuperar-senha', {
@@ -70,11 +241,22 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email })
                 });
+                
                 const data = await res.json();
-                alert(data.mensagem);
-                if (res.ok) toggleAuth();
-            } catch (e) { alert("Erro ao enviar."); }
-            finally { btn.innerText = "Enviar Link"; btn.disabled = false; }
+                
+                if (res.ok) {
+                    alert("Email enviado com sucesso! Verifique a sua caixa de entrada.");
+                    toggleAuth(); // Volta para o login
+                } else {
+                    alert(data.mensagem || "Erro ao processar pedido.");
+                }
+            } catch (e) {
+                alert("Erro ao ligar ao servidor.");
+            } finally {
+                btn.innerText = "Enviar Link por E-mail";
+                btn.disabled = false;
+                btn.style.opacity = "1";
+            }
         }
     </script>
 </body>
