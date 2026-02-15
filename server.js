@@ -2,14 +2,14 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const path = require('path');
-const bcrypt = require('bcrypt'); // NOVO: Para encriptar
-const nodemailer = require('nodemailer'); // NOVO: Para enviar emails
-const crypto = require('crypto'); // Nativo do Node para gerar tokens
+const bcrypt = require('bcrypt'); 
+const nodemailer = require('nodemailer'); 
+const crypto = require('crypto'); 
 
 const app = express();
 
 // --- CONFIGURAÇÃO ---
-app.use(express.json({ limit: '50mb' })); // Reduzi um pouco por segurança
+app.use(express.json({ limit: '50mb' })); 
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 app.use(express.static(__dirname));
@@ -20,18 +20,20 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
+// --- CONFIGURAÇÃO DE EMAIL (CORRIGIDA PARA RENDER) ---
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
-    secure: false, // Obrigatório para porta 587
+    secure: false,
     auth: {
         user: 'tiagoalvessampaio12@gmail.com',
-        pass: 'ncairwlybqnxhpxa' // Tenta colar sem espaços desta vez
+        pass: 'ncairwlybqnxhpxa'
     },
     tls: {
-        rejectUnauthorized: false // Ignora erros de certificado que causam timeout no Render
+        rejectUnauthorized: false
     },
-    connectionTimeout: 20000, // Dá 20 segundos para conectar
+    family: 4, // FORÇA IPV4 - Resolve o erro ENETUNREACH no Render
+    connectionTimeout: 20000,
     greetingTimeout: 15000,
     socketTimeout: 20000
 });
@@ -39,7 +41,7 @@ const transporter = nodemailer.createTransport({
 // --- INICIALIZAÇÃO DA BD ---
 const inicializarBancoDeDados = async () => {
     try {
-        // Criar Tabela Vendedores (com colunas de reset)
+        // Criar Tabela Vendedores
         await pool.query(`
             CREATE TABLE IF NOT EXISTS Vendedores (
                 Id SERIAL PRIMARY KEY,
@@ -53,11 +55,11 @@ const inicializarBancoDeDados = async () => {
             );
         `);
 
-        // Tentar adicionar colunas se a tabela já existir (caso não tenhas corrido o SQL manual)
+        // Garantir que colunas de reset existem
         try {
             await pool.query("ALTER TABLE Vendedores ADD COLUMN IF NOT EXISTS ResetToken VARCHAR(255)");
             await pool.query("ALTER TABLE Vendedores ADD COLUMN IF NOT EXISTS ResetTokenExpires BIGINT");
-        } catch (e) { /* Ignorar se já existirem */ }
+        } catch (e) { }
 
         // Criar Tabela Veículos
         await pool.query(`
@@ -80,37 +82,35 @@ const inicializarBancoDeDados = async () => {
             );
         `);
 
-        // Cria Admin se não existir (AGORA COM HASH)
-        // Procura esta parte e substitui o "ON CONFLICT" por isto:
-const hashAdmin = await bcrypt.hash('Garmotor2026!', 10);
-const queryAdmin = `
-    INSERT INTO Vendedores (Nome, Email, Senha, EmailConfirmado, Tipo)
-    VALUES ('GARMOTOR', 'tiagoalvessampaio12@gmail.com', $1, 1, 'Admin')
-    ON CONFLICT (Email) DO UPDATE SET Senha = EXCLUDED.Senha;
-`;
-await pool.query(queryAdmin, [hashAdmin]);
+        // Criar Admin padrão com Password Encriptada
+        const hashAdmin = await bcrypt.hash('Garmotor2026!', 10);
+        const queryAdmin = `
+            INSERT INTO Vendedores (Nome, Email, Senha, EmailConfirmado, Tipo)
+            VALUES ('GARMOTOR', 'tiagoalvessampaio12@gmail.com', $1, 1, 'Admin')
+            ON CONFLICT (Email) DO UPDATE SET Senha = EXCLUDED.Senha;
+        `;
+        await pool.query(queryAdmin, [hashAdmin]);
 
-        console.log('>>> Base de dados pronta e segura!');
+        console.log('>>> Base de dados e Admin configurados com sucesso!');
     } catch (err) {
-        console.error('Erro DB:', err);
+        console.error('Erro ao inicializar DB:', err);
     }
 };
 
 inicializarBancoDeDados();
 
-// --- ROTAS DE PÁGINAS ---
+// --- ROTAS ---
+
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'Index.html')));
 
-// --- LOGIN SEGURO (COM HASH) ---
+// LOGIN
 app.post('/api/login', async (req, res) => {
     try {
         const { email, pass } = req.body;
-        const query = 'SELECT * FROM Vendedores WHERE Email = $1';
-        const resultado = await pool.query(query, [email]);
+        const resultado = await pool.query('SELECT * FROM Vendedores WHERE Email = $1', [email]);
 
         if (resultado.rows.length > 0) {
             const user = resultado.rows[0];
-            // Compara a senha escrita com o Hash da BD
             const match = await bcrypt.compare(pass, user.senha || user.Senha);
             
             if (match) {
@@ -126,45 +126,23 @@ app.post('/api/login', async (req, res) => {
             res.status(401).json({ mensagem: "Utilizador não encontrado." });
         }
     } catch (err) {
-        console.error(err);
         res.status(500).json({ mensagem: "Erro no servidor." });
     }
 });
 
-// --- REGISTO SEGURO (COM HASH) ---
-// Útil se quiseres criar outros vendedores no futuro
-app.post('/api/registar', async (req, res) => {
-    try {
-        const { nome, email, pass } = req.body;
-        // Encriptar senha antes de guardar
-        const hash = await bcrypt.hash(pass, 10);
-        
-        const query = `INSERT INTO Vendedores (Nome, Email, Senha, Tipo, EmailConfirmado) VALUES ($1, $2, $3, 'Vendedor', 1) RETURNING Nome`;
-        await pool.query(query, [nome, email, hash]);
-        
-        res.status(201).json({ mensagem: "Criado com sucesso" });
-    } catch (err) {
-        res.status(500).json({ mensagem: "Erro ao criar conta." });
-    }
-});
-
-// --- RECUPERAÇÃO DE SENHA: PASSO 1 (PEDIR O EMAIL) ---
+// RECUPERAÇÃO DE SENHA (PEDIDO)
 app.post('/api/recuperar-senha', async (req, res) => {
     const { email } = req.body;
-    console.log(">>> Pedido de recuperação para:", email); // LOG 1
-
     try {
         const user = await pool.query("SELECT * FROM Vendedores WHERE Email = $1", [email]);
         if (user.rows.length === 0) {
-            console.log(">>> Email não encontrado na base de dados.");
             return res.status(404).json({ mensagem: "Email não registado." });
         }
 
         const token = crypto.randomBytes(20).toString('hex');
-        const expires = Date.now() + 3600000;
+        const expires = Date.now() + 3600000; // 1 hora
 
         await pool.query("UPDATE Vendedores SET ResetToken = $1, ResetTokenExpires = $2 WHERE Email = $3", [token, expires, email]);
-        console.log(">>> Token gerado e guardado com sucesso."); // LOG 2
 
         const domain = req.headers.host; 
         const protocol = req.headers['x-forwarded-proto'] || 'http'; 
@@ -174,26 +152,22 @@ app.post('/api/recuperar-senha', async (req, res) => {
             to: email,
             from: '"GARMOTOR" <tiagoalvessampaio12@gmail.com>',
             subject: 'Alteração de Password - GARMOTOR',
-            html: `<h2>Recuperação de Acesso</h2><p>Clica no link: <a href="${link}">${link}</a></p>`
+            html: `<h2>Recuperação de Acesso</h2><p>Clique no link para definir uma nova senha: <a href="${link}">${link}</a></p>`
         };
 
-        console.log(">>> A tentar enviar email..."); // LOG 3
         await transporter.sendMail(mailOptions);
-        console.log(">>> EMAIL ENVIADO COM SUCESSO!"); // LOG 4
-        
-        res.json({ mensagem: "Email enviado! Verifica a tua caixa de correio." });
+        res.json({ mensagem: "Email enviado! Verifique a sua caixa de correio." });
 
     } catch (err) {
-        console.error(">>> ERRO CRÍTICO NO ENVIO:", err.message); // LOG DE ERRO
-        res.status(500).json({ mensagem: "Erro ao enviar email: " + err.message });
+        console.error("ERRO NO ENVIO:", err.message);
+        res.status(500).json({ mensagem: "Erro ao enviar email. Tente novamente." });
     }
 });
 
-// --- RECUPERAÇÃO DE SENHA: PASSO 2 (ALTERAR A PASSWORD) ---
+// RESET FINAL DE SENHA
 app.post('/api/reset-senha-final', async (req, res) => {
     const { token, novaSenha } = req.body;
     try {
-        // Verificar se token existe e não expirou
         const query = "SELECT * FROM Vendedores WHERE ResetToken = $1 AND ResetTokenExpires > $2";
         const user = await pool.query(query, [token, Date.now()]);
 
@@ -201,32 +175,23 @@ app.post('/api/reset-senha-final', async (req, res) => {
             return res.status(400).json({ mensagem: "Link inválido ou expirado." });
         }
 
-        // Encriptar nova senha
         const novoHash = await bcrypt.hash(novaSenha, 10);
 
-        // Atualizar senha e limpar token
         await pool.query(
             "UPDATE Vendedores SET Senha = $1, ResetToken = NULL, ResetTokenExpires = NULL WHERE Id = $2",
             [novoHash, user.rows[0].id || user.rows[0].Id]
         );
 
-        res.json({ mensagem: "Password alterada com sucesso! Podes fazer login." });
-
+        res.json({ mensagem: "Password alterada com sucesso!" });
     } catch (err) {
-        console.error(err);
         res.status(500).json({ mensagem: "Erro ao alterar password." });
     }
 });
 
-// --- ROTAS DE VEÍCULOS (MANTIDAS) ---
+// VEÍCULOS
 app.get('/api/veiculos', async (req, res) => {
     const resultado = await pool.query("SELECT * FROM Veiculos ORDER BY Id DESC");
     res.json(resultado.rows);
-});
-
-app.get('/api/veiculos/:id', async (req, res) => {
-    const resultado = await pool.query("SELECT * FROM Veiculos WHERE Id = $1", [req.params.id]);
-    res.json(resultado.rows[0]);
 });
 
 app.post('/api/veiculos/adicionar', async (req, res) => {
@@ -236,18 +201,10 @@ app.post('/api/veiculos/adicionar', async (req, res) => {
     res.status(201).json(resultado.rows[0]);
 });
 
-app.put('/api/veiculos/:id', async (req, res) => {
-    const { id } = req.params;
-    const { marca, modelo, preco, ano, kms, combustivel, caixa, cor, descricao, imagemCapa, estado } = req.body;
-    const query = `UPDATE Veiculos SET Marca=$1, Modelo=$2, Preco=$3, Ano=$4, Kms=$5, Combustivel=$6, Caixa=$7, Cor=$8, Descricao=$9, ImagemCapa=$10, Estado=$11 WHERE Id=$12`;
-    await pool.query(query, [marca, modelo, preco, ano, kms, combustivel, caixa, cor, descricao, imagemCapa, estado, id]);
-    res.json({ success: true });
-});
-
 app.delete('/api/veiculos/:id', async (req, res) => {
     await pool.query("DELETE FROM Veiculos WHERE Id = $1", [req.params.id]);
     res.json({ success: true });
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`GARMOTOR Online: ${PORT}`));
+app.listen(PORT, () => console.log(`GARMOTOR Online na porta ${PORT}`));
