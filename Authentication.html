@@ -80,8 +80,6 @@
             border: 1px solid #e2e8f0;
         }
 
-        form { display: flex; flex-direction: column; gap: 15px; }
-
         .field input {
             width: 100%;
             padding: 18px 22px;
@@ -92,19 +90,20 @@
             font-weight: 500;
             box-sizing: border-box;
             transition: 0.3s;
+            margin-bottom: 15px;
         }
 
         .field input:focus {
             outline: none;
             background: #fff;
-            border-color: #007aff;
-            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+            border-color: #d4af37; /* Dourado para combinar com a marca */
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
         }
 
         .btn-auth {
             width: 100%;
             padding: 18px;
-            background: #111; /* Cor escura para Admin */
+            background: #111;
             color: white;
             border: none;
             border-radius: 18px;
@@ -117,15 +116,33 @@
         }
 
         .btn-auth:hover {
-            background: #007aff;
+            background: #d4af37;
+            color: #000;
             transform: translateY(-2px);
         }
 
         .auth-footer { 
-            margin-top: 30px; 
+            margin-top: 25px; 
             color: #94a3b8; 
             font-size: 13px; 
         }
+
+        .link-toggle {
+            display: block;
+            margin-top: 15px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .link-toggle:hover {
+            color: #d4af37;
+        }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -137,56 +154,111 @@
             <img src="img/GARMOTOR_LOGO.png" alt="GARMOTOR">
         </div>
 
-        <div class="admin-badge">PAINEL DE GESTÃO</div>
-        <h2 id="atitle">Administração</h2>
-        <p id="asub" class="subtitle">Acesso exclusivo para administradores e vendedores autorizados.</p>
+        <div id="section-login">
+            <div class="admin-badge">PAINEL DE GESTÃO</div>
+            <h2>Administração</h2>
+            <p class="subtitle">Acesso exclusivo para administradores e vendedores autorizados.</p>
 
-        <form id="alogin">
             <div class="field">
-                <input type="email" id="loginEmail" placeholder="E-mail profissional" required>
+                <input type="email" id="loginEmail" placeholder="E-mail profissional">
             </div>
             <div class="field">
-                <input type="password" id="loginPass" placeholder="Palavra-passe" required>
+                <input type="password" id="loginPass" placeholder="Palavra-passe">
             </div>
             <button type="button" onclick="executarLogin()" class="btn-auth">Aceder ao Painel</button>
             
-            <div class="auth-footer">
-                Problemas no acesso? Contacte o suporte técnico.
+            <span class="link-toggle" onclick="toggleAuth()">Esqueceu-se da palavra-passe?</span>
+        </div>
+
+        <div id="section-recover" class="hidden">
+            <div class="admin-badge" style="background: #fff7ed; color: #c2410c;">RECUPERAÇÃO</div>
+            <h2>Recuperar Senha</h2>
+            <p class="subtitle">Insira o seu e-mail para receber um link de alteração de password.</p>
+
+            <div class="field">
+                <input type="email" id="recoverEmail" placeholder="E-mail registado">
             </div>
-        </form>
+            <button type="button" id="btnRecover" onclick="executarRecuperacao()" class="btn-auth">Enviar Link por E-mail</button>
+            
+            <span class="link-toggle" onclick="toggleAuth()">Voltar ao Login</span>
+        </div>
+
+        <div class="auth-footer">
+            Problemas no acesso? Contacte o suporte técnico.
+        </div>
     </div>
 
     <script>
-    async function executarLogin() {
-        const email = document.getElementById('loginEmail').value.trim();
-        const pass = document.getElementById('loginPass').value;
-
-        try {
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, pass })
-            });
-            
-            const data = await res.json();
-            
-            if (res.ok) {
-                // Guarda a sessão
-                localStorage.setItem('vendedorNome', data.nome);
-                localStorage.setItem('userTipo', data.tipo);
-
-                alert("Login efetuado com sucesso!");
-                
-                // Redireciona para a Index ou Dashboard
-                // Na Index.html vamos fazer o botão aparecer
-                window.location.href = "Index.html"; 
-            } else {
-                alert(data.mensagem || "Credenciais erradas.");
-            }
-        } catch (e) {
-            alert("Erro ao ligar ao servidor.");
+        // Alterna entre o formulário de Login e o de Recuperação
+        function toggleAuth() {
+            document.getElementById('section-login').classList.toggle('hidden');
+            document.getElementById('section-recover').classList.toggle('hidden');
         }
-    }
-</script>
+
+        // Função de Login (Já preparada para Hash/Bcrypt no backend)
+        async function executarLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPass').value;
+
+            if(!email || !pass) return alert("Preencha todos os campos.");
+
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, pass })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    localStorage.setItem('vendedorNome', data.nome);
+                    localStorage.setItem('userTipo', data.tipo);
+                    alert("Bem-vindo, " + data.nome + "!");
+                    window.location.href = "Index.html"; 
+                } else {
+                    alert(data.mensagem || "Credenciais inválidas.");
+                }
+            } catch (e) {
+                alert("Erro ao ligar ao servidor.");
+            }
+        }
+
+        // Função para Pedir Email de Recuperação
+        async function executarRecuperacao() {
+            const email = document.getElementById('recoverEmail').value.trim();
+            const btn = document.getElementById('btnRecover');
+
+            if(!email) return alert("Por favor, introduza o seu e-mail.");
+
+            // Feedback visual de carregamento
+            btn.innerText = "A ENVIAR...";
+            btn.disabled = true;
+            btn.style.opacity = "0.7";
+
+            try {
+                const res = await fetch('/api/recuperar-senha', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    alert("Email enviado com sucesso! Verifique a sua caixa de entrada.");
+                    toggleAuth(); // Volta para o login
+                } else {
+                    alert(data.mensagem || "Erro ao processar pedido.");
+                }
+            } catch (e) {
+                alert("Erro ao ligar ao servidor.");
+            } finally {
+                btn.innerText = "Enviar Link por E-mail";
+                btn.disabled = false;
+                btn.style.opacity = "1";
+            }
+        }
+    </script>
 </body>
 </html>

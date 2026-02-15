@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definir Nova Password</title>
+    <style>
+        body {
+            margin: 0; padding: 0; font-family: sans-serif;
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            background: #111; color: white;
+        }
+        .card {
+            background: #222; padding: 40px; border-radius: 15px; width: 90%; max-width: 400px;
+            text-align: center; border: 1px solid #d4af37;
+        }
+        input {
+            width: 100%; padding: 15px; margin: 10px 0; background: #333; 
+            border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box;
+        }
+        button {
+            width: 100%; padding: 15px; background: #d4af37; border: none; 
+            font-weight: bold; cursor: pointer; border-radius: 5px; margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 style="color:#d4af37">Nova Password</h2>
+        <p style="color:#ccc; font-size:14px;">Defina a sua nova senha de acesso.</p>
+        
+        <form onsubmit="alterarSenha(event)">
+            <input type="password" id="novaSenha" placeholder="Nova Password" required minlength="6">
+            <button type="submit">GUARDAR ALTERAÇÃO</button>
+        </form>
+    </div>
+
+    <script>
+        async function alterarSenha(e) {
+            e.preventDefault();
+            
+            // Pega o token da URL (ex: ?token=xyz...)
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('token');
+            const novaSenha = document.getElementById('novaSenha').value;
+
+            if(!token) return alert("Link inválido.");
+
+            try {
+                const res = await fetch('/api/reset-senha-final', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ token, novaSenha })
+                });
+                const data = await res.json();
+                
+                alert(data.mensagem);
+                if(res.ok) window.location.href = "Authentication.html";
+                
+            } catch(err) {
+                alert("Erro ao alterar senha.");
+            }
+        }
+    </script>
+</body>
+</html>
