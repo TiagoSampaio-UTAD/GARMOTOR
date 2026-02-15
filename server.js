@@ -22,11 +22,19 @@ const pool = new Pool({
 
 // --- CONFIGURAÇÃO DE EMAIL (NODEMAILER) ---
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // true para porta 465, false para outras
     auth: {
-        user: 'tiagoalvessampaio12@gmail.com', // O TEU EMAIL GMAIL
-        pass: 'ncairwlybqnxhpxa' // AQUI TENS DE POR A TUA "APP PASSWORD" DO GOOGLE
-    }
+        user: 'tiagoalvessampaio12@gmail.com',
+        pass: 'ncai rwly bqnx hpxa' // Mantém a tua app password aqui
+    },
+    tls: {
+        rejectUnauthorized: false // Ajuda a evitar erros de certificado no Render
+    },
+    connectionTimeout: 10000, // 10 segundos de limite
+    greetingTimeout: 5000,
+    socketTimeout: 10000
 });
 
 // --- INICIALIZAÇÃO DA BD ---
