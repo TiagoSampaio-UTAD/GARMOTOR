@@ -22,20 +22,15 @@ const pool = new Pool({
 
 // --- CONFIGURAÇÃO DE EMAIL (CORRIGIDA PARA RENDER) ---
 const transporter = nodemailer.createTransport({
+    service: 'gmail', // O Nodemailer já tem configurações pré-definidas para o Gmail
     host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true, // true para porta 465
     auth: {
         user: 'tiagoalvessampaio12@gmail.com',
         pass: 'ncairwlybqnxhpxa'
     },
-    tls: {
-        rejectUnauthorized: false
-    },
-    family: 4, // FORÇA IPV4 - Resolve o erro ENETUNREACH no Render
-    connectionTimeout: 20000,
-    greetingTimeout: 15000,
-    socketTimeout: 20000
+    family: 4 // Continua a ser obrigatório para evitar o erro de rede IPv6
 });
 
 // --- INICIALIZAÇÃO DA BD ---
