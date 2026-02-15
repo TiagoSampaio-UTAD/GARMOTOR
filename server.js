@@ -81,14 +81,14 @@ const inicializarBancoDeDados = async () => {
         `);
 
         // Cria Admin se não existir (AGORA COM HASH)
-        // Nota: A senha aqui é 'Garmotor2026!'
-        const hashAdmin = await bcrypt.hash('Garmotor2026!', 10);
-        const queryAdmin = `
-            INSERT INTO Vendedores (Nome, Email, Senha, EmailConfirmado, Tipo)
-            VALUES ('GARMOTOR', 'tiagoalvessampaio12@gmail.com', $1, 1, 'Admin')
-            ON CONFLICT (Email) DO NOTHING;
-        `;
-        await pool.query(queryAdmin, [hashAdmin]);
+        // Procura esta parte e substitui o "ON CONFLICT" por isto:
+const hashAdmin = await bcrypt.hash('Garmotor2026!', 10);
+const queryAdmin = `
+    INSERT INTO Vendedores (Nome, Email, Senha, EmailConfirmado, Tipo)
+    VALUES ('GARMOTOR', 'tiagoalvessampaio12@gmail.com', $1, 1, 'Admin')
+    ON CONFLICT (Email) DO UPDATE SET Senha = EXCLUDED.Senha;
+`;
+await pool.query(queryAdmin, [hashAdmin]);
 
         console.log('>>> Base de dados pronta e segura!');
     } catch (err) {
