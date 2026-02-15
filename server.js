@@ -25,7 +25,7 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'tiagoalvessampaio12@gmail.com', // O TEU EMAIL GMAIL
-        pass: 'ncai rwly bqnx hpxa' // AQUI TENS DE POR A TUA "APP PASSWORD" DO GOOGLE
+        pass: 'ncairwlybqnxhpxa' // AQUI TENS DE POR A TUA "APP PASSWORD" DO GOOGLE
     }
 });
 
@@ -144,48 +144,41 @@ app.post('/api/registar', async (req, res) => {
 // --- RECUPERAÇÃO DE SENHA: PASSO 1 (PEDIR O EMAIL) ---
 app.post('/api/recuperar-senha', async (req, res) => {
     const { email } = req.body;
+    console.log(">>> Pedido de recuperação para:", email); // LOG 1
+
     try {
         const user = await pool.query("SELECT * FROM Vendedores WHERE Email = $1", [email]);
         if (user.rows.length === 0) {
+            console.log(">>> Email não encontrado na base de dados.");
             return res.status(404).json({ mensagem: "Email não registado." });
         }
 
-        // Gerar Token
         const token = crypto.randomBytes(20).toString('hex');
-        const expires = Date.now() + 3600000; // 1 hora de validade
+        const expires = Date.now() + 3600000;
 
-        // Guardar Token na BD
         await pool.query("UPDATE Vendedores SET ResetToken = $1, ResetTokenExpires = $2 WHERE Email = $3", [token, expires, email]);
+        console.log(">>> Token gerado e guardado com sucesso."); // LOG 2
 
-        // Link para o utilizador clicar (ajusta o domínio quando fizeres deploy)
-        // Se estiveres local: http://localhost:3000
-        // Se estiveres no render: https://garmotor.onrender.com
         const domain = req.headers.host; 
-        const protocol = req.secure ? 'https' : 'http'; // Render usa https
+        const protocol = req.headers['x-forwarded-proto'] || 'http'; 
         const link = `${protocol}://${domain}/ResetPassword.html?token=${token}`;
 
-        // Enviar Email
         const mailOptions = {
             to: email,
-            from: 'GARMOTOR <tiagoalvessampaio12@gmail.com>',
+            from: '"GARMOTOR" <tiagoalvessampaio12@gmail.com>',
             subject: 'Alteração de Password - GARMOTOR',
-            html: `
-                <div style="font-family: Arial, sans-serif; color: #333; max-width: 600px;">
-                    <h2 style="color: #d4af37;">Recuperação de Acesso</h2>
-                    <p>Recebemos um pedido para alterar a password da tua conta GARMOTOR.</p>
-                    <p>Clica no botão abaixo para definir uma nova password:</p>
-                    <a href="${link}" style="background-color: #d4af37; color: #000; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 5px;">DEFINIR NOVA PASSWORD</a>
-                    <p style="margin-top: 20px; font-size: 12px; color: #666;">Se não pediste isto, ignora este email. O link expira em 1 hora.</p>
-                </div>
-            `
+            html: `<h2>Recuperação de Acesso</h2><p>Clica no link: <a href="${link}">${link}</a></p>`
         };
 
+        console.log(">>> A tentar enviar email..."); // LOG 3
         await transporter.sendMail(mailOptions);
+        console.log(">>> EMAIL ENVIADO COM SUCESSO!"); // LOG 4
+        
         res.json({ mensagem: "Email enviado! Verifica a tua caixa de correio." });
 
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ mensagem: "Erro ao enviar email." });
+        console.error(">>> ERRO CRÍTICO NO ENVIO:", err.message); // LOG DE ERRO
+        res.status(500).json({ mensagem: "Erro ao enviar email: " + err.message });
     }
 });
 
