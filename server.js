@@ -1,9 +1,8 @@
 const express = require('express');
-const { Pool } = require('pg');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const bcrypt = require('bcrypt'); 
-const nodemailer = require('nodemailer'); 
 const crypto = require('crypto'); 
 
 const app = express();
@@ -14,91 +13,60 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 app.use(express.static(__dirname));
 
-// --- BASE DE DADOS ---
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://garmotor_db_user:bwMHap8eQ1hkRgYDkP9IFLYOO2Nh2rZE@dpg-d63uagq4d50c73e10640-a.frankfurt-postgres.render.com/garmotor_db',
-    ssl: { rejectUnauthorized: false }
-});
+// --- CONEXÃO MONGODB ---
+// Substitui <password> pela tua senha real do MongoDB Atlas
+const mongoURI = 'mongodb+srv://tiagoalvessampaio12_db_user:<password>@garmotor.jrj7tav.mongodb.net/?appName=Garmotor'; 
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER, // Ele vai buscar ao Render
-        pass: process.env.EMAIL_PASS  // Ele vai buscar ao Render
-    },
-    family: 4, 
-    tls: { rejectUnauthorized: false }
-});
+mongoose.connect(mongoURI)
+    .then(() => console.log('>>> Conectado ao MongoDB com sucesso!'))
+    .catch(err => console.error('Erro ao conectar ao MongoDB:', err));
 
-// Diagnóstico importante
-transporter.verify(function (error, success) {
-    if (error) {
-        console.log(">>> [ERRO] Falha no Gmail: " + error.message);
-    } else {
-        console.log(">>> [OK] Servidor pronto para enviar emails!");
-    }
-});
+// --- MODELOS (SCHEMAS) ---
 
-// --- INICIALIZAÇÃO DA BD ---
-const inicializarBancoDeDados = async () => {
+const VendedorSchema = new mongoose.Schema({
+    nome: { type: String, required: true },
+    email: { type: String, unique: true, required: true },
+    senha: { type: String, required: true },
+    tipo: { type: String, default: 'Cliente' },
+    resetToken: String,
+    resetTokenExpires: Date
+});
+const Vendedor = mongoose.model('Vendedor', VendedorSchema);
+
+const VeiculoSchema = new mongoose.Schema({
+    vendedorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendedor' },
+    marca: String,
+    modelo: String,
+    ano: Number,
+    kms: Number,
+    combustivel: String,
+    caixa: String,
+    cor: String,
+    preco: Number,
+    descricao: String,
+    imagemCapa: String, 
+    estado: { type: String, default: 'Disponível' },
+    dataPublicacao: { type: Date, default: Date.now }
+});
+const Veiculo = mongoose.model('Veiculo', VeiculoSchema);
+
+// --- INICIALIZAÇÃO: Admin padrão ---
+const inicializarAdmin = async () => {
     try {
-        // Criar Tabela Vendedores
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS Vendedores (
-                Id SERIAL PRIMARY KEY,
-                Nome VARCHAR(255) NOT NULL,
-                Email VARCHAR(255) UNIQUE NOT NULL,
-                Senha VARCHAR(255) NOT NULL,
-                EmailConfirmado INT DEFAULT 0,
-                Tipo VARCHAR(50) DEFAULT 'Cliente',
-                ResetToken VARCHAR(255),
-                ResetTokenExpires BIGINT
-            );
-        `);
-
-        // Garantir que colunas de reset existem
-        try {
-            await pool.query("ALTER TABLE Vendedores ADD COLUMN IF NOT EXISTS ResetToken VARCHAR(255)");
-            await pool.query("ALTER TABLE Vendedores ADD COLUMN IF NOT EXISTS ResetTokenExpires BIGINT");
-        } catch (e) { }
-
-        // Criar Tabela Veículos
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS Veiculos (
-                Id SERIAL PRIMARY KEY,
-                VendedorId INT NOT NULL,
-                Marca VARCHAR(50),
-                Modelo VARCHAR(50),
-                Ano INT,
-                Kms INT,
-                Combustivel VARCHAR(30),
-                Caixa VARCHAR(30),
-                Cor VARCHAR(30),
-                Preco DECIMAL(10, 2),
-                Descricao TEXT,
-                ImagemCapa TEXT, 
-                Estado VARCHAR(20) DEFAULT 'Disponível',
-                DataPublicacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT FK_VendedorVeiculo FOREIGN KEY (VendedorId) REFERENCES Vendedores(Id) ON DELETE CASCADE
-            );
-        `);
-
-        // Criar Admin padrão com Password Encriptada
-        const hashAdmin = await bcrypt.hash('Garmotor2026!', 10);
-        const queryAdmin = `
-            INSERT INTO Vendedores (Nome, Email, Senha, EmailConfirmado, Tipo)
-            VALUES ('GARMOTOR', 'tiagoalvessampaio12@gmail.com', $1, 1, 'Admin')
-            ON CONFLICT (Email) DO UPDATE SET Senha = EXCLUDED.Senha;
-        `;
-        await pool.query(queryAdmin, [hashAdmin]);
-
-        console.log('>>> Base de dados e Admin configurados com sucesso!');
-    } catch (err) {
-        console.error('Erro ao inicializar DB:', err);
-    }
+        const adminExistente = await Vendedor.findOne({ email: 'tiagoalvessampaio12@gmail.com' });
+        if (!adminExistente) {
+            const hash = await bcrypt.hash('Garmotor2026!', 10);
+            await Vendedor.create({
+                nome: 'GARMOTOR',
+                email: 'tiagoalvessampaio12@gmail.com',
+                senha: hash,
+                tipo: 'Admin'
+            });
+            console.log('>>> Admin GARMOTOR criado no MongoDB!');
+        }
+    } catch (err) { console.error('Erro ao criar admin:', err); }
 };
-
-inicializarBancoDeDados();
+inicializarAdmin();
 
 // --- ROTAS ---
 
@@ -108,104 +76,69 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'Index.html')));
 app.post('/api/login', async (req, res) => {
     try {
         const { email, pass } = req.body;
-        const resultado = await pool.query('SELECT * FROM Vendedores WHERE Email = $1', [email]);
-
-        if (resultado.rows.length > 0) {
-            const user = resultado.rows[0];
-            const match = await bcrypt.compare(pass, user.senha || user.Senha);
-            
-            if (match) {
-                res.json({
-                    nome: user.nome || user.Nome,
-                    email: user.email || user.Email,
-                    tipo: user.tipo || user.Tipo
-                });
-            } else {
-                res.status(401).json({ mensagem: "Senha incorreta." });
-            }
+        const user = await Vendedor.findOne({ email });
+        if (user && await bcrypt.compare(pass, user.senha)) {
+            res.json({ nome: user.nome, email: user.email, tipo: user.tipo });
         } else {
-            res.status(401).json({ mensagem: "Utilizador não encontrado." });
+            res.status(401).json({ mensagem: "Email ou senha incorretos." });
         }
-    } catch (err) {
-        res.status(500).json({ mensagem: "Erro no servidor." });
-    }
+    } catch (err) { res.status(500).json({ mensagem: "Erro no servidor." }); }
 });
 
-// RECUPERAÇÃO DE SENHA (PEDIDO)
+// RECUPERAÇÃO DE SENHA (Gera o link para o Frontend)
 app.post('/api/recuperar-senha', async (req, res) => {
-    const { email } = req.body;
     try {
-        const user = await pool.query("SELECT * FROM Vendedores WHERE Email = $1", [email]);
-        if (user.rows.length === 0) {
-            return res.status(404).json({ mensagem: "Email não registado." });
-        }
+        const { email } = req.body;
+        const user = await Vendedor.findOne({ email });
+        if (!user) return res.status(404).json({ mensagem: "Email não registado." });
 
         const token = crypto.randomBytes(20).toString('hex');
-        const expires = Date.now() + 3600000; // 1 hora
+        user.resetToken = token;
+        user.resetTokenExpires = Date.now() + 3600000; 
+        await user.save();
 
-        await pool.query("UPDATE Vendedores SET ResetToken = $1, ResetTokenExpires = $2 WHERE Email = $3", [token, expires, email]);
-
+        // Como não usas Render, o link será baseado no teu endereço local ou novo domínio
         const domain = req.headers.host; 
-        const protocol = req.headers['x-forwarded-proto'] || 'http'; 
-        const link = `${protocol}://${domain}/ResetPassword.html?token=${token}`;
+        const link = `http://${domain}/ResetPassword.html?token=${token}`;
 
-        const mailOptions = {
-            to: email,
-            from: '"GARMOTOR" <tiagoalvessampaio12@gmail.com>',
-            subject: 'Alteração de Password - GARMOTOR',
-            html: `<h2>Recuperação de Acesso</h2><p>Clique no link para definir uma nova senha: <a href="${link}">${link}</a></p>`
-        };
-
-        await transporter.sendMail(mailOptions);
-        res.json({ mensagem: "Email enviado! Verifique a sua caixa de correio." });
-
-    } catch (err) {
-        console.error("ERRO NO ENVIO:", err.message);
-        res.status(500).json({ mensagem: "Erro ao enviar email. Tente novamente." });
-    }
+        res.json({ link, email: user.email });
+    } catch (err) { res.status(500).json({ mensagem: "Erro ao processar pedido." }); }
 });
 
-// RESET FINAL DE SENHA
+// RESET FINAL
 app.post('/api/reset-senha-final', async (req, res) => {
-    const { token, novaSenha } = req.body;
     try {
-        const query = "SELECT * FROM Vendedores WHERE ResetToken = $1 AND ResetTokenExpires > $2";
-        const user = await pool.query(query, [token, Date.now()]);
+        const { token, novaSenha } = req.body;
+        const user = await Vendedor.findOne({
+            resetToken: token,
+            resetTokenExpires: { $gt: Date.now() }
+        });
+        if (!user) return res.status(400).json({ mensagem: "Link inválido ou expirado." });
 
-        if (user.rows.length === 0) {
-            return res.status(400).json({ mensagem: "Link inválido ou expirado." });
-        }
-
-        const novoHash = await bcrypt.hash(novaSenha, 10);
-
-        await pool.query(
-            "UPDATE Vendedores SET Senha = $1, ResetToken = NULL, ResetTokenExpires = NULL WHERE Id = $2",
-            [novoHash, user.rows[0].id || user.rows[0].Id]
-        );
-
+        user.senha = await bcrypt.hash(novaSenha, 10);
+        user.resetToken = undefined;
+        user.resetTokenExpires = undefined;
+        await user.save();
         res.json({ mensagem: "Password alterada com sucesso!" });
-    } catch (err) {
-        res.status(500).json({ mensagem: "Erro ao alterar password." });
-    }
+    } catch (err) { res.status(500).json({ mensagem: "Erro ao alterar password." }); }
 });
 
 // VEÍCULOS
 app.get('/api/veiculos', async (req, res) => {
-    const resultado = await pool.query("SELECT * FROM Veiculos ORDER BY Id DESC");
-    res.json(resultado.rows);
+    const veiculos = await Veiculo.find().sort({ dataPublicacao: -1 });
+    res.json(veiculos);
 });
 
 app.post('/api/veiculos/adicionar', async (req, res) => {
-    const { marca, modelo, preco, ano, kms, combustivel, caixa, cor, descricao, imagemCapa, estado } = req.body;
-    const query = `INSERT INTO Veiculos (VendedorId, Marca, Modelo, Preco, Ano, Kms, Combustivel, Caixa, Cor, Descricao, ImagemCapa, Estado) VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`;
-    const resultado = await pool.query(query, [marca, modelo, preco, ano, kms, combustivel, caixa, cor, descricao, imagemCapa, estado || 'Disponível']);
-    res.status(201).json(resultado.rows[0]);
+    const novoVeiculo = new Veiculo(req.body);
+    await novoVeiculo.save();
+    res.status(201).json(novoVeiculo);
 });
 
 app.delete('/api/veiculos/:id', async (req, res) => {
-    await pool.query("DELETE FROM Veiculos WHERE Id = $1", [req.params.id]);
+    await Veiculo.findByIdAndDelete(req.params.id);
     res.json({ success: true });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`GARMOTOR Online na porta ${PORT}`));
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Servidor a correr em http://localhost:${PORT}`));
