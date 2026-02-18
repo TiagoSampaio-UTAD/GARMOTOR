@@ -15,7 +15,7 @@ app.use(express.static(__dirname));
 
 // --- CONEXÃO MONGODB ---
 // Substitui <password> pela tua senha real do MongoDB Atlas
-const mongoURI = 'mongodb+srv://tiagoalvessampaio12_db_user:<password>@garmotor.jrj7tav.mongodb.net/?appName=Garmotor'; 
+const mongoURI = 'mongodb+srv://tiagoalvessampaio12_db_user:rdeXqIxQXV7L64jC@garmotor.jrj7tav.mongodb.net/?appName=Garmotor'; 
 
 mongoose.connect(mongoURI)
     .then(() => console.log('>>> Conectado ao MongoDB com sucesso!'))
@@ -99,7 +99,7 @@ app.post('/api/recuperar-senha', async (req, res) => {
 
         // Como não usas Render, o link será baseado no teu endereço local ou novo domínio
         const domain = req.headers.host; 
-        const link = `http://${domain}/ResetPassword.html?token=${token}`;
+        const link = `http://${domain}/ResetUser.html?token=${token}`;
 
         res.json({ link, email: user.email });
     } catch (err) { res.status(500).json({ mensagem: "Erro ao processar pedido." }); }
