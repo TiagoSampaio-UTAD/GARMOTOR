@@ -8,21 +8,25 @@ const crypto = require('crypto');
 const app = express();
 
 // --- CONFIGURAÇÃO ---
+// Aumentar o limite é vital para aceitar as strings de fotos em Base64
 app.use(express.json({ limit: '50mb' })); 
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 app.use(express.static(__dirname));
 
 // --- CONEXÃO MONGODB ---
-// Substitui <password> pela tua senha real do MongoDB Atlas
-const mongoURI = 'mongodb+srv://tiagoalvessampaio12_db_user:rdeXqIxQXV7L64jC@garmotor.jrj7tav.mongodb.net/?appName=Garmotor'; 
+const mongoURI = 'mongodb+srv://tiagoalvessampaio12_db_user:rdeXqIxQXV7L64jC@garmotor.jrj7tav.mongodb.net/garmotor?retryWrites=true&w=majority';
 
 mongoose.connect(mongoURI)
-    .then(() => console.log('>>> Conectado ao MongoDB com sucesso!'))
-    .catch(err => console.error('Erro ao conectar ao MongoDB:', err));
+    .then(() => {
+        console.log('>>> Conectado ao MongoDB com sucesso!');
+        inicializarAdmin(); 
+    })
+    .catch(err => {
+        console.error('Erro crítico ao conectar ao MongoDB:', err.message);
+    });
 
-// --- MODELOS (SCHEMAS) ---
-
+// --- MODELOS ---
 const VendedorSchema = new mongoose.Schema({
     nome: { type: String, required: true },
     email: { type: String, unique: true, required: true },
@@ -34,23 +38,25 @@ const VendedorSchema = new mongoose.Schema({
 const Vendedor = mongoose.model('Vendedor', VendedorSchema);
 
 const VeiculoSchema = new mongoose.Schema({
-    vendedorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendedor' },
-    marca: String,
-    modelo: String,
-    ano: Number,
-    kms: Number,
-    combustivel: String,
-    caixa: String,
-    cor: String,
-    preco: Number,
+    vendedorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendedor', required: true },
+    marca: { type: String, required: true },
+    modelo: { type: String, required: true },
+    ano: { type: Number, required: true },
+    kms: { type: Number, required: true },
+    combustivel: { type: String, required: true },
+    caixa: { type: String, required: true },
+    portas: { type: String, required: true },
+    cor: { type: String, required: true },
+    preco: { type: String, required: true },
+    equipamento: String, 
     descricao: String,
-    imagemCapa: String, 
+    imagemCapa: { type: String, required: true }, 
     estado: { type: String, default: 'Disponível' },
     dataPublicacao: { type: Date, default: Date.now }
 });
 const Veiculo = mongoose.model('Veiculo', VeiculoSchema);
 
-// --- INICIALIZAÇÃO: Admin padrão ---
+// --- INICIALIZAÇÃO ---
 const inicializarAdmin = async () => {
     try {
         const adminExistente = await Vendedor.findOne({ email: 'tiagoalvessampaio12@gmail.com' });
@@ -62,30 +68,86 @@ const inicializarAdmin = async () => {
                 senha: hash,
                 tipo: 'Admin'
             });
-            console.log('>>> Admin GARMOTOR criado no MongoDB!');
+            console.log('>>> Admin GARMOTOR criado!');
         }
     } catch (err) { console.error('Erro ao criar admin:', err); }
 };
-inicializarAdmin();
 
-// --- ROTAS ---
+// --- ROTAS DA API ---
 
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'Index.html')));
+// 1. LISTAR TODOS OS VEÍCULOS (Faltava esta rota!)
+app.get('/api/veiculos', async (req, res) => {
+    try {
+        const veiculos = await Veiculo.find().sort({ dataPublicacao: -1 });
+        res.json(veiculos);
+    } catch (err) {
+        res.status(500).json({ mensagem: "Erro ao listar veículos." });
+    }
+});
 
-// LOGIN
+// 2. BUSCAR UM VEÍCULO ESPECÍFICO
+app.get('/api/veiculos/:id', async (req, res) => {
+    try {
+        const veiculo = await Veiculo.findById(req.params.id);
+        if (!veiculo) return res.status(404).json({ mensagem: "Não encontrado" });
+        res.json(veiculo);
+    } catch (err) {
+        res.status(500).json({ mensagem: "Erro ao buscar detalhes." });
+    }
+});
+
+// 3. ADICIONAR NOVO
+app.post('/api/veiculos/adicionar', async (req, res) => {
+    try {
+        const novoVeiculo = new Veiculo(req.body);
+        await novoVeiculo.save();
+        res.status(201).json({ mensagem: "Publicado com sucesso!", id: novoVeiculo._id });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ mensagem: "Erro ao publicar no MongoDB." });
+    }
+});
+
+// 4. ATUALIZAR
+app.put('/api/veiculos/:id', async (req, res) => {
+    try {
+        const veiculo = await Veiculo.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!veiculo) return res.status(404).json({ mensagem: "Não encontrado." });
+        res.json({ mensagem: "Atualizado com sucesso!" });
+    } catch (err) {
+        res.status(500).json({ mensagem: "Erro ao atualizar." });
+    }
+});
+
+// 5. APAGAR
+app.delete('/api/veiculos/:id', async (req, res) => {
+    try {
+        await Veiculo.findByIdAndDelete(req.params.id);
+        res.json({ success: true, mensagem: "Removido!" });
+    } catch (err) {
+        res.status(500).json({ mensagem: "Erro ao apagar." });
+    }
+});
+
+// 6. LOGIN
 app.post('/api/login', async (req, res) => {
     try {
         const { email, pass } = req.body;
         const user = await Vendedor.findOne({ email });
         if (user && await bcrypt.compare(pass, user.senha)) {
-            res.json({ nome: user.nome, email: user.email, tipo: user.tipo });
+            res.json({ 
+                id: user._id, 
+                nome: user.nome, 
+                tipo: user.tipo,
+                mensagem: "Sucesso" 
+            });
         } else {
-            res.status(401).json({ mensagem: "Email ou senha incorretos." });
+            res.status(401).json({ mensagem: "Dados incorretos." });
         }
     } catch (err) { res.status(500).json({ mensagem: "Erro no servidor." }); }
 });
 
-// RECUPERAÇÃO DE SENHA (Gera o link para o Frontend)
+// 7. RECUPERAR SENHA
 app.post('/api/recuperar-senha', async (req, res) => {
     try {
         const { email } = req.body;
@@ -94,18 +156,15 @@ app.post('/api/recuperar-senha', async (req, res) => {
 
         const token = crypto.randomBytes(20).toString('hex');
         user.resetToken = token;
-        user.resetTokenExpires = Date.now() + 3600000; 
+        user.resetTokenExpires = Date.now() + 3600000;
         await user.save();
 
-        // Como não usas Render, o link será baseado no teu endereço local ou novo domínio
-        const domain = req.headers.host; 
-        const link = `http://${domain}/ResetUser.html?token=${token}`;
-
+        const link = `http://${req.headers.host}/ResetUser.html?token=${token}`;
         res.json({ link, email: user.email });
-    } catch (err) { res.status(500).json({ mensagem: "Erro ao processar pedido." }); }
+    } catch (err) { res.status(500).json({ mensagem: "Erro ao processar." }); }
 });
 
-// RESET FINAL
+// Rota para reset final
 app.post('/api/reset-senha-final', async (req, res) => {
     try {
         const { token, novaSenha } = req.body;
@@ -113,32 +172,17 @@ app.post('/api/reset-senha-final', async (req, res) => {
             resetToken: token,
             resetTokenExpires: { $gt: Date.now() }
         });
-        if (!user) return res.status(400).json({ mensagem: "Link inválido ou expirado." });
-
+        if (!user) return res.status(400).json({ mensagem: "Link expirado." });
         user.senha = await bcrypt.hash(novaSenha, 10);
         user.resetToken = undefined;
         user.resetTokenExpires = undefined;
         await user.save();
-        res.json({ mensagem: "Password alterada com sucesso!" });
-    } catch (err) { res.status(500).json({ mensagem: "Erro ao alterar password." }); }
+        res.json({ mensagem: "Sucesso!" });
+    } catch (err) { res.status(500).json({ mensagem: "Erro." }); }
 });
 
-// VEÍCULOS
-app.get('/api/veiculos', async (req, res) => {
-    const veiculos = await Veiculo.find().sort({ dataPublicacao: -1 });
-    res.json(veiculos);
-});
+// SERVIR O FRONTEND
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'Index.html')));
 
-app.post('/api/veiculos/adicionar', async (req, res) => {
-    const novoVeiculo = new Veiculo(req.body);
-    await novoVeiculo.save();
-    res.status(201).json(novoVeiculo);
-});
-
-app.delete('/api/veiculos/:id', async (req, res) => {
-    await Veiculo.findByIdAndDelete(req.params.id);
-    res.json({ success: true });
-});
-
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Servidor a correr em http://localhost:${PORT}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`>>> Servidor GARMOTOR ativo em: http://localhost:${PORT}`));

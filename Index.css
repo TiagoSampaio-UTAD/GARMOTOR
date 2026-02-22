@@ -527,9 +527,10 @@ body {
 .social-item:hover span { opacity: 1; }
 
 .social-item:nth-child(1):hover { background: #0084ff; }
-.social-item:nth-child(2):hover { background: #25D366; }
-.social-item:nth-child(3):hover { background: #1877F2; }
-.social-item:nth-child(4):hover { background: #E4405F; }
+.social-item:nth-child(2):hover { background: #ee4f41; }
+.social-item:nth-child(3):hover { background: #25D366; }
+.social-item:nth-child(4):hover { background: #1877F2; }
+.social-item:nth-child(5):hover { background: #e9526e; }
 
 /* ==========================================================================
    MOBILE APP MODE - (Abaixo de 900px)

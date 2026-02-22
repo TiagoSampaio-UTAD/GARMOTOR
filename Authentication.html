@@ -146,6 +146,7 @@
     </style>
 </head>
 <body>
+
     <div class="auth-card">
         <a href="Index.html" class="close-btn" title="Voltar ao Início">&times;</a>
 
@@ -187,77 +188,91 @@
         </div>
     </div>
 
-    <script>
-        // Alterna entre o formulário de Login e o de Recuperação
-        function toggleAuth() {
-            document.getElementById('section-login').classList.toggle('hidden');
-            document.getElementById('section-recover').classList.toggle('hidden');
-        }
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
-        // Função de Login (Já preparada para Hash/Bcrypt no backend)
-        async function executarLogin() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const pass = document.getElementById('loginPass').value;
+<script>
+    // 1. INICIALIZA O EMAILJS (Substitui pela tua chave que está no site do EmailJS)
+    (function(){
+        emailjs.init("IhWfluNHy886GlJKX"); 
+    })();
 
-            if(!email || !pass) return alert("Preencha todos os campos.");
+    function toggleAuth() {
+        document.getElementById('section-login').classList.toggle('hidden');
+        document.getElementById('section-recover').classList.toggle('hidden');
+    }
 
-            try {
-                const res = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, pass })
+    async function executarLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPass').value;
+        if(!email || !pass) return alert("Preencha todos os campos.");
+
+        try {
+            const response = await fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, pass })
+});
+
+const data = await response.json();
+            if (response.ok) {
+    // GUARDAR OS DADOS NO NAVEGADOR
+    localStorage.setItem('vendedorId', data.id); // O ID de 24 caracteres do MongoDB
+    localStorage.setItem('vendedorNome', data.nome);
+    localStorage.setItem('userTipo', data.tipo);
+    
+    // REDIRECIONAR
+    window.location.href = "Dashboard.html";
+} else {
+    alert(data.mensagem);
+}
+        } catch (e) { alert("Erro ao ligar ao servidor."); }
+    }
+
+    // --- FUNÇÃO CORRIGIDA PARA ENVIAR E-MAIL ---
+    async function executarRecuperacao() {
+        const emailInput = document.getElementById('recoverEmail').value.trim();
+        const btn = document.getElementById('btnRecover');
+
+        if(!emailInput) return alert("Por favor, introduza o seu e-mail.");
+
+        btn.innerText = "A ENVIAR...";
+        btn.disabled = true;
+
+        try {
+            // 1. Pede o link ao teu servidor (MongoDB)
+            const res = await fetch('/api/recuperar-senha', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: emailInput })
+            });
+            
+            const data = await res.json();
+            
+            if (res.ok) {
+                // 2. DISPARA O EMAILJS REALMENTE
+                // Verifica se os nomes "service_...", "template_..." e "{{link}}" estão iguais no teu painel EmailJS
+                emailjs.send("service_kbn1gui", "template_be025v4", {
+                    email: data.email, 
+                    link: data.link  // O link gerado pelo servidor: http://localhost:3000/ResetUser.html?token=...
+                })
+                .then(() => {
+                    alert("Sucesso! O link de recuperação foi enviado para: " + data.email);
+                    toggleAuth();
+                })
+                .catch((err) => {
+                    alert("Erro no EmailJS: Verifica se o ID do serviço e do template estão corretos.");
+                    console.error("EmailJS Error:", err);
                 });
-                
-                const data = await res.json();
-                
-                if (res.ok) {
-                    localStorage.setItem('vendedorNome', data.nome);
-                    localStorage.setItem('userTipo', data.tipo);
-                    alert("Bem-vindo, " + data.nome + "!");
-                    window.location.href = "Index.html"; 
-                } else {
-                    alert(data.mensagem || "Credenciais inválidas.");
-                }
-            } catch (e) {
-                alert("Erro ao ligar ao servidor.");
+            } else {
+                alert(data.mensagem || "Erro ao gerar link.");
             }
+        } catch (e) {
+            alert("Erro de ligação ao servidor.");
+        } finally {
+            btn.innerText = "Enviar Link por E-mail";
+            btn.disabled = false;
         }
-
-        // Função para Pedir Email de Recuperação
-        async function executarRecuperacao() {
-            const email = document.getElementById('recoverEmail').value.trim();
-            const btn = document.getElementById('btnRecover');
-
-            if(!email) return alert("Por favor, introduza o seu e-mail.");
-
-            // Feedback visual de carregamento
-            btn.innerText = "A ENVIAR...";
-            btn.disabled = true;
-            btn.style.opacity = "0.7";
-
-            try {
-                const res = await fetch('/api/recuperar-senha', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                });
-                
-                const data = await res.json();
-                
-                if (res.ok) {
-                    alert("Email enviado com sucesso! Verifique a sua caixa de entrada.");
-                    toggleAuth(); // Volta para o login
-                } else {
-                    alert(data.mensagem || "Erro ao processar pedido.");
-                }
-            } catch (e) {
-                alert("Erro ao ligar ao servidor.");
-            } finally {
-                btn.innerText = "Enviar Link por E-mail";
-                btn.disabled = false;
-                btn.style.opacity = "1";
-            }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>

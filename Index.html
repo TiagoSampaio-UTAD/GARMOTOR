@@ -42,6 +42,10 @@
                 <i class="fa-solid fa-phone"></i>
                 <span>919 741 045</span>
             </a>
+            <a href="mailto:garmotor.automovel@gmail.com?subject=Pedido de Informação - GARMOTOR" class="social-item">
+                <i class="fa-solid fa-envelope"></i>
+                <span>Gmail</span>
+            </a>
             <a href="https://api.whatsapp.com/send?phone=919741045" target="_blank" class="social-item">
                 <i class="fa-brands fa-whatsapp"></i>
                 <span>WhatsApp</span>
@@ -241,7 +245,7 @@ function verificarSessao() {
         grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #666;">A carregar o catálogo...</div>`;
 
         try {
-            const resposta = await fetch('https://garmotor.onrender.com/api/veiculos');
+            const resposta = await fetch('/api/veiculos');
             todosVeiculos = await resposta.json();
             preencherMarcas(todosVeiculos);
             aplicarFiltros(); 
@@ -313,53 +317,55 @@ function verificarSessao() {
     }
 
     function renderizarGrid(veiculos) {
-        const grid = document.querySelector('.featured-grid');
-        if (!grid) return;
+    const grid = document.querySelector('.featured-grid');
+    if (!grid) return;
 
-        if (veiculos.length === 0) {
-            grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:50px; color:#999;">Nenhum veículo encontrado.</p>`;
-            return;
+    if (veiculos.length === 0) {
+        grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:50px; color:#999;">Nenhum veículo encontrado.</p>`;
+        return;
+    }
+
+    grid.innerHTML = veiculos.map(carro => {
+        let imagemUrl = 'img/placeholder-car.jpg';
+        
+        // CORREÇÃO: imagemCapa com C maiúsculo
+        if (carro.imagemCapa) {
+            imagemUrl = carro.imagemCapa.includes('|||') ? carro.imagemCapa.split('|||')[0] : carro.imagemCapa;
         }
 
-        grid.innerHTML = veiculos.map(carro => {
-            let imagemUrl = 'img/placeholder-car.jpg';
-            if (carro.imagemcapa) {
-                imagemUrl = carro.imagemcapa.includes('|||') ? carro.imagemcapa.split('|||')[0] : carro.imagemcapa;
-            }
+        const precoFormatado = Number(carro.preco).toLocaleString('pt-PT');
+        const kmsFormatados = Number(carro.kms).toLocaleString('pt-PT');
+        const isVendido = carro.estado === 'Vendido';
+        const isReservado = carro.estado === 'Reservado';
 
-            const precoFormatado = Number(carro.preco).toLocaleString('pt-PT');
-            const kmsFormatados = Number(carro.kms).toLocaleString('pt-PT');
-            const isVendido = carro.estado === 'Vendido';
-            const isReservado = carro.estado === 'Reservado';
+        return `
+        <div class="car-card ${isVendido ? 'card-vendido' : ''}" 
+             onclick="${isVendido ? '' : `window.location.href='Detalhes.html?id=${carro._id}'`}">
+            
+            <div class="car-img-container">
+                <img src="${imagemUrl}" alt="${carro.marca}" class="${isVendido ? 'img-grayscale' : ''}" loading="lazy">
+                <span class="badge-ano">${carro.ano}</span>
+                ${isVendido ? '<span class="badge-status vendido">VENDIDO</span>' : ''}
+                ${isReservado ? '<span class="badge-status reservado">RESERVADO</span>' : ''}
+            </div>
 
-            return `
-            <div class="car-card ${isVendido ? 'card-vendido' : ''}" 
-                 onclick="${isVendido ? '' : `window.location.href='Detalhes.html?id=${carro.id}'`}">
-                
-                <div class="car-img-container">
-                    <img src="${imagemUrl}" alt="${carro.marca}" class="${isVendido ? 'img-grayscale' : ''}" loading="lazy">
-                    <span class="badge-ano">${carro.ano}</span>
-                    ${isVendido ? '<span class="badge-status vendido">VENDIDO</span>' : ''}
-                    ${isReservado ? '<span class="badge-status reservado">RESERVADO</span>' : ''}
+            <div class="car-info">
+                <h4>${carro.marca} <span>${carro.modelo}</span></h4>
+                <div class="car-specs">
+                    <span><i class="fa-solid fa-gauge-high"></i> ${kmsFormatados} km</span>
+                    <span><i class="fa-solid fa-gas-pump"></i> ${carro.combustivel}</span>
                 </div>
-
-                <div class="car-info">
-                    <h4>${carro.marca} <span>${carro.modelo}</span></h4>
-                    <div class="car-specs">
-                        <span><i class="fa-solid fa-gauge-high"></i> ${kmsFormatados} km</span>
-                        <span><i class="fa-solid fa-gas-pump"></i> ${carro.combustivel}</span>
-                    </div>
-                    <div class="car-footer">
-                        <p class="car-price">${precoFormatado} €</p>
-                        ${isVendido ? 
-                            '<div class="btn-indisponivel">INDISPONÍVEL</div>' : 
-                            '<div class="btn-ver-mais">VER MAIS <i class="fa-solid fa-arrow-right"></i></div>'
-                        }
-                    </div>
+                <div class="car-footer">
+                    <p class="car-price">${precoFormatado} €</p>
+                    ${isVendido ? 
+                        '<div class="btn-indisponivel">INDISPONÍVEL</div>' : 
+                        '<div class="btn-ver-mais">VER MAIS <i class="fa-solid fa-arrow-right"></i></div>'
+                    }
                 </div>
-            </div>`;
-        }).join('');
-    }
+            </div>
+        </div>`;
+    }).join('');
+}
 </script>
 </body>
 </html>
