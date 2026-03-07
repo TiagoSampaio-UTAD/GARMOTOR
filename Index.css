@@ -445,13 +445,13 @@ body {
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 2px;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
 }
 
 .footer-nav {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 5px;
 }
 
 .footer-nav a, .footer-contacts a, .footer-contacts p {
@@ -471,7 +471,7 @@ body {
 .footer-contacts {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 5px;
 }
 
 .footer-contacts i {

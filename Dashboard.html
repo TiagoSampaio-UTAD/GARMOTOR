@@ -302,17 +302,18 @@ body {
     </style>
 </head>
 <body>
-   <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
     <header class="top-nav">
         <div class="header-left">
-<div class="menu-toggle" onclick="toggleMenu()">
+            <div class="menu-toggle" onclick="toggleMenu()">
                     <span></span>
-                <span></span>
-                <span></span>
+                    <span></span>
+                    <span></span>
             </div>
 
-        <div class="logo-area">
-            <img src="img/GARMOTOR_LOGO(6).png" alt="GARMOTOR" class="logo-img" />
+            <div class="logo-area">
+                <img src="img/GARMOTOR_LOGO(6).png" alt="GARMOTOR" class="logo-img" />
+            </div>
         </div>
     </div>
     
@@ -323,7 +324,7 @@ body {
     </nav>
     
     <div id="nav-auth" class="user-actions"></div>
-</header>
+    </header>
 
         <div class="container">
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px;">
@@ -618,32 +619,114 @@ body {
         popularMarcas();
         loadVehicles();
     };
+        // Efeito visual no Nav ao fazer scroll
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.top-nav');
+            if (nav) {
+                if (window.scrollY > 50) nav.classList.add('scrolled');
+                else nav.classList.remove('scrolled');
+            }
+        });
 
-    // --- SESSÃO E UI ---
-    function verificarSessao() {
-        const nome = localStorage.getItem('vendedorNome');
-        const vId = localStorage.getItem('vendedorId') || localStorage.getItem('id');
+    // --- LÓGICA DO MENU MOBILE ---
+    function inicializarMenuMobile() {
+    const menuToggle = document.getElementById('mobile-menu');
+    const navMenu = document.getElementById('nav-menu');
+    const body = document.body;
 
-        if (!vId || !nome) {
-            alert("Sessão inválida. Por favor, faça login novamente.");
-            window.location.href = "Authentication.html";
-            return;
-        }
+    if (!menuToggle || !navMenu) return;
+
+    menuToggle.addEventListener('click', () => {
+        menuToggle.classList.toggle('active');
+        navMenu.classList.toggle('active');
         
-        const authContainer = document.getElementById('nav-auth');
-        if (authContainer) {
-            authContainer.innerHTML = `
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <span style="color:white; font-size:0.8rem;">Bem Vindo, ${nome}!</span>
-                    <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
-                </div>`;
+        // Bloqueia o scroll da página quando o menu está aberto
+        if (navMenu.classList.contains('active')) {
+            body.style.overflow = 'hidden';
+        } else {
+            body.style.overflow = 'auto';
         }
+    });
+
+    // Fecha ao clicar num link
+    document.querySelectorAll('.main-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            body.style.overflow = 'auto';
+        });
+    });
+}
+
+function verificarSessao() {
+    const authContainer = document.getElementById('nav-auth');
+    const navMenu = document.getElementById('nav-menu'); 
+    const nome = localStorage.getItem('vendedorNome');
+    const tipo = localStorage.getItem('userTipo');
+
+    if (!authContainer || !navMenu) return;
+
+    if (nome) {
+        // Injeta o botão de gestão no menu (quer seja mobile ou desktop)
+        if (tipo === 'Admin' || tipo === 'Vendedor') {
+            if (!document.querySelector('.btn-gestao')) {
+                navMenu.insertAdjacentHTML('beforeend', `
+                    <a href="Dashboard.html" class="btn-gestao" style="color:var(--gold)">
+                        <i class="fa-solid fa-table-cells-large"></i> GESTÃO
+                    </a>
+                `);
+            }
+        }
+        authContainer.innerHTML = `
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span class="welcome-text" style="color:white; font-size:0.75rem; font-weight:600;">Bem Vindo, ${nome}!</span>
+                <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
+            </div>`;
+    } else {
+        authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">PAINEL DE ADMIN</a>`;
     }
+}
 
     function fazerLogout() {
         localStorage.clear();
-        window.location.href = "Index.html";
+        window.location.reload();
     }
+
+    // --- CARREGAMENTO DE DADOS ---
+    async function carregarVeiculos() {
+        const grid = document.querySelector('.featured-grid');
+        if (!grid) return;
+
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #666;">A carregar o catálogo...</div>`;
+
+        try {
+            const resposta = await fetch('/api/veiculos');
+            todosVeiculos = await resposta.json();
+            preencherMarcas(todosVeiculos);
+            aplicarFiltros(); 
+        } catch (e) {
+            console.error("Erro ao carregar veículos:", e);
+            grid.innerHTML = `<p style="grid-column:1/-1; color:red; text-align:center;">Erro ao ligar ao servidor.</p>`;
+        }
+    }
+
+    function toggleMenu() {
+    const menu = document.querySelector('.main-menu');
+    const overlay = document.getElementById('menuOverlay');
+    const body = document.body;
+
+    // Alterna a classe active
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+
+    // Bloqueia o scroll do site quando o menu está aberto
+    if (menu.classList.contains('active')) {
+        body.style.overflow = 'hidden';
+    } else {
+        body.style.overflow = 'auto';
+    }
+}
+
 
     // --- GESTÃO DE MARCAS/MODELOS ---
     function popularMarcas() {
