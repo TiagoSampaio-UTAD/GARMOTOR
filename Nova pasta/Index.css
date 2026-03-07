@@ -690,30 +690,23 @@ body {
         padding: 50px 5% 80px; /* 80px em baixo para não bater na barra social nova */
     }
 
-
     .footer-grid {
         grid-template-columns: 1fr;
-        gap: 40px;
         text-align: center;
-    }
-    
-    .footer-logo{
-        display: block;
-        margin:0 auto;
-        padding-bottom: 5px;
+        gap: 40px;
     }
 
-    .footer-tagline {
-        margin: 0 auto;
+    .footer-logo {
+        margin: 0 auto 20px auto;
     }
-    
+
     .footer-nav a, .footer-contacts a, .footer-contacts p {
         justify-content: center;
     }
-    
+
     .bottom-content {
         flex-direction: column;
         gap: 15px;
+        text-align: center;
     }
-
 }

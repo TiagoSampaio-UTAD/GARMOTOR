@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GARMOTOR - Qualidade que Conduz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="Index.css">
+</head>
+<body>
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+    <header class="top-nav">
+        <div class="header-left">
+<div class="menu-toggle" onclick="toggleMenu()">
+                    <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+        <div class="logo-area">
+            <img src="img/GARMOTOR_LOGO(6).png" alt="GARMOTOR" class="logo-img" />
+        </div>
+    </div>
+    
+    <nav class="main-menu" id="nav-menu">
+        <a href="Index.html">INÍCIO</a>
+        <a href="Index.html#h">VEÍCULOS</a>
+        <a href="AboutUs.html">SOBRE NÓS</a>
+    </nav>
+    
+    <div id="nav-auth" class="user-actions"></div>
+</header>
+
+    <section class="main-hero">
+        <div class="hero-content">
+            <h2>ENCONTRE O SEU CARRO IDEAL</h2>
+            <p>Milhares de Veículos de Qualidade, Compare preços, Reserve Compra.</p>
+        </div>
+
+        <div class="social-sidebar">
+            <a href="tel:919741045" class="social-item">
+                <i class="fa-solid fa-phone"></i>
+                <span>919 741 045</span>
+            </a>
+            <a href="mailto:garmotor.automovel@gmail.com?subject=Pedido de Informação - GARMOTOR" class="social-item">
+                <i class="fa-solid fa-envelope"></i>
+                <span>Gmail</span>
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=919741045" target="_blank" class="social-item">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span>WhatsApp</span>
+            </a>
+            <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank" class="social-item">
+                <i class="fa-brands fa-facebook-f"></i>
+                <span>Facebook</span>
+            </a>
+            <a href="https://www.instagram.com/garmotor.automovel/" target="_blank" class="social-item">
+                <i class="fa-brands fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="featured-section">
+        <div class="featured-container">
+            <section class="inventory-section" id="h">
+                <div class="filters-container">
+                    <form id="filter-form" class="filter-bar">
+                        <div class="filter-group search">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="search-input" placeholder="Pesquise marca, modelo...">
+                        </div>
+                        
+                        <div class="filter-group">
+                            <select id="filter-brand">
+                                <option value="">Todas as Marcas</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <select id="filter-type">
+                                <option value="">Todos os Combustíveis</option>
+                                <option value="Gasóleo">Gasóleo</option>
+                                <option value="Gasolina">Gasolina</option>
+                                <option value="Híbrido">Híbrido</option>
+                                <option value="Elétrico">Elétrico</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <select id="filter-sort">
+                                <option value="recent">Mais Recentes</option>
+                                <option value="price-asc">Preço Crescente</option>
+                                <option value="price-desc">Preço Decrescente</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="featured-grid">
+                    </div>
+            </section>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+    <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-column brand-info">
+                <img src="img/GARMOTOR_LOGO(6).png" alt="GARMOTOR" class="footer-logo">
+                <p class="footer-tagline">Qualidade que conduz. Veículos selecionados com inspeção em 120 pontos.</p>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">LINKS</h4>
+                <nav class="footer-nav">
+                    <a href="Index.html">Início</a>
+                    <a href="Index.html#h">Veículos</a>
+                    <a href="AboutUs.html">Sobre Nós</a>
+                    <a href="#">Privacidade</a>
+                </nav>
+            </div>
+
+            <div class="footer-column">
+                <h4 class="footer-title">CONTACTOS</h4>
+                <div class="footer-contacts">
+                    <p><i class="fa-solid fa-phone"></i> +351 919 741 045</p>
+                    <a href="https://www.instagram.com/garmotor.automovel/" target="_blank">
+                        <i class="fa-brands fa-instagram"></i> Instagram
+                    </a>
+                    <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank">
+                        <i class="fa-brands fa-facebook"></i> Facebook
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div class="bottom-content">
+                <p>&copy; 2024 GARMOTOR. Todos os direitos reservados.</p>
+                <p class="dev-credits">Desenvolvido por <a href="https://linktr.ee/tiagoalvessampaio12" target="_blank" style="color: #d4af37; font-weight: 600;">Tiago Sampaio</a></p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    let todosVeiculos = []; // Cache para evitar múltiplos fetchs ao filtrar
+
+    window.onload = function() {
+        verificarSessao();
+        carregarVeiculos();
+        inicializarMenuMobile(); // Nova função para o menu
+
+        // Eventos de Filtro em tempo real
+        const searchInput = document.getElementById('search-input');
+        const filterBrand = document.getElementById('filter-brand');
+        const filterType = document.getElementById('filter-type');
+        const filterSort = document.getElementById('filter-sort');
+
+        if (searchInput) searchInput.addEventListener('input', aplicarFiltros);
+        if (filterBrand) filterBrand.addEventListener('change', aplicarFiltros);
+        if (filterType) filterType.addEventListener('change', aplicarFiltros);
+        if (filterSort) filterSort.addEventListener('change', aplicarFiltros);
+
+        // Efeito visual no Nav ao fazer scroll
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('.top-nav');
+            if (nav) {
+                if (window.scrollY > 50) nav.classList.add('scrolled');
+                else nav.classList.remove('scrolled');
+            }
+        });
+    };
+
+    // --- LÓGICA DO MENU MOBILE ---
+    function inicializarMenuMobile() {
+    const menuToggle = document.getElementById('mobile-menu');
+    const navMenu = document.getElementById('nav-menu');
+    const body = document.body;
+
+    if (!menuToggle || !navMenu) return;
+
+    menuToggle.addEventListener('click', () => {
+        menuToggle.classList.toggle('active');
+        navMenu.classList.toggle('active');
+        
+        // Bloqueia o scroll da página quando o menu está aberto
+        if (navMenu.classList.contains('active')) {
+            body.style.overflow = 'hidden';
+        } else {
+            body.style.overflow = 'auto';
+        }
+    });
+
+    // Fecha ao clicar num link
+    document.querySelectorAll('.main-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            menuToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            body.style.overflow = 'auto';
+        });
+    });
+}
+
+function verificarSessao() {
+    const authContainer = document.getElementById('nav-auth');
+    const navMenu = document.getElementById('nav-menu'); 
+    const nome = localStorage.getItem('vendedorNome');
+    const tipo = localStorage.getItem('userTipo');
+
+    if (!authContainer || !navMenu) return;
+
+    if (nome) {
+        // Injeta o botão de gestão no menu (quer seja mobile ou desktop)
+        if (tipo === 'Admin' || tipo === 'Vendedor') {
+            if (!document.querySelector('.btn-gestao')) {
+                navMenu.insertAdjacentHTML('beforeend', `
+                    <a href="Dashboard.html" class="btn-gestao" style="color:var(--gold)">
+                        <i class="fa-solid fa-table-cells-large"></i> GESTÃO
+                    </a>
+                `);
+            }
+        }
+        authContainer.innerHTML = `
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span class="welcome-text" style="color:white; font-size:0.75rem; font-weight:600;">Bem Vindo, ${nome}!</span>
+                <button onclick="fazerLogout()" class="btn-sair-min">SAIR</button>
+            </div>`;
+    } else {
+        authContainer.innerHTML = `<a href="Authentication.html" class="btn-admin">PAINEL DE ADMIN</a>`;
+    }
+}
+
+    function fazerLogout() {
+        localStorage.clear();
+        window.location.reload();
+    }
+
+    // --- CARREGAMENTO DE DADOS ---
+    async function carregarVeiculos() {
+        const grid = document.querySelector('.featured-grid');
+        if (!grid) return;
+
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #666;">A carregar o catálogo...</div>`;
+
+        try {
+            const resposta = await fetch('/api/veiculos');
+            todosVeiculos = await resposta.json();
+            preencherMarcas(todosVeiculos);
+            aplicarFiltros(); 
+        } catch (e) {
+            console.error("Erro ao carregar veículos:", e);
+            grid.innerHTML = `<p style="grid-column:1/-1; color:red; text-align:center;">Erro ao ligar ao servidor.</p>`;
+        }
+    }
+
+    function toggleMenu() {
+    const menu = document.querySelector('.main-menu');
+    const overlay = document.getElementById('menuOverlay');
+    const body = document.body;
+
+    // Alterna a classe active
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+
+    // Bloqueia o scroll do site quando o menu está aberto
+    if (menu.classList.contains('active')) {
+        body.style.overflow = 'hidden';
+    } else {
+        body.style.overflow = 'auto';
+    }
+}
+
+    function preencherMarcas(veiculos) {
+        const select = document.getElementById('filter-brand');
+        if (!select) return;
+
+        const marcas = [...new Set(veiculos.map(v => v.marca))].sort();
+        select.innerHTML = '<option value="">Todas as Marcas</option>';
+        marcas.forEach(marca => {
+            select.innerHTML += `<option value="${marca}">${marca}</option>`;
+        });
+    }
+
+    function aplicarFiltros() {
+        const termo = document.getElementById('search-input')?.value.toLowerCase() || "";
+        const marcaSel = document.getElementById('filter-brand')?.value || "";
+        const tipoSel = document.getElementById('filter-type')?.value || "";
+        const ordenacao = document.getElementById('filter-sort')?.value || "";
+
+        let filtrados = [...todosVeiculos]; 
+
+        if (termo) {
+            filtrados = filtrados.filter(v => 
+                v.marca.toLowerCase().includes(termo) || 
+                v.modelo.toLowerCase().includes(termo)
+            );
+        }
+        
+        if (marcaSel) filtrados = filtrados.filter(v => v.marca === marcaSel);
+        if (tipoSel) filtrados = filtrados.filter(v => v.combustivel === tipoSel);
+
+        // Ordenar
+        if (ordenacao === 'price-asc') {
+            filtrados.sort((a, b) => parseFloat(a.preco) - parseFloat(b.preco));
+        } else if (ordenacao === 'price-desc') {
+            filtrados.sort((a, b) => parseFloat(b.preco) - parseFloat(a.preco));
+        } else {
+            filtrados.sort((a, b) => b.id - a.id);
+        }
+
+        // Vendidos para o fim
+        filtrados.sort((a, b) => (a.estado === 'Vendido' ? 1 : -1) - (b.estado === 'Vendido' ? 1 : -1));
+
+        renderizarGrid(filtrados);
+    }
+
+    function renderizarGrid(veiculos) {
+    const grid = document.querySelector('.featured-grid');
+    if (!grid) return;
+
+    if (veiculos.length === 0) {
+        grid.innerHTML = `<p style="grid-column:1/-1; text-align:center; padding:50px; color:#999;">Nenhum veículo encontrado.</p>`;
+        return;
+    }
+
+    grid.innerHTML = veiculos.map(carro => {
+        let imagemUrl = 'img/placeholder-car.jpg';
+        
+        // CORREÇÃO: imagemCapa com C maiúsculo
+        if (carro.imagemCapa) {
+            imagemUrl = carro.imagemCapa.includes('|||') ? carro.imagemCapa.split('|||')[0] : carro.imagemCapa;
+        }
+
+        const precoFormatado = Number(carro.preco).toLocaleString('pt-PT');
+        const kmsFormatados = Number(carro.kms).toLocaleString('pt-PT');
+        const isVendido = carro.estado === 'Vendido';
+        const isReservado = carro.estado === 'Reservado';
+
+        return `
+        <div class="car-card ${isVendido ? 'card-vendido' : ''}" 
+             onclick="${isVendido ? '' : `window.location.href='Detalhes.html?id=${carro._id}'`}">
+            
+            <div class="car-img-container">
+                <img src="${imagemUrl}" alt="${carro.marca}" class="${isVendido ? 'img-grayscale' : ''}" loading="lazy">
+                <span class="badge-ano">${carro.ano}</span>
+                ${isVendido ? '<span class="badge-status vendido">VENDIDO</span>' : ''}
+                ${isReservado ? '<span class="badge-status reservado">RESERVADO</span>' : ''}
+            </div>
+
+            <div class="car-info">
+                <h4>${carro.marca} <span>${carro.modelo}</span></h4>
+                <div class="car-specs">
+                    <span><i class="fa-solid fa-gauge-high"></i> ${kmsFormatados} km</span>
+                    <span><i class="fa-solid fa-gas-pump"></i> ${carro.combustivel}</span>
+                </div>
+                <div class="car-footer">
+                    <p class="car-price">${precoFormatado} €</p>
+                    ${isVendido ? 
+                        '<div class="btn-indisponivel">INDISPONÍVEL</div>' : 
+                        '<div class="btn-ver-mais">VER MAIS <i class="fa-solid fa-arrow-right"></i></div>'
+                    }
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+</script>
+</body>
+</html>

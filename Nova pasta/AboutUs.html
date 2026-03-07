@@ -131,35 +131,8 @@ body {
     font-weight: 600;
 }
 
-/* ==========================================================================
-   7. DESIGN RESPONSIVO (TABLETS E LAPTOPS PEQUENOS)
-   ========================================================================== */
-@media (max-width: 1024px) {
-    /* Ajuste da Hero Section */
-    .hero-content h2 {
-        font-size: 2.8rem;
-    }
-
-    /* Filtros: Passam de 1 linha de 4, para 2 linhas de 2 */
-    .filter-bar {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    /* Footer: Passa para 2 colunas */
-    .footer-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
-    }
-}
-
-/* ==========================================================================
-   8. DESIGN RESPONSIVO (TELEMÓVEIS) - Abaixo de 768px
-   ========================================================================== */
+/* Ajuste Responsivo */
 @media (max-width: 768px) {
-    .main-footer {
-        padding: 50px 5% 80px; /* 80px em baixo para não bater na barra social nova */
-    }
-
     .footer-grid {
         grid-template-columns: 1fr;
         gap: 40px;
@@ -178,11 +151,12 @@ body {
         flex-direction: column;
         gap: 15px;
     }
-    
-    .footer-logo{
-        display: block;
-        margin:0 auto;
-        padding-bottom: 5px;
+}
+
+/* --- RESPONSIVIDADE PARA O FOOTER --- */
+@media (max-width: 992px) {
+    .footer-grid {
+        grid-template-columns: 1.5fr 1fr;
     }
 }
 
