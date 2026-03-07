@@ -37,7 +37,7 @@ const VendedorSchema = new mongoose.Schema({
     resetToken: String,
     resetTokenExpires: Date
 });
-const Vendedor = mongoose.model('Vendedor', VendedorSchema);
+const Vendedor = mongoose.model('Vendedor', VendedorSchema, 'vendedores');
 
 const VeiculoSchema = new mongoose.Schema({
     vendedorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendedor', required: true },
@@ -56,7 +56,7 @@ const VeiculoSchema = new mongoose.Schema({
     estado: { type: String, default: 'Disponível' },
     dataPublicacao: { type: Date, default: Date.now }
 });
-const Veiculo = mongoose.model('Veiculo', VeiculoSchema);
+const Veiculo = mongoose.model('Veiculo', VeiculoSchema, 'veiculos');
 
 // --- INICIALIZAÇÃO ---
 const inicializarAdmin = async () => {
@@ -97,10 +97,10 @@ const inicializarAdmin = async () => {
 // 1. LISTAR TODOS OS VEÍCULOS (Faltava esta rota!)
 app.get('/api/veiculos', async (req, res) => {
     try {
-        const veiculos = await Veiculo.find().sort({ dataPublicacao: -1 });
+        const veiculos = await Veiculo.find();
         res.json(veiculos);
     } catch (err) {
-        res.status(500).json({ mensagem: "Erro ao listar veículos." });
+        res.status(500).json({ mensagem: "Erro ao procurar veículos" });
     }
 });
 

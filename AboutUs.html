@@ -156,6 +156,28 @@ body {
    8. DESIGN RESPONSIVO (TELEMÓVEIS) - Abaixo de 768px
    ========================================================================== */
 @media (max-width: 768px) {
+    .social-sidebar {
+        top: auto;
+        bottom: 0;
+        transform: none;
+        flex-direction: row;
+        width: 100%;
+        justify-content: center;
+        background: #000;
+        padding: 10px 0;
+    }
+
+    .social-item {
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        justify-content: center;
+    }
+
+    .social-item:hover { width: 40px; } /* Desativa o efeito de expansão no mobile */
+    .social-item span { display: none; } /* Esconde o texto no mobile */
+
     .main-footer {
         padding: 50px 5% 80px; /* 80px em baixo para não bater na barra social nova */
     }
@@ -220,6 +242,30 @@ body {
     
     <div id="nav-auth" class="user-actions"></div>
 </header>
+
+        <div class="social-sidebar">
+            <a href="tel:919741045" class="social-item">
+                <i class="fa-solid fa-phone"></i>
+                <span>919 741 045</span>
+            </a>
+            <a href="mailto:garmotor.automovel@gmail.com?subject=Pedido de Informação - GARMOTOR" class="social-item">
+                <i class="fa-solid fa-envelope"></i>
+                <span>Gmail</span>
+            </a>
+            <a href="https://api.whatsapp.com/send?phone=919741045" target="_blank" class="social-item">
+                <i class="fa-brands fa-whatsapp"></i>
+                <span>WhatsApp</span>
+            </a>
+            <a href="https://www.facebook.com/people/Garmotor-Autom%C3%B3veis/61558459118986/" target="_blank" class="social-item">
+                <i class="fa-brands fa-facebook-f"></i>
+                <span>Facebook</span>
+            </a>
+            <a href="https://www.instagram.com/garmotor.automovel/" target="_blank" class="social-item">
+                <i class="fa-brands fa-instagram"></i>
+                <span>Instagram</span>
+            </a>
+        </div>
+    </section>
 
     <div class="page-content">
         <section class="relative h-[400px] flex items-center px-10 bg-cover bg-center" style="background-image: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.5)), url('img/GARMOTOR_PLACE.png');">
